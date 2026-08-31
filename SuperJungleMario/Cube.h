@@ -5,6 +5,6 @@ FVertexSimple v3 = { 0.2f, 0.2f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f };
 
 FVertexSimple cube_vertices[] =
 {
-    v0, v2, v1,
+    v0, v1, v2,
     v1, v2, v3
 };

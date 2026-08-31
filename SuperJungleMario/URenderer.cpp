@@ -13,9 +13,6 @@ void URenderer::Create(HWND hWindow)
 	// 래스터라이저 상태 생성
 	CreateRasterizerState();
 
-	// ui 래스터라이저 상태 생성
-	CreateUIRasterizerState();
-
 	// 깊이 스텐실 버퍼 및 블렌드 상태는 이 코드에서는 다루지 않음
 }
 
@@ -110,19 +107,9 @@ void URenderer::CreateRasterizerState()
 {
 	D3D11_RASTERIZER_DESC rasterizerdesc = {};
 	rasterizerdesc.FillMode = D3D11_FILL_SOLID;		// 채우기 모드
-	rasterizerdesc.CullMode = D3D11_CULL_BACK;		// 백페이스 컬링
+	rasterizerdesc.CullMode = D3D11_CULL_NONE;		// 백페이스 컬링
 
 	Device->CreateRasterizerState(&rasterizerdesc, &RasterizerState);
-}
-
-// cull none 인 ui 전용 rasterier
-void URenderer::CreateUIRasterizerState()
-{
-	D3D11_RASTERIZER_DESC rasterierdesc = {};
-	rasterierdesc.FillMode = D3D11_FILL_SOLID;
-	rasterierdesc.CullMode = D3D11_CULL_NONE;
-
-	Device->CreateRasterizerState(&rasterierdesc, &UIRasterizerState);
 }
 
 // 래스터라이저 상태를 해제하는 함수
@@ -132,11 +119,6 @@ void URenderer::ReleaseRasterizerState()
 	{
 		RasterizerState->Release();
 		RasterizerState = nullptr;
-	}
-	if (UIRasterizerState)
-	{
-		UIRasterizerState->Release();
-		UIRasterizerState = nullptr;
 	}
 }
 
@@ -278,6 +260,8 @@ void URenderer::Prepare()
 
 	DeviceContext->RSSetViewports(1, &ViewportInfo);
 
+	DeviceContext->RSSetState(RasterizerState);
+
 	DeviceContext->OMSetRenderTargets(1, &FrameBufferRTV, nullptr);
 
 	DeviceContext->OMSetBlendState(nullptr, nullptr, 0xffff'ffff);
@@ -286,7 +270,6 @@ void URenderer::Prepare()
 // Simple Shader 사용을 위한 PrepareShader 함수
 void URenderer::PrepareShader()
 {
-	DeviceContext->RSSetState(RasterizerState); // 이제 rasterizer를 계속 갱신해 줘야 함.ShaderW0.hlsl을 이용하면 이 state로 
 	DeviceContext->VSSetShader(SimpleVertexShader, nullptr, 0);
 	DeviceContext->PSSetShader(SimplePixelShader, nullptr, 0);
 	DeviceContext->IASetInputLayout(SimpleInputLayout);
@@ -309,7 +292,6 @@ void URenderer::RenderPrimitive(ID3D11Buffer* pBuffer, UINT numVertices)
 // RenderUI 하기 전 파이프라인을 모두 UI... 으로 
 void URenderer::PrepareUIShader()
 {
-	DeviceContext->RSSetState(UIRasterizerState); // 이제 rasterizer를 계속 갱신해 줘야 함 UI는 state로 
 	DeviceContext->VSSetShader(UIVertexShader, nullptr, 0);
 	DeviceContext->PSSetShader(UIPixelShader, nullptr, 0);
 	DeviceContext->IASetInputLayout(UIInputLayout);
