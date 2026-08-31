@@ -148,6 +148,9 @@
     <ClCompile Include="ImGui\imgui_tables.cpp" />
     <ClCompile Include="ImGui\imgui_widgets.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="UBall.cpp" />
+    <ClCompile Include="UPrimitive.cpp" />
+    <ClCompile Include="URenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ImGui\imconfig.h" />
@@ -159,6 +162,10 @@
     <ClInclude Include="ImGui\imstb_textedit.h" />
     <ClInclude Include="ImGui\imstb_truetype.h" />
     <ClInclude Include="Sphere.h" />
+    <ClInclude Include="SuperJungleMario.h" />
+    <ClInclude Include="UBall.h" />
+    <ClInclude Include="UPrimitive.h" />
+    <ClInclude Include="URenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="ShaderW0.hlsl">
