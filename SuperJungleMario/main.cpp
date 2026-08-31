@@ -280,7 +280,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		if (bLineRender && bFriction)
 		{
 			renderer.UpdateConstantBuffer(FVector{}, 0.0f, holdPos, currPos);
-			renderer.LineRenderPrimitive(LineBuffer, numVerticesLine);
 		}
 	
 		renderer.SwapBuffer();
