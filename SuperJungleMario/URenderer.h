@@ -40,6 +40,7 @@ public:
 	// 텍스처를 렌더 타겟으로 사용하는 뷰
 
 	ID3D11RasterizerState* RasterizerState = nullptr;
+	ID3D11RasterizerState* UIRasterizerState = nullptr;
 	// 레스터라이저 상태 (컬링, 채우기 모드 등 정의)
 
 	ID3D11Buffer* ConstantBuffer = nullptr;
@@ -72,6 +73,7 @@ public:
 
 	// 래스터라이저 상태를 생성하는 함수
 	void CreateRasterizerState();
+	void CreateUIRasterizerState();
 
 	// 래스터라이저 상태를 해제하는 함수
 	void ReleaseRasterizerState();
@@ -91,12 +93,18 @@ public:
 	ID3D11VertexShader* SimpleVertexShader;
 	ID3D11PixelShader* SimplePixelShader;
 	ID3D11InputLayout* SimpleInputLayout;
+	ID3D11VertexShader* UIVertexShader;
+	ID3D11PixelShader* UIPixelShader;
+	ID3D11InputLayout* UIInputLayout;
 	unsigned int Stride;
+	unsigned int UIStride;
 
 	ID3D11VertexShader* LineVertexShader;
 
 
 	void CreateShader();
+
+	void CreateUIShader();
 
 	void ReleaseShader();
 
@@ -110,7 +118,13 @@ public:
 	// 실질적인 Rendering 요청을 할 RenderPrimitive 함수
 	void RenderPrimitive(ID3D11Buffer* pBuffer, UINT numVertices);
 
-	void LineRenderPrimitive(ID3D11Buffer* pBuffer, UINT numVertices);
+	void PrepareUIShader();
+
+	void RenderUI(ID3D11Buffer* pBuffer, UINT numVertices);
+
+	//void LineRenderPrimitive(ID3D11Buffer* pBuffer, UINT numVertices);
+
+	ID3D11Buffer* CreateUIVertexBuffer(FVertexUI* vertices, UINT byteWidth);
 
 	///////////////////////////////////////////////////////////////////////////////////////////
 		// 버텍스 버퍼 생성, 소멸 함수

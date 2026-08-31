@@ -7,6 +7,14 @@ struct FVertexSimple
 	float r, g, b, a;	// color
 };
 
+// ui 전용 버텍스 
+struct FVertexUI
+{
+	float x, y; // x, y 화면 좌표
+	float u, v; // u, v 좌표
+	float r, g, b, a; // 색상 rgba 
+};
+
 // structure for a 3D vector
 struct FVector
 {
