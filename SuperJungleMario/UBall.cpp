@@ -14,6 +14,9 @@ UBall::UBall()
 	Radius = ((float)(rand() % 100 + 10)) * 0.01f;
 	Mass = Radius * Radius * 3.14f;
 	Index = TotalNumBalls++;
+
+	width = Radius * 2.0 * scaleMod;
+	height = Radius * 2.0f * scaleMod;
 }
 
 UBall::~UBall()

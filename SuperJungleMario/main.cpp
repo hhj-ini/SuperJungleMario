@@ -174,14 +174,17 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		for (size_t i = 0; i < UBall::TotalNumBalls; ++i)
 		{
-			for (size_t j = i + 1; j < UBall::TotalNumBalls; ++j) 
-			{
-				PrimitiveList[i]->CollisionCheck(PrimitiveList[j]);
-			}
 			if (UBall* b = dynamic_cast<UBall*>(PrimitiveList[i]))
 			{
 				b->Move();
 				b->UpdateVelocity(bGravity, bFriction);
+			}
+		}
+		for (size_t i = 0; i < UBall::TotalNumBalls; ++i)
+		{
+			for (size_t j = i + 1; j < UBall::TotalNumBalls; ++j)
+			{
+				PrimitiveList[i]->CollisionCheck(PrimitiveList[j]);
 			}
 		}
 
