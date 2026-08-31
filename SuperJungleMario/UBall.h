@@ -8,8 +8,7 @@ public:
 	static int inline TotalNumBalls = 0;
 
 	static float inline scaleMod = 0.1f;
-	FVector Location;
-	FVector Velocity;
+
 	float Radius = 1.0f;
 	float Mass = 1.0f;
 
