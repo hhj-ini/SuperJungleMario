@@ -4,6 +4,9 @@
 class UPlayer : public UBall
 {
 public:
+    bool bIsGrounded = true;
+
+public:
     UPlayer();
     ~UPlayer() override;
 
