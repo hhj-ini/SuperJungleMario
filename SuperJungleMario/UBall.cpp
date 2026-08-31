@@ -152,30 +152,3 @@ void UBall::UpdateVelocity(bool bGravity, bool bFriction)
 	Velocity.y -= gravity * deltaTime;
 }
 
-/////////////////
-
-void UBall::Picking(float xPos, float yPos, bool& bLineRender)
-{
-	float radius = Radius * scaleMod;
-	float xdist = Location.x - xPos;
-	float ydist = Location.y - yPos;
-
-	float dist = sqrtf((xdist * xdist) + (ydist * ydist));
-	if (Location.x + radius > xPos && Location.x - radius < xPos
-		&& Location.y + radius > yPos && Location.y - radius < yPos
-		&& dist < radius)
-	{
-		bIsHold = true;
-		bLineRender = true;
-	}
-}
-
-void UBall::LetGo(FPos HoldPos, FPos CurrPos)
-{
-	if (bIsHold)
-	{
-		Velocity.x = HoldPos.x - CurrPos.x;
-		Velocity.y = HoldPos.y - CurrPos.y;
-	}
-	bIsHold = false;
-}
