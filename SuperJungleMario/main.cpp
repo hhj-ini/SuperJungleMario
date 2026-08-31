@@ -13,19 +13,9 @@
 
 #include "URenderer.h"
 #include "SuperJungleMario.h"
-#include "Sphere.h"
+#include "Cube.h"
 #include "UBall.h"
 
-FVertexUI v0 = { -0.2f, -0.2f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f };
-FVertexUI v1 = { 0.2f, -0.2f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f };
-FVertexUI v2 = { -0.2f, 0.2f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f };
-FVertexUI v3 = { 0.2f, 0.2f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f };
-
-FVertexUI testUIVertex[] =
-{
-	v0, v2, v1,
-	v1, v2, v3
-};
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -74,7 +64,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	URenderer renderer;
 	renderer.Create(hWnd);
 	renderer.CreateShader();
-	renderer.CreateUIShader();
 	renderer.CreateConstantBuffer();
 
 	IMGUI_CHECKVERSION();
@@ -85,23 +74,19 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	ImGui_ImplDX11_Init(renderer.Device, renderer.DeviceContext);
 
 	// 버텍스 버퍼 생성 
-	UINT numVerticesSphere = sizeof(sphere_vertices) / sizeof(FVertexSimple);	// 버텍스 갯수 변수화
-	float scaleMod = 0.1f;	// Sphere 크기 조정
-	for (UINT i = 0; i < numVerticesSphere; ++i)
+	UINT numVerticescube = sizeof(cube_vertices) / sizeof(FVertexSimple);	// 버텍스 갯수 변수화
+	float scaleMod = 0.1f;	// cube 크기 조정
+	for (UINT i = 0; i < numVerticescube; ++i)
 	{
-		sphere_vertices[i].x *= scaleMod;
-		sphere_vertices[i].y *= scaleMod;
-		sphere_vertices[i].z *= scaleMod;
+		cube_vertices[i].x *= scaleMod;
+		cube_vertices[i].y *= scaleMod;
+		cube_vertices[i].z *= scaleMod;
 	}
-	ID3D11Buffer* SphereBuffer = renderer.CreateVertexBuffer(sphere_vertices, sizeof(sphere_vertices));
-
-	// ui 버텍스 버퍼 생성
-	UINT numVerticesTestUI = sizeof(testUIVertex) / sizeof(FVertexUI);
-	ID3D11Buffer* UIBuffer = renderer.CreateUIVertexBuffer(testUIVertex, sizeof(testUIVertex));
+	ID3D11Buffer* cubeBuffer = renderer.CreateVertexBuffer(cube_vertices, sizeof(cube_vertices));
 
 
-	//UINT numVerticesLine = sizeof(line_vertices) / sizeof(FVertexSimple);
-	//ID3D11Buffer* LineBuffer = renderer.CreateVertexBuffer(line_vertices, sizeof(line_vertices));
+	UINT numVerticesLine = sizeof(line_vertices) / sizeof(FVertexSimple);
+	ID3D11Buffer* LineBuffer = renderer.CreateVertexBuffer(line_vertices, sizeof(line_vertices));
 
 	size_t ballPoolCnt = 50;	// 초기에 50개만큼 공 풀 확보
 
@@ -189,17 +174,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		for (size_t i = 0; i < UBall::TotalNumBalls; ++i)
 		{
+			for (size_t j = i + 1; j < UBall::TotalNumBalls; ++j) 
+			{
+				PrimitiveList[i]->CollisionCheck(PrimitiveList[j]);
+			}
 			if (UBall* b = dynamic_cast<UBall*>(PrimitiveList[i]))
 			{
 				b->Move();
 				b->UpdateVelocity(bGravity, bFriction);
-			}
-		}
-		for (size_t i = 0; i < UBall::TotalNumBalls; ++i)
-		{
-			for (size_t j = i + 1; j < UBall::TotalNumBalls; ++j)
-			{
-				PrimitiveList[i]->CollisionCheck(PrimitiveList[j]);
 			}
 		}
 
@@ -208,12 +190,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		for (size_t i = 0; i < UBall::TotalNumBalls; ++i)
 		{
-			PrimitiveList[i]->Render(renderer, SphereBuffer, numVerticesSphere);
+			PrimitiveList[i]->Render(renderer, cubeBuffer, numVerticescube);
 		}
-
-		// 모든 primitive를 렌더 후 UI 렌더링.
-		//renderer.PrepareUIShader();
-		//renderer.RenderUI(UIBuffer, numVerticesTestUI);
 
 		// ImGui 렌더링 준비, 컨트롤 설정, 렌더링 요청
 		ImGui_ImplDX11_NewFrame();
@@ -299,11 +277,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		ImGui::Render();
 		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
-		//if (bLineRender && bFriction)
-		//{
-		//	renderer.UpdateConstantBuffer(FVector{}, 0.0f, holdPos, currPos);
-		//	renderer.LineRenderPrimitive(LineBuffer, numVerticesLine);
-		//}
+		if (bLineRender && bFriction)
+		{
+			renderer.UpdateConstantBuffer(FVector{}, 0.0f, holdPos, currPos);
+			renderer.LineRenderPrimitive(LineBuffer, numVerticesLine);
+		}
 	
 		renderer.SwapBuffer();
 
@@ -339,8 +317,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	// 소멸하는 코드를 여기에 추가합니다.
 
 	// 생성된 버텍스 버퍼를 소멸 - 셰이더 소멸 전 호출
-	renderer.ReleaseVertexBuffer(SphereBuffer);
-	//renderer.ReleaseVertexBuffer(LineBuffer);
+	renderer.ReleaseVertexBuffer(cubeBuffer);
+	renderer.ReleaseVertexBuffer(LineBuffer);
 
 	// 상수 버퍼 소멸
 	renderer.ReleaseConstantBuffer();
