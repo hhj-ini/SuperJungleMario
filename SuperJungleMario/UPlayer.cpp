@@ -1,51 +1,36 @@
 #pragma once
-#include "UBall.h"
+#include "UPlayer.h"
 #include <math.h>
 
 
-UBall::UBall()
+UPlayer::UPlayer()
 {
 	Location.x = ((float)(rand() % 180 - 90)) * 0.01f;
 	Location.y = ((float)(rand() % 180 - 90)) * 0.01f;
 
-	Velocity.x = ((float)(rand() % 100 - 50)) * 0.0001f;
-	Velocity.y = ((float)(rand() % 100 - 50)) * 0.001f;
-
-	Radius = ((float)(rand() % 100 + 10)) * 0.01f;
-	Mass = Radius * Radius * 3.14f;
-	Index = TotalNumBalls++;
-
-	width = Radius * 2.0 * scaleMod;
-	height = Radius * 2.0f * scaleMod;
+	Velocity.x = 0.001f;
+	Velocity.y = 0.001f;
 }
 
-UBall::~UBall()
+UPlayer::~UPlayer()
 {
-	--TotalNumBalls;
 }
 
-
-void UBall::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)
+void UPlayer::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)
 {
 	renderer.UpdateConstantBuffer(Location, Radius);
 	renderer.RenderPrimitive(pBuffer, num);
 }
 
-//bool UBall::CollisionCheck(UPrimitive* other)
+//bool UPlayer::CollisionCheck(UPrimitive* other)
 //{
 //	if (this == other)
 //	{
 //		return false;
 //	}
 //
-//	UBall* Other = nullptr;
-//	if (!(Other = dynamic_cast<UBall*>(other)))
-//	{
-//		return false;
-//	}
-//
-//	// 피킹 중일때는 충돌 연산 처리 안하도록 함
-//	if (bIsHold || Other->bIsHold)
+//	UPlayer* Other = nullptr;
+//	if (!(Other = dynamic_cast<UPlayer*>(other)))
 //	{
 //		return false;
 //	}
@@ -95,37 +80,33 @@ void UBall::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)
 //}
 
 
-void UBall::Move()
+void UPlayer::Move()
 {
-	if (bIsHold)
+
+	Velocity.x = 0.0f;
+
+	if (GetAsyncKeyState(VK_LEFT) & 0x8000)
 	{
-		return;
+		Velocity.x -= 0.1f;
 	}
+	if (GetAsyncKeyState(VK_RIGHT) & 0x8000)
+	{
+		Velocity.x += 0.1f;
+	}
+
+	if (bIsGrounded && (GetAsyncKeyState(VK_SPACE) & 0x8000))
+	{
+		Velocity.y += 0.2f;
+		bIsGrounded = false;
+	}
+
+	
 	Location.x += Velocity.x * deltaTime;
 	Location.y += Velocity.y * deltaTime;
-	Location.z += Velocity.z * deltaTime;
 
-	float renderRadius = Radius * scaleMod;
-	if (Location.x <= leftBorder + renderRadius)
-	{
-		Velocity.x *= -1.0f;
-		Location.x = leftBorder + renderRadius;
-	}
-	if (Location.x >= rightBorder - renderRadius)
-	{
-		Velocity.x *= -1.0f;
-		Location.x = rightBorder - renderRadius;
-	}
-	if (Location.y <= bottomBorder + renderRadius)
-	{
-		Velocity.y *= -1.0f;
-		Location.y = bottomBorder + renderRadius;
-	}
-	if (Location.y >= topBorder - renderRadius)
-	{
-		Velocity.y *= -1.0f;
-		Location.y = topBorder - renderRadius;
-	}
+	// Velocity.y -= gravity * deltaTime;
+
+	// 바닥 착지 처리 필요(충돌)
 }
 
 void UBall::UpdateVelocity(bool bGravity, bool bFriction)

@@ -28,9 +28,9 @@ public:
 
 	virtual void Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num);
 
-	virtual bool CollisionCheck(UPrimitive* other);
+	//virtual bool CollisionCheck(UPrimitive* other);
 
-	void Move();
+	virtual void Move();
 
 	void UpdateVelocity(bool bGravity, bool bFriction);
 
