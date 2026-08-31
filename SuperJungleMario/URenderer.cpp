@@ -13,6 +13,9 @@ void URenderer::Create(HWND hWindow)
 	// 래스터라이저 상태 생성
 	CreateRasterizerState();
 
+	// ui 래스터라이저 상태 생성
+	CreateUIRasterizerState();
+
 	// 깊이 스텐실 버퍼 및 블렌드 상태는 이 코드에서는 다루지 않음
 }
 
@@ -112,6 +115,16 @@ void URenderer::CreateRasterizerState()
 	Device->CreateRasterizerState(&rasterizerdesc, &RasterizerState);
 }
 
+// cull none 인 ui 전용 rasterier
+void URenderer::CreateUIRasterizerState()
+{
+	D3D11_RASTERIZER_DESC rasterierdesc = {};
+	rasterierdesc.FillMode = D3D11_FILL_SOLID;
+	rasterierdesc.CullMode = D3D11_CULL_NONE;
+
+	Device->CreateRasterizerState(&rasterierdesc, &UIRasterizerState);
+}
+
 // 래스터라이저 상태를 해제하는 함수
 void URenderer::ReleaseRasterizerState()
 {
@@ -119,6 +132,11 @@ void URenderer::ReleaseRasterizerState()
 	{
 		RasterizerState->Release();
 		RasterizerState = nullptr;
+	}
+	if (UIRasterizerState)
+	{
+		UIRasterizerState->Release();
+		UIRasterizerState = nullptr;
 	}
 }
 
@@ -154,9 +172,9 @@ void URenderer::CreateShader()
 	D3DCompileFromFile(L"ShaderW0.hlsl", nullptr, nullptr, "mainVS", "vs_5_0", 0, 0, &vertexshaderCSO, nullptr);
 	Device->CreateVertexShader(vertexshaderCSO->GetBufferPointer(), vertexshaderCSO->GetBufferSize(), nullptr, &SimpleVertexShader);
 
-	// 라인 그리는 셰이더 프로그램 만들기
-	D3DCompileFromFile(L"ShaderW0.hlsl", nullptr, nullptr, "mainVS2", "vs_5_0", 0, 0, &vertexshaderCSO, nullptr);
-	Device->CreateVertexShader(vertexshaderCSO->GetBufferPointer(), vertexshaderCSO->GetBufferSize(), nullptr, &LineVertexShader);
+	//// 라인 그리는 셰이더 프로그램 만들기
+	//D3DCompileFromFile(L"ShaderW0.hlsl", nullptr, nullptr, "mainVS2", "vs_5_0", 0, 0, &vertexshaderCSO, nullptr);
+	//Device->CreateVertexShader(vertexshaderCSO->GetBufferPointer(), vertexshaderCSO->GetBufferSize(), nullptr, &LineVertexShader);
 
 	D3DCompileFromFile(L"ShaderW0.hlsl", nullptr, nullptr, "mainPS", "ps_5_0", 0, 0, &pixelshaderCSO, nullptr);
 	Device->CreatePixelShader(pixelshaderCSO->GetBufferPointer(), pixelshaderCSO->GetBufferSize(), nullptr, &SimplePixelShader);
@@ -171,6 +189,34 @@ void URenderer::CreateShader()
 		vertexshaderCSO->GetBufferPointer(), vertexshaderCSO->GetBufferSize(), &SimpleInputLayout);
 
 	Stride = sizeof(FVertexSimple);
+
+	vertexshaderCSO->Release();
+	pixelshaderCSO->Release();
+}
+
+// ui 전용 셰이더 생성 UIShader.hlsl로.
+void URenderer::CreateUIShader()
+{
+	ID3DBlob* vertexshaderCSO;
+	ID3DBlob* pixelshaderCSO;
+
+	D3DCompileFromFile(L"UIShader.hlsl", nullptr, nullptr, "mainVS", "vs_5_0", 0, 0, &vertexshaderCSO, nullptr);
+	Device->CreateVertexShader(vertexshaderCSO->GetBufferPointer(), vertexshaderCSO->GetBufferSize(), nullptr, &UIVertexShader);
+
+	D3DCompileFromFile(L"UIShader.hlsl", nullptr, nullptr, "mainPS", "ps_5_0", 0, 0, &pixelshaderCSO, nullptr);
+	Device->CreatePixelShader(pixelshaderCSO->GetBufferPointer(), pixelshaderCSO->GetBufferSize(), nullptr, &UIPixelShader);
+
+	D3D11_INPUT_ELEMENT_DESC layout[] =
+	{
+		{"POSITION", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0}
+	};
+
+	Device->CreateInputLayout(layout, ARRAYSIZE(layout),
+		vertexshaderCSO->GetBufferPointer(), vertexshaderCSO->GetBufferSize(), &UIInputLayout);
+
+	UIStride = sizeof(FVertexUI);
 
 	vertexshaderCSO->Release();
 	pixelshaderCSO->Release();
@@ -196,11 +242,30 @@ void URenderer::ReleaseShader()
 		SimpleVertexShader = nullptr;
 	}
 
-	// 자체적으로 만든 라인 셰이더 프로그램 메모리 해제
-	if (LineVertexShader)
+	//// 자체적으로 만든 라인 셰이더 프로그램 메모리 해제
+	//if (LineVertexShader)
+	//{
+	//	LineVertexShader->Release();
+	//	LineVertexShader = nullptr;
+	//}
+
+	// ui 셰이더 해제
+	if (UIInputLayout)
 	{
-		LineVertexShader->Release();
-		LineVertexShader = nullptr;
+		UIInputLayout->Release();
+		UIInputLayout = nullptr;
+	}
+
+	if (UIPixelShader)
+	{
+		UIPixelShader->Release();
+		UIPixelShader = nullptr;
+	}
+
+	if (UIVertexShader)
+	{
+		UIVertexShader->Release();
+		UIVertexShader = nullptr;
 	}
 }
 
@@ -213,8 +278,6 @@ void URenderer::Prepare()
 
 	DeviceContext->RSSetViewports(1, &ViewportInfo);
 
-	DeviceContext->RSSetState(RasterizerState);
-
 	DeviceContext->OMSetRenderTargets(1, &FrameBufferRTV, nullptr);
 
 	DeviceContext->OMSetBlendState(nullptr, nullptr, 0xffff'ffff);
@@ -223,6 +286,7 @@ void URenderer::Prepare()
 // Simple Shader 사용을 위한 PrepareShader 함수
 void URenderer::PrepareShader()
 {
+	DeviceContext->RSSetState(RasterizerState); // 이제 rasterizer를 계속 갱신해 줘야 함.ShaderW0.hlsl을 이용하면 이 state로 
 	DeviceContext->VSSetShader(SimpleVertexShader, nullptr, 0);
 	DeviceContext->PSSetShader(SimplePixelShader, nullptr, 0);
 	DeviceContext->IASetInputLayout(SimpleInputLayout);
@@ -242,17 +306,52 @@ void URenderer::RenderPrimitive(ID3D11Buffer* pBuffer, UINT numVertices)
 	DeviceContext->Draw(numVertices, 0);
 }
 
-void URenderer::LineRenderPrimitive(ID3D11Buffer* pBuffer, UINT numVertices)
+// RenderUI 하기 전 파이프라인을 모두 UI... 으로 
+void URenderer::PrepareUIShader()
 {
-	DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
-	DeviceContext->VSSetShader(LineVertexShader, nullptr, 0);
+	DeviceContext->RSSetState(UIRasterizerState); // 이제 rasterizer를 계속 갱신해 줘야 함 UI는 state로 
+	DeviceContext->VSSetShader(UIVertexShader, nullptr, 0);
+	DeviceContext->PSSetShader(UIPixelShader, nullptr, 0);
+	DeviceContext->IASetInputLayout(UIInputLayout);
+}
 
+// ui 렌더링 
+void URenderer::RenderUI(ID3D11Buffer* pBuffer, UINT numVertices)
+{
 	UINT offset = 0;	// 버퍼에서 얼마나 건너뛸 지를 설정하는 변수
-	DeviceContext->IASetVertexBuffers(0, 1, &pBuffer, &Stride, &offset);
-
+	DeviceContext->IASetVertexBuffers(0, 1, &pBuffer, &UIStride, &offset);
+	
 	DeviceContext->Draw(numVertices, 0);
 }
 
+//void URenderer::LineRenderPrimitive(ID3D11Buffer* pBuffer, UINT numVertices)
+//{
+//	DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
+//	DeviceContext->VSSetShader(LineVertexShader, nullptr, 0);
+//
+//	UINT offset = 0;	// 버퍼에서 얼마나 건너뛸 지를 설정하는 변수
+//	DeviceContext->IASetVertexBuffers(0, 1, &pBuffer, &Stride, &offset);
+//
+//	DeviceContext->Draw(numVertices, 0);
+//}
+
+// ui 버텍스 버퍼 생성. FVertexUI를 인자로 받음.
+ID3D11Buffer* URenderer::CreateUIVertexBuffer(FVertexUI* vertices, UINT byteWidth)
+{
+	// Create a vertex buffer
+	D3D11_BUFFER_DESC vertexbufferdesc = {};
+	vertexbufferdesc.ByteWidth = byteWidth;
+	vertexbufferdesc.Usage = D3D11_USAGE_IMMUTABLE;
+	vertexbufferdesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+
+	D3D11_SUBRESOURCE_DATA vertexbufferSRD = { vertices };
+
+	ID3D11Buffer* vertexBuffer;
+
+	Device->CreateBuffer(&vertexbufferdesc, &vertexbufferSRD, &vertexBuffer);
+
+	return vertexBuffer;
+}
 
 ID3D11Buffer* URenderer::CreateVertexBuffer(FVertexSimple* vertices, UINT byteWidth)
 {
