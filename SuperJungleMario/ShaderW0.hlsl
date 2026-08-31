@@ -2,15 +2,13 @@
 
 cbuffer constants : register(b0)
 {
-    float3 Offset;
-    float Radius;
-    float2 HoldPos;
-    float2 CurrPos;
+    matrix World;
+    matrix View;
 }
 
 struct VS_INPUT
 {
-    float3 position : POSITION;    // Input position from vertex buffer
+    float4 position : POSITION;    // Input position from vertex buffer
     float4 color : COLOR;           // Input color from vertex buffer
 };
 
@@ -24,11 +22,17 @@ PS_INPUT mainVS(VS_INPUT input)
 {
     PS_INPUT output;
     
-    // Pass the position directly to the pixel shader (no transformation)
-    float3 newPos = input.position * Radius;
-    output.position = float4(Offset, 0) + float4(newPos, 1);
+    //// Pass the position directly to the pixel shader (no transformation)
+    //float3 newPos = input.position * Radius;
+    //output.position = float4(Offset, 0) + float4(newPos, 1);
     
-    // Pass the color to the pixel shader
+    float4 position = float4(input.position, 1.0f);
+    
+    position = mul(position, World);
+    position = mul(position, View);
+    
+    output.position = position;
+    
     output.color = input.color;
     
     return output;
@@ -44,15 +48,15 @@ PS_INPUT mainVS2(VS_INPUT input)
 {
     PS_INPUT output;
     
-    // Pass the position directly to the pixel shader (no transformation)
-    if (input.position.x > 0.5f)
-    {
-        output.position = float4(HoldPos, 0, 1);
-    }
-    else
-    {
-        output.position = float4(CurrPos, 0, 1);
-    }
+    //// Pass the position directly to the pixel shader (no transformation)
+    //if (input.position.x > 0.5f)
+    //{
+    //    output.position = float4(HoldPos, 0, 1);
+    //}
+    //else
+    //{
+    //    output.position = float4(CurrPos, 0, 1);
+    //}
     
     // Pass the color to the pixel shader
     output.color = input.color;

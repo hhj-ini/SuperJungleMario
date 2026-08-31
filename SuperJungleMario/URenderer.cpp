@@ -299,22 +299,25 @@ void URenderer::ReleaseConstantBuffer()
 	}
 }
 
-void URenderer::UpdateConstantBuffer(FVector Offset, float Radius, FPos HoldPos, FPos CurrPos)
+void URenderer::UpdateConstantBuffer(const DirectX::XMMATRIX& world, const DirectX::XMMATRIX& view)
 {
 	if (ConstantBuffer)	// 버퍼가 있을 때만 아래 코드 실행
 	{
 		D3D11_MAPPED_SUBRESOURCE constantbufferMSR;
+		
+		FConstants constants;
+
+		DirectX::XMStoreFloat4x4(&constants.World, DirectX::XMMatrixTranspose(world));
+		DirectX::XMStoreFloat4x4(&constants.View, DirectX::XMMatrixTranspose(view));
 
 		DeviceContext->Map(ConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &constantbufferMSR);
 
-		FConstants* constants = (FConstants*)constantbufferMSR.pData;
+		FConstants* constant = (FConstants*)constantbufferMSR.pData;
 		{
-			constants->Offset = Offset;
-			constants->Radius = Radius;
-			// 라인 그리기 위한 마우스 좌표 정보들 상수 버퍼에 업데이트
-			constants->HoldPos = HoldPos;
-			constants->CurrPos = CurrPos;
+			constant->World = constants.World;
+			constant->View = constants.View;
 		}
 		DeviceContext->Unmap(ConstantBuffer, 0);
+
 	}
 }
