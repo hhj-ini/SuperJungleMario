@@ -139,31 +139,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				break;
 			}	
 			else if (msg.message == WM_LBUTTONDOWN)
-			{	// 공 피킹
+			{	
 				holdPos.x = (LOWORD(msg.lParam) - 512.0f) / 512.0f;
 				holdPos.y = (512.0f - HIWORD(msg.lParam)) / 512.0f;
-
-				if (bFriction)
-				{
-					for (size_t i = 0; i < UBall::TotalNumBalls; ++i)
-					{
-						PrimitiveList[i]->Picking(currPos.x, currPos.y, bLineRender);
-					}
-				}
 			}
 			else if (msg.message == WM_LBUTTONUP)
 			{
 				currPos.x = (LOWORD(msg.lParam) - 512.0f) / 512.0f;
 				currPos.y = (512.0f - HIWORD(msg.lParam)) / 512.0f;
-
-				if (bFriction)
-				{
-					for (size_t i = 0; i < UBall::TotalNumBalls; ++i)
-					{
-						PrimitiveList[i]->LetGo(holdPos, currPos);
-						bLineRender = false;
-					}
-				}
 			}
 			else if (msg.message == WM_MOUSEMOVE)
 			{
