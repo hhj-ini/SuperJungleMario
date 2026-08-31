@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="SuperJungleMario/SuperJungleMario.vcxproj" Id="a9249b60-f765-4df6-88db-ac117686a7a6" />
+</Solution>
