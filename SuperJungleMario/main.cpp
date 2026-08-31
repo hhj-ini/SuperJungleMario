@@ -147,7 +147,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				{
 					for (size_t i = 0; i < UBall::TotalNumBalls; ++i)
 					{
-						PrimitiveList[i]->Picking(currPos.x, currPos.y, bLineRender);
+
 					}
 				}
 			}
@@ -160,7 +160,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				{
 					for (size_t i = 0; i < UBall::TotalNumBalls; ++i)
 					{
-						PrimitiveList[i]->LetGo(holdPos, currPos);
+
 						bLineRender = false;
 					}
 				}
