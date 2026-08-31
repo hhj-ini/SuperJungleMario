@@ -35,10 +35,6 @@ public:
 
 	void UpdateVelocity(bool bGravity, bool bFriction);
 
-	/////////////////
 
-	virtual void Picking(float xPos, float yPos, bool& bLineRender);
-
-	virtual void LetGo(FPos HoldPos, FPos CurrPos);
 };
 
