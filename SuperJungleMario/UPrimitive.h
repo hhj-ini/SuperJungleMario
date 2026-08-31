@@ -9,4 +9,7 @@ class UPrimitive
 
 
 	virtual ~UPrimitive() {};
+
+	FVector Location;
+	FVector Velocity;
 };
