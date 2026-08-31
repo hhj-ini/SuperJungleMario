@@ -15,6 +15,7 @@
 #include "SuperJungleMario.h"
 #include "Cube.h"
 #include "UBall.h"
+#include "UMushroom.h"
 
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -118,6 +119,21 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	// 라인 렌더링 여부
 	bool bLineRender = false;
 
+
+
+	/////////// 여기서 테스트용 객체 추가하시면 됩니다 ////////////////
+	int mushroomIdx = UBall::TotalNumBalls;
+	PrimitiveList[mushroomIdx] = new UMushroom;
+	// 접근할때
+	// PrimitiveList[mushroomIdx]->render(...); 이런식으로 하면 됩니다.
+	// for 문이랑 로직 중첩되지 않도록 주의해주시면 돼요
+
+
+	/////////// 여기서 테스트용 객체 추가하시면 됩니다 ////////////////
+
+
+
+
 	// Main Loop(Quit Message가 들어오기 전까지 아래 Loop를 무한히 실행하게 됨.
 	while (bIsExit == false)
 	{
@@ -176,13 +192,19 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		{
 			for (size_t j = i + 1; j < UBall::TotalNumBalls; ++j) 
 			{
+				if (j == mushroomIdx || i == mushroomIdx) continue;	// 임시로 버섯 충돌 로직 영향 받지 않도록 함
 				PrimitiveList[i]->CollisionCheck(PrimitiveList[j]);
 			}
-			if (UBall* b = dynamic_cast<UBall*>(PrimitiveList[i]))
+			if (UMushroom* ms = dynamic_cast<UMushroom*>(PrimitiveList[i]))
+			{
+				ms->Move();
+			}
+			else if (UBall* b = dynamic_cast<UBall*>(PrimitiveList[i]))
 			{
 				b->Move();
 				b->UpdateVelocity(bGravity, bFriction);
 			}
+			
 		}
 
 		renderer.Prepare();
@@ -219,55 +241,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			}
 		}
 
-		int* num = new int(UBall::TotalNumBalls);
-
-		if (ImGui::InputInt("Number of Balls", num))
+		// 버섯 무빙 테스트용
+		if (ImGui::Button("Mushroom"))
 		{
-			if (*num >= 1)	// 최소 1개
+			if (UMushroom* ms = dynamic_cast<UMushroom*>(PrimitiveList[mushroomIdx]))
 			{
-				if (*num > UBall::TotalNumBalls)
-				{
-					// 볼 풀이 꽉찼으면 새로 할당해줘야 함
-					if (*num >= ballPoolCnt)
-					{
-						UPrimitive** temp = new UPrimitive * [(*num) * 2];
-
-						for (size_t i = 0; i < ballPoolCnt; ++i)
-						{
-							temp[i] = PrimitiveList[i];
-						}
-						delete[] PrimitiveList;
-						PrimitiveList = temp;
-						temp = nullptr;
-						ballPoolCnt = (*num) * 2;
-						// 공 풀의 증가는 2배씩
-					}
-					
-					int addCnt = *num - UBall::TotalNumBalls;
-					for (size_t i = 0; i < addCnt; ++i)
-					{
-						int currIdx = UBall::TotalNumBalls;
-						PrimitiveList[currIdx] = new UBall;
-					}
-				}
-				else if (*num < UBall::TotalNumBalls)
-				{
-					int deleteCnt = UBall::TotalNumBalls - *num;
-					for (size_t i = 0; i < deleteCnt; ++i)
-					{
-						// 임의의 공 삭제
-						int randIdx = rand() % UBall::TotalNumBalls;
-						int currIdx = UBall::TotalNumBalls;
-						UPrimitive* deletePtr = PrimitiveList[randIdx];
-						if (randIdx != currIdx - 1)
-						{	// 랜덤으로 선택된 인덱스가 마지막 인덱스가 아니라면 서로 교환
-							PrimitiveList[randIdx] = PrimitiveList[currIdx - 1];
-						}
-						PrimitiveList[currIdx - 1] = nullptr;
-
-						delete deletePtr;
-					}
-				}
+				ms->SetState(UMushroom::MushroomState::ANIMATING);
 			}
 		}
 
