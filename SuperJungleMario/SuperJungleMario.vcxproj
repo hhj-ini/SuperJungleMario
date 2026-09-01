@@ -155,6 +155,7 @@
     <ClCompile Include="UMushroom.cpp" />
     <ClCompile Include="UPlayer.cpp" />
     <ClCompile Include="UPrimitive.cpp" />
+    <ClCompile Include="UProjectile.cpp" />
     <ClCompile Include="URenderer.cpp" />
     <ClCompile Include="UUi.cpp" />
   </ItemGroup>
@@ -179,6 +180,7 @@
     <ClInclude Include="UMushroom.h" />
     <ClInclude Include="UPlayer.h" />
     <ClInclude Include="UPrimitive.h" />
+    <ClInclude Include="UProjectile.h" />
     <ClInclude Include="URenderer.h" />
     <ClInclude Include="UUi.h" />
   </ItemGroup>
