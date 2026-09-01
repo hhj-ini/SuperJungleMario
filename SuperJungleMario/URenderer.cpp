@@ -107,7 +107,7 @@ void URenderer::CreateRasterizerState()
 {
 	D3D11_RASTERIZER_DESC rasterizerdesc = {};
 	rasterizerdesc.FillMode = D3D11_FILL_SOLID;		// 채우기 모드
-	rasterizerdesc.CullMode = D3D11_CULL_NONE;		// 백페이스 컬링
+	rasterizerdesc.CullMode = D3D11_CULL_BACK;		// 백페이스 컬링
 
 	Device->CreateRasterizerState(&rasterizerdesc, &RasterizerState);
 }
@@ -154,9 +154,9 @@ void URenderer::CreateShader()
 	D3DCompileFromFile(L"ShaderW0.hlsl", nullptr, nullptr, "mainVS", "vs_5_0", 0, 0, &vertexshaderCSO, nullptr);
 	Device->CreateVertexShader(vertexshaderCSO->GetBufferPointer(), vertexshaderCSO->GetBufferSize(), nullptr, &SimpleVertexShader);
 
-	//// 라인 그리는 셰이더 프로그램 만들기
-	//D3DCompileFromFile(L"ShaderW0.hlsl", nullptr, nullptr, "mainVS2", "vs_5_0", 0, 0, &vertexshaderCSO, nullptr);
-	//Device->CreateVertexShader(vertexshaderCSO->GetBufferPointer(), vertexshaderCSO->GetBufferSize(), nullptr, &LineVertexShader);
+	// 라인 그리는 셰이더 프로그램 만들기
+	/*D3DCompileFromFile(L"ShaderW0.hlsl", nullptr, nullptr, "mainVS2", "vs_5_0", 0, 0, &vertexshaderCSO, nullptr);
+	Device->CreateVertexShader(vertexshaderCSO->GetBufferPointer(), vertexshaderCSO->GetBufferSize(), nullptr, &LineVertexShader);*/
 
 	D3DCompileFromFile(L"ShaderW0.hlsl", nullptr, nullptr, "mainPS", "ps_5_0", 0, 0, &pixelshaderCSO, nullptr);
 	Device->CreatePixelShader(pixelshaderCSO->GetBufferPointer(), pixelshaderCSO->GetBufferSize(), nullptr, &SimplePixelShader);
@@ -224,30 +224,11 @@ void URenderer::ReleaseShader()
 		SimpleVertexShader = nullptr;
 	}
 
-	//// 자체적으로 만든 라인 셰이더 프로그램 메모리 해제
-	//if (LineVertexShader)
-	//{
-	//	LineVertexShader->Release();
-	//	LineVertexShader = nullptr;
-	//}
-
-	// ui 셰이더 해제
-	if (UIInputLayout)
+	// 자체적으로 만든 라인 셰이더 프로그램 메모리 해제
+	if (LineVertexShader)
 	{
-		UIInputLayout->Release();
-		UIInputLayout = nullptr;
-	}
-
-	if (UIPixelShader)
-	{
-		UIPixelShader->Release();
-		UIPixelShader = nullptr;
-	}
-
-	if (UIVertexShader)
-	{
-		UIVertexShader->Release();
-		UIVertexShader = nullptr;
+		LineVertexShader->Release();
+		LineVertexShader = nullptr;
 	}
 }
 
@@ -306,6 +287,7 @@ void URenderer::RenderUI(ID3D11Buffer* pBuffer, UINT numVertices)
 	DeviceContext->Draw(numVertices, 0);
 }
 
+
 //void URenderer::LineRenderPrimitive(ID3D11Buffer* pBuffer, UINT numVertices)
 //{
 //	DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
@@ -316,6 +298,7 @@ void URenderer::RenderUI(ID3D11Buffer* pBuffer, UINT numVertices)
 //
 //	DeviceContext->Draw(numVertices, 0);
 //}
+
 
 // ui 버텍스 버퍼 생성. FVertexUI를 인자로 받음.
 ID3D11Buffer* URenderer::CreateUIVertexBuffer(FVertexUI* vertices, UINT byteWidth)
@@ -335,6 +318,7 @@ ID3D11Buffer* URenderer::CreateUIVertexBuffer(FVertexUI* vertices, UINT byteWidt
 
 	return vertexBuffer;
 }
+
 
 ID3D11Buffer* URenderer::CreateVertexBuffer(FVertexSimple* vertices, UINT byteWidth)
 {
@@ -381,22 +365,25 @@ void URenderer::ReleaseConstantBuffer()
 	}
 }
 
-void URenderer::UpdateConstantBuffer(FVector Offset, float Radius, FPos HoldPos, FPos CurrPos)
+void URenderer::UpdateConstantBuffer(const DirectX::XMMATRIX& world, const DirectX::XMMATRIX& view)
 {
 	if (ConstantBuffer)	// 버퍼가 있을 때만 아래 코드 실행
 	{
 		D3D11_MAPPED_SUBRESOURCE constantbufferMSR;
+		
+		FConstants constants;
+
+		DirectX::XMStoreFloat4x4(&constants.World, DirectX::XMMatrixTranspose(world));
+		DirectX::XMStoreFloat4x4(&constants.View, DirectX::XMMatrixTranspose(view));
 
 		DeviceContext->Map(ConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &constantbufferMSR);
 
-		FConstants* constants = (FConstants*)constantbufferMSR.pData;
+		FConstants* constant = (FConstants*)constantbufferMSR.pData;
 		{
-			constants->Offset = Offset;
-			constants->Radius = Radius;
-			// 라인 그리기 위한 마우스 좌표 정보들 상수 버퍼에 업데이트
-			constants->HoldPos = HoldPos;
-			constants->CurrPos = CurrPos;
+			constant->World = constants.World;
+			constant->View = constants.View;
 		}
 		DeviceContext->Unmap(ConstantBuffer, 0);
+
 	}
 }

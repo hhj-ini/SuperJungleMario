@@ -7,6 +7,7 @@ class UBall : public UPrimitive
 public:
 	static int inline TotalNumBalls = 0;
 
+	static float inline scaleMod = 0.5f;
 
 	float Radius = 1.0f;
 	float Mass = 1.0f;
@@ -18,7 +19,7 @@ public:
 
 	float DeltaGravityAmount = 0.098f * 60;
 
-	bool bIsHold = true;
+	bool bIsHold = false;
 
 public:
 	UBall();

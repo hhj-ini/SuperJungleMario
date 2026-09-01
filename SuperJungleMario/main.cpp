@@ -5,6 +5,7 @@
 #include <Windows.h>
 #include <d3d11.h>
 #include <d3dcompiler.h>
+#include <DirectXMath.h>
 
 #include "ImGui/imgui.h"
 #include "ImGui/imgui_internal.h"
@@ -18,6 +19,7 @@
 #include "UMushroom.h"
 #include "UPlayer.h"
 #include "UI.h"
+#include "UCamera.h"
 
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -64,11 +66,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	bool bIsExit = false;
 
 	// 각종 생성하는 코드를 여기에 추가합니다.
+	UCamera camera;
+
 	URenderer renderer;
 	renderer.Create(hWnd);
 	renderer.CreateShader();
 	renderer.CreateUIShader();
 	renderer.CreateConstantBuffer();
+
 
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
@@ -92,8 +97,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	UINT numVerticesUI = sizeof(ui_vertices) / sizeof(FVertexUI);
 	ID3D11Buffer* UIBuffer = renderer.CreateUIVertexBuffer(ui_vertices, sizeof(ui_vertices));
 
-	UINT numVerticesLine = sizeof(line_vertices) / sizeof(FVertexSimple);
-	ID3D11Buffer* LineBuffer = renderer.CreateVertexBuffer(line_vertices, sizeof(line_vertices));
+	//UINT numVerticesLine = sizeof(line_vertices) / sizeof(FVertexSimple);
+	//ID3D11Buffer* LineBuffer = renderer.CreateVertexBuffer(line_vertices, sizeof(line_vertices));
 
 	size_t ballPoolCnt = 50;	// 초기에 50개만큼 공 풀 확보
 
@@ -112,8 +117,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	
 	LARGE_INTEGER startTime, endTime;
 	double elapsedTime = 0.0;	
-
-	
 
 	// 나만의 무기
 	bool bFriction = false;
@@ -137,7 +140,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	/////////// 여기서 테스트용 객체 추가하시면 됩니다 ////////////////
 
-	UPlayer* player = new UPlayer;
+	UBall* player = new UPlayer;
 
 	// Main Loop(Quit Message가 들어오기 전까지 아래 Loop를 무한히 실행하게 됨.
 	while (bIsExit == false)
@@ -159,10 +162,18 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				bIsExit = true;
 				break;
 			}	
-
+	
 		}
-
 		player->Move();
+
+
+		// 카메라가 플레이어 추적
+		/*camera.Follow(player->Location);
+		renderer.ViewMatrix = camera.GetViewMatrix();*/
+
+		// 카메라가 플레이어를 추적하지 않음
+		renderer.ViewMatrix = DirectX::XMMatrixIdentity();
+
 		//for (size_t i = 0; i < UBall::TotalNumBalls; ++i)
 		//{
 		//	for (size_t j = i + 1; j < UBall::TotalNumBalls; ++j) 
@@ -213,14 +224,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			}
 		}
 		
-		// 나만의 무기 - 당구 게임 모드
-		if (ImGui::Checkbox("Cue Sports Mode!!!!", &bFriction))
-		{
-			if (bFriction)
-			{
-				bGravity = false;
-			}
-		}
+		//// 나만의 무기 - 당구 게임 모드
+		//if (ImGui::Checkbox("Cue Sports Mode!!!!", &bFriction))
+		//{
+		//	if (bFriction)
+		//	{
+		//		bGravity = false;
+		//	}
+		//}
 
 		// 버섯 무빙 테스트용
 		if (ImGui::Button("Mushroom"))
@@ -237,10 +248,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		ImGui::Render();
 		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
-		if (bLineRender && bFriction)
+		/*if (bLineRender && bFriction)
 		{
 			renderer.UpdateConstantBuffer(FVector{}, 0.0f, holdPos, currPos);
-		}
+		}*/
 	
 		renderer.SwapBuffer();
 
@@ -280,7 +291,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	// 생성된 버텍스 버퍼를 소멸 - 셰이더 소멸 전 호출
 	renderer.ReleaseVertexBuffer(cubeBuffer);
-	renderer.ReleaseVertexBuffer(LineBuffer);
+	//renderer.ReleaseVertexBuffer(LineBuffer);
 
 	// 상수 버퍼 소멸
 	renderer.ReleaseConstantBuffer();
