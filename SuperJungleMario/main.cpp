@@ -16,6 +16,7 @@
 #include "Cube.h"
 #include "UBall.h"
 #include "UMushroom.h"
+#include "UPlayer.h"
 
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -131,7 +132,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	/////////// 여기서 테스트용 객체 추가하시면 됩니다 ////////////////
 
-
+	UPlayer* player = new UPlayer;
 
 
 	// Main Loop(Quit Message가 들어오기 전까지 아래 Loop를 무한히 실행하게 됨.
@@ -154,66 +155,39 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				bIsExit = true;
 				break;
 			}	
-			else if (msg.message == WM_LBUTTONDOWN)
-			{	// 공 피킹
-				holdPos.x = (LOWORD(msg.lParam) - 512.0f) / 512.0f;
-				holdPos.y = (512.0f - HIWORD(msg.lParam)) / 512.0f;
 
-				if (bFriction)
-				{
-					for (size_t i = 0; i < UBall::TotalNumBalls; ++i)
-					{
-
-					}
-				}
-			}
-			else if (msg.message == WM_LBUTTONUP)
-			{
-				currPos.x = (LOWORD(msg.lParam) - 512.0f) / 512.0f;
-				currPos.y = (512.0f - HIWORD(msg.lParam)) / 512.0f;
-
-				if (bFriction)
-				{
-					for (size_t i = 0; i < UBall::TotalNumBalls; ++i)
-					{
-
-						bLineRender = false;
-					}
-				}
-			}
-			else if (msg.message == WM_MOUSEMOVE)
-			{
-				currPos.x = (LOWORD(msg.lParam) - 512.0f) / 512.0f;
-				currPos.y = (512.0f - HIWORD(msg.lParam)) / 512.0f;
-			}
 		}
 
-		for (size_t i = 0; i < UBall::TotalNumBalls; ++i)
-		{
-			for (size_t j = i + 1; j < UBall::TotalNumBalls; ++j) 
-			{
-				if (j == mushroomIdx || i == mushroomIdx) continue;	// 임시로 버섯 충돌 로직 영향 받지 않도록 함
-				PrimitiveList[i]->CollisionCheck(PrimitiveList[j]);
-			}
-			if (UMushroom* ms = dynamic_cast<UMushroom*>(PrimitiveList[i]))
-			{
-				ms->Move();
-			}
-			else if (UBall* b = dynamic_cast<UBall*>(PrimitiveList[i]))
-			{
-				b->Move();
-				b->UpdateVelocity(bGravity, bFriction);
-			}
-			
-		}
+		player->Move();
+
+		//for (size_t i = 0; i < UBall::TotalNumBalls; ++i)
+		//{
+		//	for (size_t j = i + 1; j < UBall::TotalNumBalls; ++j) 
+		//	{
+		//		if (j == mushroomIdx || i == mushroomIdx) continue;	// 임시로 버섯 충돌 로직 영향 받지 않도록 함
+		//		PrimitiveList[i]->CollisionCheck(PrimitiveList[j]);
+		//	}
+		//	if (UMushroom* ms = dynamic_cast<UMushroom*>(PrimitiveList[i]))
+		//	{
+		//		ms->Move();
+		//	}
+		//	else if (UBall* b = dynamic_cast<UBall*>(PrimitiveList[i]))
+		//	{
+		//		b->Move();
+		//		b->UpdateVelocity(bGravity, bFriction);
+		//	}
+		//	
+		//}
 
 		renderer.Prepare();
 		renderer.PrepareShader();
 
-		for (size_t i = 0; i < UBall::TotalNumBalls; ++i)
+		player->Render(renderer, cubeBuffer, numVerticescube);
+
+		/*for (size_t i = 0; i < UBall::TotalNumBalls; ++i)
 		{
 			PrimitiveList[i]->Render(renderer, cubeBuffer, numVerticescube);
-		}
+		}*/
 
 		// ImGui 렌더링 준비, 컨트롤 설정, 렌더링 요청
 		ImGui_ImplDX11_NewFrame();
@@ -285,6 +259,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	}
 	delete[] PrimitiveList;
 	PrimitiveList = nullptr;
+
+	delete player;
+	player = nullptr;
 
 
 	// ImGui 소멸
