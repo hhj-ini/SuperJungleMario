@@ -89,6 +89,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	renderer.CreateShader();
 	renderer.CreateUIShader();
 	renderer.CreateConstantBuffer();
+	renderer.CreateUISamplerState();
 
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
@@ -100,21 +101,23 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	// 버텍스 버퍼 생성 
 	UINT numVerticescube = sizeof(cube_vertices) / sizeof(FVertex);	// 버텍스 갯수 변수화
 	float scaleMod = 0.1f;	// cube 크기 조정
-	for (UINT i = 0; i < numVerticescube; ++i)
-	{
-		cube_vertices[i].x *= scaleMod;
-		cube_vertices[i].y *= scaleMod;
-		cube_vertices[i].z *= scaleMod;
-	}
+	//for (UINT i = 0; i < numVerticescube; ++i)
+	//{
+	//	cube_vertices[i].x *= scaleMod;
+	//	cube_vertices[i].y *= scaleMod;
+	//	cube_vertices[i].z *= scaleMod;
+	//}
 
 	// UI 버텍스 버퍼 생성
 	UINT numVerticesUI = sizeof(ui_vertices) / sizeof(FVertexUI);
 	ID3D11Buffer* UIBuffer = renderer.CreateUIVertexBuffer(ui_vertices, sizeof(ui_vertices));
-	// UI 리스트 생성 일단 2개
-	size_t uiCnt = 2;
+	// UI 리스트 생성
+	size_t uiCnt = 14;
 	UUi** UIList = new UUi*[uiCnt];
-	UIList[0] = new UUi(ui_vertices, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT4(1, 1, 1, 1), 1.0f);
-	UIList[1] = new UUi(ui_vertices, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT4(0.2f, 0.3f, 0.4f, 1), 1.0f);
+	for (int i = 0; i < uiCnt; i++)
+	{
+		UIList[i] = new UUi(ui_vertices, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT4(1, 1, 1, 1), UUi::Translate(charList[i]), 1.0f);
+	}
 
 	//ID3D11Buffer* cubeBuffer = renderer.CreateVertexBuffer(cube_vertices, sizeof(cube_vertices));
 	ID3D11Buffer* cubeBuffer = renderer.CreateTextureVertexBuffer(cube_vertices, sizeof(cube_vertices));
@@ -126,7 +129,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	UPrimitive** PrimitiveList = new UPrimitive*[ballPoolCnt];
 	PrimitiveList[primitiveCount++] = new UBall;
 	
-	bool bGravity = true;	
+	bool bGravity = false;	
 	
 	// FPS 제한을 위한 설정
 	const int targetFPS = 30;
@@ -140,7 +143,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	double elapsedTime = 0.0;	
 
 	// UI 렌더링 여부
-	bool bUIRender = false;
+	bool bUIRender = true;
 
 
 	/////////// 여기서 테스트용 객체 추가하시면 됩니다 ////////////////
@@ -152,10 +155,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	// PrimitiveList[mushroomIdx]->render(...); 이런식으로 하면 됩니다.
 	// for 문이랑 로직 중첩되지 않도록 주의해주시면 돼요
 	
-	int x1 = 500; // ui 테스트용 임시 초기 좌표
-	int y1 = 500;
-	int x2 = 200;
-	int y2 = 600;
+	int x1 = 94; // ui 테스트용 임시 초기 좌표
+	int y1 = 49;
+	int x2 = 129;
+	int y2 = 45;
+	int x3 = 168;
+	int y3 = 49;
 
 	//int playerIdx = UBall::TotalNumBalls;
 	UBall* player = new UPlayer;
@@ -168,17 +173,23 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 
 	// 텍스쳐 파일 로드 테스트 코드
-	ID3D11Resource* MushroomTest = nullptr;
-	ID3D11ShaderResourceView* MushroomTestSRV = nullptr;
-	renderer.LoadTexture(L"Resource\\Mushroom.png", MushroomTest, MushroomTestSRV);
+	//ID3D11Resource* MushroomTest = nullptr;
+	//ID3D11ShaderResourceView* MushroomTestSRV = nullptr;
+	//renderer.LoadTexture(L"Resource\\Mushroom.png", MushroomTest, MushroomTestSRV);
+
+	// ui 텍스쳐 파일 로드 테스트 코드
+	ID3D11Resource* UITestResource = nullptr;
+	ID3D11ShaderResourceView* UITestSRV = nullptr;
+	renderer.LoadTexture(L"Resource\\font.png", UITestResource, UITestSRV);
 
 
 	//// Box 추가////
 	UPrimitive** Ground = nullptr;
 	Ground = new UPrimitive * [40];  // 10을 변수로 변경해야함. 지금은 임시테스트용
+	
 	for (int i = 0;i < 40; ++i)
 	{
-		Ground[i] = new UBox(-1.0f+i*UPrimitive::scaleMod , -0.8f, 1.0f, 1.0f);
+		Ground[i] = new UBox(-1.0f+i*0.1f , -0.8f, 1.0f, 1.0f);
 	}
 
 
@@ -223,6 +234,19 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			{
 				b->Move();
 				b->UpdateVelocity(bGravity);
+				for (int k = 0; k < 40; ++k)   // player->Ground 충돌 체크
+				{
+					if (b->CollisionCheck(Ground[k]))
+					{
+						if (UPlayer* p = dynamic_cast<UPlayer*>(b))
+						{
+							if (p->Location.y > Ground[k]->Location.y)   
+							{
+								p->bIsGrounded = true;
+							}
+						}
+					}
+				}
 			}	
 		}
 
@@ -251,7 +275,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 
 		renderer.Prepare();
-		renderer.PrepareShaderResource(MushroomTestSRV);
+		//renderer.PrepareShaderResource(MushroomTestSRV);
 		renderer.PrepareShader();
 
 		for (size_t i = 0; i < primitiveCount; ++i)
@@ -268,15 +292,17 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		// UI 렌더링 
 		if (bUIRender)
 		{
-			POINT cursor1 = { static_cast<long>(x1), static_cast<long>(y1) }; // 여기에 실제 좌표 넣어야함
-			POINT cursor2 = { static_cast<long>(x2), static_cast<long>(y2) };
-			UIList[0]->setNDCoord(renderer.GetNDCoordinate(cursor1, 1024, 1024)); // 픽셀 좌표를 NDC로 변환
-			UIList[1]->setNDCoord(renderer.GetNDCoordinate(cursor2, 1024, 1024));
-			renderer.PrepareUIShader();
+			for (int i = 0; i < uiCnt; i++)
+			{
+				UIList[i]->setNDCoord(renderer.GetNDCoordinate(charPositions[i], 1024, 1024));
+			}
+			renderer.PrepareUIShader(UITestSRV);
+
+			const float fontSize = 0.09f;
 
 			for (size_t i = 0; i < uiCnt; i++)
 			{
-				UIList[i]->Render(renderer, UIBuffer, numVerticesUI, 0.4f, 0.4f);
+				UIList[i]->Render(renderer, UIBuffer, numVerticesUI, fontSize, fontSize);
 			}
 		}
 
@@ -291,15 +317,18 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		// UI 위치변경 테스트용
 		ImGui::Checkbox("Show UI", &bUIRender);
-		if (bUIRender)
-		{
-			ImGui::Text("UI 1 position");
-			ImGui::SliderInt("x1", &x1, 0, 1024);
-			ImGui::SliderInt("y1", &y1, 0, 1024);
-			ImGui::Text("UI 2 position");
-			ImGui::SliderInt("x2", &x2, 0, 1024);
-			ImGui::SliderInt("y2", &y2, 0, 1024);
-		}
+		//if (bUIRender)
+		//{
+		//	ImGui::Text("UI 1 position");
+		//	ImGui::SliderInt("x1", &x1, 0, 1024);
+		//	ImGui::SliderInt("y1", &y1, 0, 1024);
+		//	ImGui::Text("UI 2 position");
+		//	ImGui::SliderInt("x2", &x2, 0, 1024);
+		//	ImGui::SliderInt("y2", &y2, 0, 1024);
+		//	ImGui::Text("UI 3 position");
+		//	ImGui::SliderInt("x3", &x3, 0, 1024);
+		//	ImGui::SliderInt("y3", &y3, 0, 1024);
+		//}
 
 		if (ImGui::Checkbox("Gravity", &bGravity));
 		
@@ -361,8 +390,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	renderer.ReleaseShader();
 
 	// 리소스 소멸
-	renderer.ReleaseResource(MushroomTest);
-	renderer.ReleaseSRV(MushroomTestSRV);
+	//renderer.ReleaseResource(MushroomTest);
+	//renderer.ReleaseSRV(MushroomTestSRV);
+
+	ResourceManager::GetInstance().ReleaseResource(&renderer);
 
 	// D3D11 소멸시키는 함수를 호출
 	renderer.Release();

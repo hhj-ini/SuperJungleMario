@@ -4,7 +4,11 @@ cbuffer constants : register(b0)
 {
     //float2 HoldPos;
     //float2 CurrPos;
-}
+};
+
+Texture2D uiTexture : register(t1);
+SamplerState uiSampler : register(s1);
+
 
 struct VS_INPUT
 {
@@ -38,6 +42,15 @@ PS_INPUT mainVS(VS_INPUT input)
 
 float4 mainPS(PS_INPUT input) : SV_TARGET
 {
-    // Output the color directly
-    return input.color;
+    // uiTexture에서 .Sample로 uiSampler 방식으로 input.uv의 rgba 값을 추출
+    float4 rgba = uiTexture.Sample(uiSampler, input.uv);
+    
+    // 흰색이 아니면 버림
+    if (rgba.r < 0.85f || rgba.g < 0.85f || rgba.b < 0.85f)
+    {
+        discard;
+    }
+    
+    // input.color와 추출한 값을 곱함. 이걸로 ui 색변경 가능
+    return rgba * input.color;
 }

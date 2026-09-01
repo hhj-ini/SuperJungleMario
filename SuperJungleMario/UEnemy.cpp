@@ -7,7 +7,7 @@ UEnemy::UEnemy()
 	Velocity.x = 0.0f;
 	Velocity.y = 0.0f;
 
-	Location.x = 0.0f;
+	Location.x = 2.0f;
 	Location.y = 0.0f;
 	// 위치 설정 필요
 
@@ -51,8 +51,9 @@ void UEnemy::Move()
 {
 	if (eState == EnemyState::ALIVE)
 	{
-		this->UBall::Move();
+		return;
 	}
+	this->UBall::Move();
 }
 
 void UEnemy::SetState(UEnemy::EnemyState InState)

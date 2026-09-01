@@ -14,6 +14,9 @@ UPlayer::UPlayer()
 
 	bIsGrounded = true;
 	Life = 1;
+	Radius = 1.0f;
+	width = Radius * scaleMod;
+	height = Radius * scaleMod;
 }
 
 UPlayer::~UPlayer()
@@ -82,20 +85,20 @@ void UPlayer::Move()
 	if (pState == PlayerState::ALIVE)
 	{
 		Velocity.x = 0.0f;
-		Velocity.y = 0.0f;
+		//Velocity.y = 0.0f;
 
 		if (GetAsyncKeyState(VK_LEFT) & 0x8000)
 		{
-			Velocity.x -= 0.1f;
+			Velocity.x -= 0.01f;
 		}
 		if (GetAsyncKeyState(VK_RIGHT) & 0x8000)
 		{
-			Velocity.x += 0.1f;
+			Velocity.x += 0.01f;
 		}
 
 		if (bIsGrounded && (GetAsyncKeyState(VK_SPACE) & 0x8000))
 		{
-			Velocity.y += 0.2f;
+			Velocity.y += 0.05f;
 			bIsGrounded = false;
 		}
 
@@ -104,6 +107,7 @@ void UPlayer::Move()
 		Location.y += Velocity.y * deltaTime;
 
 		// 바닥 착지 처리 필요(충돌)
+		
 	}
 }
 

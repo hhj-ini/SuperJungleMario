@@ -47,12 +47,21 @@ public:
 	ID3D11Buffer* ConstantBuffer = nullptr;
 	// 셰이더에 데이터를 전달하기 위한 상수 버퍼
 
-
-	FLOAT ClearColor[4] = { 0.025f, 0.025f, 0.025f, 1.0f };
+	FLOAT ClearColor[4] =
+	{
+		0.0844f,
+		0.1812f,
+		0.7682f,
+		1.0f
+	};
 	// 화면을 초기화(Clear) 할 때 사용할 색상(RGBA)
 
 	D3D11_VIEWPORT ViewportInfo;
 	// 렌더링 영역을 정의하는 뷰포트 정보
+
+	ID3D11SamplerState* UISamplerStete;
+	// ui sampler state. ui 텍스쳐를 어떻게 샘플링 할지를 결정
+
 
 
 public:
@@ -121,7 +130,7 @@ public:
 	// 실질적인 Rendering 요청을 할 RenderPrimitive 함수
 	void RenderPrimitive(ID3D11Buffer* pBuffer, UINT numVertices);
 
-	void PrepareUIShader();
+	void PrepareUIShader(ID3D11ShaderResourceView* UISRV);
 
 	void RenderUI(ID3D11Buffer* pBuffer, UINT numVertices);
 
@@ -153,7 +162,7 @@ public:
 
 	DirectX::XMFLOAT2 GetNDCoordinate(POINT point, int width, int height);
 
-	void UpdateUI(DirectX::XMFLOAT2 NDCoord, ID3D11Buffer* vertexBuffer, float UIWidth, float UIHeight, DirectX::XMFLOAT4 rgba);
+	void UpdateUI(DirectX::XMFLOAT2 NDCoord, ID3D11Buffer* vertexBuffer, float UIWidth, float UIHeight, DirectX::XMFLOAT4 uv1uv2, DirectX::XMFLOAT4 rgba);
 
 	void UpdateConstantBuffer(const DirectX::XMMATRIX& world, const DirectX::XMMATRIX& view);
 
@@ -173,4 +182,7 @@ public:
 
 	// resource 해제하는 함수
 	void ReleaseSRV(ID3D11ShaderResourceView*& InRVPtr);
+
+	// ui sampler state 만든다
+	void CreateUISamplerState();
 };

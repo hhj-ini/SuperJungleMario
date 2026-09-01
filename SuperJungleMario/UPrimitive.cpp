@@ -6,36 +6,65 @@ void UPrimitive::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)
 {
 	DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(Location.x, Location.y, Location.z); 
 	// renderer.PrepareShaderResource(TextureSRVPtr[CurrentFrame]);
+  
+	//DirectX::XMMATRIX world = DirectX::XMMatrixScaling(width, height, 1.0f) *
+	//DirectX::XMMatrixTranslation(Location.x, Location.y, Location.z);
+	//renderer.PrepareShaderResource(TextureSRVPtr);
+  
 	renderer.UpdateConstantBuffer(world, renderer.ViewMatrix);
 	renderer.RenderPrimitive(pBuffer, num);
 }
 
 bool UPrimitive::CollisionCheck(UPrimitive* other)
 {
-	// ±âº» Ãæµ¹ Ã¼Å© ·ÎÁ÷ ±¸Çö
+	// ê¸°ë³¸ ì¶©ëŒ ì²´í¬ ë¡œì§ êµ¬í˜„
 
-	// °¡·Î°¡ °ãÄ¡´ÂÁö È®ÀÎ
+	// ê°€ë¡œê°€ ê²¹ì¹˜ëŠ”ì§€ í™•ì¸
 	float sumHalfWidth = (width / 2.0f) + (other->width / 2.0f);
 	float xdistance = std::fabs(Location.x - other->Location.x);
 	float overlapX = sumHalfWidth - xdistance;
 	
-	// ¼¼·Î°¡ °ãÄ¡´ÂÁö È®ÀÎ
+	// ì„¸ë¡œê°€ ê²¹ì¹˜ëŠ”ì§€ í™•ì¸
 	float sumHalfHeight = (height / 2.0f) + (other->height / 2.0f);
 	float ydistance = std::fabs(Location.y - other->Location.y);
 	float overlapY = sumHalfHeight - ydistance;
 
 
-	// Ãæµ¹
+	// ì¶©ëŒ
 	if(overlapX>0 && overlapY>0){
 		
-		//¹Ğ¾î³»±â ±¸Çö
-		if (bisHold==false) { // ¼Óµµ°¡ 0, Áï ºí·°ÀÌ¸é
+		//ë°€ì–´ë‚´ê¸° êµ¬í˜„
+		if (bisMove==false && other->bisMove==true) { // ì†ë„ê°€ 0, ì¦‰ ë¸”ëŸ­ì´ë©´
 			other->Location.x += (overlapX) * ((Location.x < other->Location.x) ? 1.0f : -1.0f);
 			other->Location.y += (overlapY) * ((Location.y < other->Location.y) ? 1.0f : -1.0f);
+
+			//ê²¹ì¹˜ëŠ” ê°„ê²©ì´ ì‘ì€ìª½ì˜ ì†ë„ë¥¼ ë©ˆì¶¤
+
+			if (overlapX < overlapY) {
+				Velocity.x = 0.0f;
+				other->Velocity.x = 0.0f;
+
+			}
+			else {
+				Velocity.y = 0.0f;
+				other->Velocity.y = 0.0f;
+			}
 		}
-		else if (other->bisHold == false) { 
-			Location.x += (overlapX) * ((Location.x < other->Location.x) ? -1.0f : 1.0f);
-			Location.y += (overlapY) * ((Location.y < other->Location.y) ? -1.0f : 1.0f);
+		else if (other->bisMove == false && bisMove == true) { 
+
+			//ê²¹ì¹˜ëŠ” ê°„ê²©ì´ ì‘ì€ìª½ì˜ ì†ë„ë¥¼ ë©ˆì¶¤
+
+			if (overlapX < overlapY) {
+				Location.x += (overlapX) * ((Location.x < other->Location.x) ? -1.0f : 1.0f);
+				Velocity.x = 0.0f;
+				other->Velocity.x = 0.0f;
+
+			}
+			else {
+				Location.y += (overlapY) * ((Location.y < other->Location.y) ? -1.0f : 1.0f);
+				Velocity.y = 0.0f;
+				other->Velocity.y = 0.0f;
+			}
 		}
 
 		else {
@@ -44,17 +73,7 @@ bool UPrimitive::CollisionCheck(UPrimitive* other)
 			other->Location.x += (overlapX / 2.0f) * ((Location.x < other->Location.x) ? 1.0f : -1.0f);
 			other->Location.y += (overlapY / 2.0f) * ((Location.y < other->Location.y) ? 1.0f : -1.0f);
 		}
-		//°ãÄ¡´Â °£°İÀÌ ÀÛÀºÂÊÀÇ ¼Óµµ¸¦ ¸ØÃã
-
-		if (overlapX < overlapY) {
-			Velocity.x = 0.0f;
-			other->Velocity.x = 0.0f;
-
-		}
-		else {
-			Velocity.y = 0.0f;
-			other->Velocity.y = 0.0f;
-		}
+		
 		return true;
 	}
 
