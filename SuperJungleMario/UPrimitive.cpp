@@ -1,7 +1,9 @@
 #include "UPrimitive.h"
 #include <cmath>
 #include <DirectXMath.h>
+#include <iostream>
 
+using namespace std;
 
 void UPrimitive::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)
 {
@@ -33,6 +35,7 @@ bool UPrimitive::CollisionCheck(UPrimitive* other)
 
 	// 충돌
 	if(overlapX>0 && overlapY>0){
+		cout << "충돌 발생";
 		return true;
 		
 		//UBox로 내릴예정, 임시충돌처리
