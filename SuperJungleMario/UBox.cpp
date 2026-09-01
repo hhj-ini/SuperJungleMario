@@ -27,6 +27,11 @@ void UBox::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)
 
 }
 
+void UBox::SetBoxState(EBoxType InType)
+{
+	BoxType = InType;
+}
+
 
 
 UBox::~UBox()
