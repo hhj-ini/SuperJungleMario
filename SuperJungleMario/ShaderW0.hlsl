@@ -22,10 +22,6 @@ PS_INPUT mainVS(VS_INPUT input)
 {
     PS_INPUT output;
     
-    //// Pass the position directly to the pixel shader (no transformation)
-    //float3 newPos = input.position * Radius;
-    //output.position = float4(Offset, 0) + float4(newPos, 1);
-    
     float4 position = float4(input.position, 1.0f);
     
     position = mul(position, World);

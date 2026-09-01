@@ -74,7 +74,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	renderer.CreateUIShader();
 	renderer.CreateConstantBuffer();
 
-
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO();
@@ -97,9 +96,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	UINT numVerticesUI = sizeof(ui_vertices) / sizeof(FVertexUI);
 	ID3D11Buffer* UIBuffer = renderer.CreateUIVertexBuffer(ui_vertices, sizeof(ui_vertices));
 
-	//UINT numVerticesLine = sizeof(line_vertices) / sizeof(FVertexSimple);
-	//ID3D11Buffer* LineBuffer = renderer.CreateVertexBuffer(line_vertices, sizeof(line_vertices));
-
 	size_t ballPoolCnt = 50;	// 초기에 50개만큼 공 풀 확보
 
 	UPrimitive** PrimitiveList = new UPrimitive*[ballPoolCnt];
@@ -117,18 +113,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	
 	LARGE_INTEGER startTime, endTime;
 	double elapsedTime = 0.0;	
-
-	// 나만의 무기
-	bool bFriction = false;
-
-	// 클릭 포지션 저장하기
-	FPos currPos;
-	FPos holdPos;
-
-	// 라인 렌더링 여부
-	bool bLineRender = false;
-
-
 
 	/////////// 여기서 테스트용 객체 추가하시면 됩니다 ////////////////
 	int mushroomIdx = UBall::TotalNumBalls;
@@ -200,14 +184,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			else if (UBall* b = dynamic_cast<UBall*>(PrimitiveList[i]))
 			{
 				b->Move();
-				b->UpdateVelocity(bGravity, bFriction);
+				b->UpdateVelocity(bGravity);
 			}
 			
 		}
 
 		renderer.Prepare();
 		renderer.PrepareShader();
-
 
 		for (size_t i = 0; i < UBall::TotalNumBalls; ++i)
 		{
@@ -227,13 +210,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		ImGui::Begin("Jungle Property Window");
 		ImGui::Text("Hello Jungle World!");
 
-		if (ImGui::Checkbox("Gravity", &bGravity))
-		{
-			if (bGravity)
-			{
-				bFriction = false;
-			}
-		}
+		if (ImGui::Checkbox("Gravity", &bGravity));
 		
 
 		// 버섯 무빙 테스트용
@@ -251,11 +228,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		ImGui::Render();
 		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
-		/*if (bLineRender && bFriction)
-		{
-			renderer.UpdateConstantBuffer(FVector{}, 0.0f, holdPos, currPos);
-		}*/
-	
 		renderer.SwapBuffer();
 
 		// 미리 정해둔 상한 FPS 를 따르도록 시간을 지연시킴
@@ -281,16 +253,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	delete[] PrimitiveList;
 	PrimitiveList = nullptr;
 
-	delete player;
-	player = nullptr;
-
-
 	// ImGui 소멸
 	ImGui_ImplDX11_Shutdown();
 	ImGui_ImplWin32_Shutdown();
 	ImGui::DestroyContext();
 
-	// 소멸하는 코드를 여기에 추가합니다.
 
 	// 생성된 버텍스 버퍼를 소멸 - 셰이더 소멸 전 호출
 	renderer.ReleaseVertexBuffer(cubeBuffer);
