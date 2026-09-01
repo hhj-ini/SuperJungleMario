@@ -20,12 +20,8 @@
 #include "UPlayer.h"
 #include "UI.h"
 #include "UCamera.h"
-<<<<<<< Updated upstream
-
-=======
 #include "UBox.h"
 #include "UEmeny.h"
->>>>>>> Stashed changes
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -135,12 +131,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	/////////// 여기서 테스트용 객체 추가하시면 됩니다 ////////////////
 	int mushroomIdx = UBall::TotalNumBalls;
-<<<<<<< Updated upstream
-	PrimitiveList[mushroomIdx] = new UMushroom;
-=======
+	//PrimitiveList[mushroomIdx] = new UMushroom;
 	PrimitiveList[primitiveCount++] = new UMushroom;
 
->>>>>>> Stashed changes
 	// 접근할때
 	// PrimitiveList[mushroomIdx]->render(...); 이런식으로 하면 됩니다.
 	// for 문이랑 로직 중첩되지 않도록 주의해주시면 돼요
