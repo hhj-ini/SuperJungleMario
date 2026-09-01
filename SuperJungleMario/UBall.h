@@ -30,5 +30,7 @@ public:
 	virtual void Move();
 
 	virtual void UpdateVelocity(bool bGravity);
+
+	virtual void UpdateAnimation(float deltaTime);
 };
 

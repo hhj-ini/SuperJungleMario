@@ -15,7 +15,6 @@ public:
 	ResourceManager& operator=(const ResourceManager& src) = delete;
 	// 싱글톤 유지하기 위하여 복사생성자, 복사대입연산자 삭제처리
 
-
 	ID3D11ShaderResourceView* GetSRV(const std::wstring& InPath, URenderer* renderer);
 	//ID3D11Resource* GetResource(std::wstring*)
 

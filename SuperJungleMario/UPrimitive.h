@@ -23,9 +23,9 @@ class UPrimitive
 	float width;
 	float height;
 	float Radius;
-	bool bisMove=true;
+	bool bisHold;
 
 	// 텍스쳐 포인터 저장
-	ID3D11ShaderResourceView* TextureSRVPtr = nullptr;
+	ID3D11ShaderResourceView* TextureSRVPtr[2] = { nullptr, nullptr };
 
 };

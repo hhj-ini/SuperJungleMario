@@ -174,7 +174,7 @@
     <ClInclude Include="UBall.h" />
     <ClInclude Include="UBox.h" />
     <ClInclude Include="UCamera.h" />
-    <ClInclude Include="UEmeny.h" />
+    <ClInclude Include="UEnemy.h" />
     <ClInclude Include="UI.h" />
     <ClInclude Include="UMushroom.h" />
     <ClInclude Include="UPlayer.h" />

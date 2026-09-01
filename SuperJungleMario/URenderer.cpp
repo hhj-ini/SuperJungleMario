@@ -300,7 +300,7 @@ void URenderer::Prepare()
 	DeviceContext->OMSetBlendState(nullptr, nullptr, 0xffff'ffff);
 }
 
-void URenderer::PrepareShaderResource(ID3D11ShaderResourceView*& InSRVPtr)
+void URenderer::PrepareShaderResource(ID3D11ShaderResourceView* InSRVPtr)
 {
 	DeviceContext->PSSetShaderResources(0, 1, &InSRVPtr);
 }

@@ -8,7 +8,7 @@ ID3D11ShaderResourceView* ResourceManager::GetSRV(const std::wstring& InPath, UR
     ID3D11Resource* MushroomTest = nullptr;
     auto it = SRVMap.find(InPath);
     if (it == SRVMap.end()) // 맵에 존재하지 않은 경우
-    {      
+    {
         renderer->LoadTexture(InPath, MushroomTest, MushroomTestSRV);
         SRVMap[InPath] = MushroomTestSRV;
     }

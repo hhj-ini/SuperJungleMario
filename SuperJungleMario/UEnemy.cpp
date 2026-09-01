@@ -1,7 +1,8 @@
-#include "UEmeny.h"
+#include "UEnemy.h"
 #include "UPlayer.h"
+#include "ResourceManager.h"
 
-UEmeny::UEmeny() : UBall()
+UEnemy::UEnemy()
 {
 	Velocity.x = 0.0f;
 	Velocity.y = 0.0f;
@@ -11,13 +12,24 @@ UEmeny::UEmeny() : UBall()
 	// 위치 설정 필요
 
 	Radius = 1.0f;
-	SetState(EmenyState::ALIVE);
+	SetState(EnemyState::ALIVE);
 }
 
-void UEmeny::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)
+void UEnemy::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)
 {
-	if (eState == EmenyState::ALIVE)
+	if (eState == EnemyState::ALIVE)
 	{
+		if (!TextureSRVPtr[0])
+		{
+			TextureSRVPtr[0] = ResourceManager::GetInstance().GetSRV(L"Resource\\Goomba1.png", &renderer);
+		}
+
+		if (!TextureSRVPtr[1])
+		{
+			TextureSRVPtr[1] = ResourceManager::GetInstance().GetSRV(L"Resource\\Goomba2.png", &renderer);
+		}
+		renderer.PrepareShaderResource(TextureSRVPtr[CurrentFrame]);
+
 		DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(Location.x, Location.y, Location.z);
 		renderer.UpdateConstantBuffer(world, renderer.ViewMatrix);
 
@@ -25,7 +37,7 @@ void UEmeny::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)
 	}
 }
 
-bool UEmeny::CollisionCheck(UPrimitive* other)
+bool UEnemy::CollisionCheck(UPrimitive* other)
 {
 	if (this == other)
 	{
@@ -35,37 +47,37 @@ bool UEmeny::CollisionCheck(UPrimitive* other)
 	return false;
 }
 
-void UEmeny::Move()
+void UEnemy::Move()
 {
-	if (eState == EmenyState::DEAD)
+	if (eState == EnemyState::ALIVE)
 	{
 		return;
 	}
 	this->UBall::Move();
 }
 
-void UEmeny::SetState(UEmeny::EmenyState InState)
+void UEnemy::SetState(UEnemy::EnemyState InState)
 {
 	switch (InState)
 	{
-	case EmenyState::ALIVE:
-		eState = EmenyState::ALIVE;
+	case EnemyState::ALIVE:
+		eState = EnemyState::ALIVE;
 		Velocity.x = -0.01f;
 		break;
 
-	case EmenyState::DEAD:
-		eState = EmenyState::DEAD;
+	case EnemyState::DEAD:
+		eState = EnemyState::DEAD;
 		break;
 	}
 }
 
-void UEmeny::OnCollisionWithPlayer(UPlayer* player)
+void UEnemy::OnCollisionWithPlayer(UPlayer* player)
 {
-	if (eState == EmenyState::ALIVE)
+	if (eState == EnemyState::ALIVE)
 	{
 		if (player->GetPosition().y > this->GetPosition().y + 0.5f)  // 플레이어가 적을 밟았을 때
 		{
-			SetState(EmenyState::DEAD);
+			SetState(EnemyState::DEAD);
 			player->SetVelocityY(0.2f); // 플레이어가 튕기도록 설정
 		}
 		else
@@ -74,5 +86,14 @@ void UEmeny::OnCollisionWithPlayer(UPlayer* player)
 			player->TakeDamage(1);
 		}
 	}
+}
 
+void UEnemy::UpdateAnimation(float deltaTime)
+{
+	AnimationTimer += deltaTime;
+	if (AnimationTimer >= FrameInterval)
+	{
+		CurrentFrame = (CurrentFrame + 1) % 2;
+		AnimationTimer = 0.0f;
+	}
 }
