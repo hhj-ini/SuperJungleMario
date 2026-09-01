@@ -36,8 +36,8 @@ class UPrimitive
 	float height;
 	float Radius;
 	bool bisMove;
-	UPrimitive(float x, float y, float w, float h)
-	{
+	UPrimitive(float x, float y, float w, float h) 
+	{ 
 		Location.x = x;
 		Location.y = y;
 		width = w * scaleMod;
