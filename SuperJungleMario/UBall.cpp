@@ -104,11 +104,10 @@ void UBall::Move()
 {
 	if (bisMove)
 	{
-		return;
-	}
 	Location.x += Velocity.x * deltaTime;
 	Location.y += Velocity.y * deltaTime;
 	Location.z += Velocity.z * deltaTime;
+	}
 
 	/*float renderRadius = Radius * scaleMod;
 	if (Location.x <= leftBorder + renderRadius)
