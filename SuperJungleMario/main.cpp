@@ -181,9 +181,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	//// Box 추가////
 	UPrimitive** Ground = nullptr;
 	Ground = new UPrimitive * [40];  // 10을 변수로 변경해야함. 지금은 임시테스트용
+	
 	for (int i = 0;i < 40; ++i)
 	{
-		Ground[i] = new UBox(-1.0f+i*UPrimitive::scaleMod , -0.8f, 1.0f, 1.0f);
+		Ground[i] = new UBox(-1.0f+i*0.1f , -0.8f, 1.0f, 1.0f);
 	}
 
 
@@ -228,6 +229,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			{
 				b->Move();
 				b->UpdateVelocity(bGravity);
+				for (int k = 0;k < 40;++k)
+				{
+					b->CollisionCheck(Ground[k]);
+				}
 			}	
 		}
 
@@ -247,10 +252,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				RemoveObject(PrimitiveList, primitiveCount, i);
 				continue;
 			}
-		}
-		for (int k = 0; k < 40; ++k)
-		{
-			player->CollisionCheck(Ground[k]);
 		}
 
 		renderer.Prepare();
