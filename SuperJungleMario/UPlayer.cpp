@@ -7,9 +7,12 @@ UPlayer::UPlayer()
 {
 	Location.x = 0.0f;
 	Location.y = 0.0f;
+	Location.z = 0.0f;
 
 	Velocity.x = 0.0f;
 	Velocity.y = 0.0f;
+
+	bIsGrounded = true;
 }
 
 UPlayer::~UPlayer()
@@ -49,52 +52,11 @@ void UPlayer::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)
 //		return false;
 //	}
 //
-//	UPlayer* Other = nullptr;
+//	/*UPlayer* Other = nullptr;
 //	if (!(Other = dynamic_cast<UPlayer*>(other)))
 //	{
 //		return false;
-//	}
-//
-//	float xdist = Location.x - Other->Location.x;
-//	float ydist = Location.y - Other->Location.y;
-//
-//	float dist = sqrtf((xdist * xdist) + (ydist * ydist));
-//	float radiustest = (Radius * scaleMod) + (Other->Radius * scaleMod);
-//
-//	if (dist <= radiustest && dist > 0.0f)
-//	{
-//		float nx = xdist / dist;
-//		float ny = ydist / dist;
-//
-//		float overlap = radiustest - dist;
-//		Location.x += nx * overlap / 2;
-//		Location.y += ny * overlap / 2;
-//
-//		Other->Location.x -= nx * overlap / 2;
-//		Other->Location.y -= ny * overlap / 2;
-//
-//		// 상대속도 벡터
-//		float rvx = Velocity.x - Other->Velocity.x;
-//		float rvy = Velocity.y - Other->Velocity.y;
-//
-//		// 투영
-//		float vreln = (rvx * nx) + (rvy * ny);
-//		if (vreln > 0.0f)
-//		{
-//			return false;
-//		}
-//
-//		float e = 0.3f;	// 반발계수
-//		float impulseScalar = -1 * (1 + e) * vreln / ((1 / Mass) + (1 / Other->Mass));
-//
-//		Velocity.x = Velocity.x + (impulseScalar / Mass) * nx;
-//		Velocity.y = Velocity.y + (impulseScalar / Mass) * ny;
-//
-//		Other->Velocity.x = Other->Velocity.x - (impulseScalar / Other->Mass) * nx;
-//		Other->Velocity.y = Other->Velocity.y - (impulseScalar / Other->Mass) * ny;
-//
-//		return true;
-//	}
+//	}*/
 //
 //	return false;
 //}
@@ -125,7 +87,7 @@ void UPlayer::Move()
 	Location.x += Velocity.x * deltaTime;
 	Location.y += Velocity.y * deltaTime;
 
-	// Velocity.y -= gravity * deltaTime;
+	//Velocity.y -= gravity * deltaTime;
 
 	// 바닥 착지 처리 필요(충돌)
 }

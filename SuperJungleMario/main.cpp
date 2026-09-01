@@ -71,7 +71,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	URenderer renderer;
 	renderer.Create(hWnd);
 	renderer.CreateShader();
-	//renderer.CreateUIShader();
+	renderer.CreateUIShader();
 	renderer.CreateConstantBuffer();
 
 
@@ -94,8 +94,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	ID3D11Buffer* cubeBuffer = renderer.CreateVertexBuffer(cube_vertices, sizeof(cube_vertices));
 
 	// UI 버텍스 버퍼 생성
-	/*UINT numVerticesUI = sizeof(ui_vertices) / sizeof(FVertexUI);
-	ID3D11Buffer* UIBuffer = renderer.CreateUIVertexBuffer(ui_vertices, sizeof(ui_vertices));*/
+	UINT numVerticesUI = sizeof(ui_vertices) / sizeof(FVertexUI);
+	ID3D11Buffer* UIBuffer = renderer.CreateUIVertexBuffer(ui_vertices, sizeof(ui_vertices));
 
 	//UINT numVerticesLine = sizeof(line_vertices) / sizeof(FVertexSimple);
 	//ID3D11Buffer* LineBuffer = renderer.CreateVertexBuffer(line_vertices, sizeof(line_vertices));
@@ -201,6 +201,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			PrimitiveList[i]->Render(renderer, cubeBuffer, numVerticescube);
 		}*/
 
+		// UI 렌더링 
+		//renderer.PrepareUIShader();
+		//renderer.RenderUI(UIBuffer, numVerticesUI);
+
 		// ImGui 렌더링 준비, 컨트롤 설정, 렌더링 요청
 		ImGui_ImplDX11_NewFrame();
 		ImGui_ImplWin32_NewFrame();
@@ -271,6 +275,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	}
 	delete[] PrimitiveList;
 	PrimitiveList = nullptr;
+
+	delete player;
+	player = nullptr;
 
 
 	// ImGui 소멸
