@@ -44,5 +44,7 @@ public:
 
 	static void UpdateCoinUI(int coin);
 
+	static void UpdateLifeUI(int life);
+
 	void UpdateUV(int index);
 };
