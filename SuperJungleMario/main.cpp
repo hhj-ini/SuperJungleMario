@@ -237,8 +237,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		for (size_t i = 0; i < primitiveCount; ++i)
 		{
-			for (size_t j = i + 1; j < primitiveCount; ++j) 
+			for (size_t j = 0; j < primitiveCount; ++j) 
 			{
+				if (i == j) continue;
 				// if (j == mushroomIdx || i == mushroomIdx) continue;	// 임시로 버섯 충돌 로직 영향 받지 않도록 함
 				PrimitiveList[i]->CollisionCheck(PrimitiveList[j]);
 			}

@@ -6,6 +6,18 @@ struct ID3D11ShaderResourceView;	// 포인터 위해서 전방선언
 class UPrimitive
 {
 	public:
+		enum class EObjectType
+		{
+			NONE = 0,
+			BOX,
+			PLAYER,
+			ENEMY,
+			PROJECTILE,
+			MUSHROOM,
+			COIN,
+			FLOWER,
+		};
+
 	virtual void Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num);
 	virtual bool CollisionCheck(UPrimitive* other);
 
@@ -27,5 +39,5 @@ class UPrimitive
 
 	// 텍스쳐 포인터 저장
 	ID3D11ShaderResourceView* TextureSRVPtr[2] = { nullptr, nullptr };
-
+	EObjectType ObjectType;
 };
