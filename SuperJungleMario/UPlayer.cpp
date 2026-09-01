@@ -104,6 +104,7 @@ bool UPlayer::CollisionCheck(UPrimitive* other)
 				Location.x = other->Location.x + (other->width / 2.0f) + (width / 2.0f);
 				Velocity.x = 0;
 			}
+			break;
 		case EObjectType::ENEMY:
 			if (UEnemy* enemy = dynamic_cast<UEnemy*>(other))
 			{
@@ -116,6 +117,7 @@ bool UPlayer::CollisionCheck(UPrimitive* other)
 					TakeDamage(1);
 				}
 			}
+			break;
 		case EObjectType::MUSHROOM:
 			Grow();
 
@@ -189,7 +191,16 @@ void UPlayer::TakeDamage(int damage)
 void UPlayer::Grow()
 {
 	++Hp;
-	//height = scaleMod * 2.0f;
+
+	float oldHeight = height;
+
+	width *= 1.3f;
+	height *= 1.5f;
+
+	// Location이 캐릭터 중심 좌표라면,
+	// 발바닥 위치를 유지하도록 커진 높이의 절반만큼 위로 올림
+	Location.y += (height - oldHeight) / 2.0f;
+	
 }
 
 void UPlayer::Shrink()
