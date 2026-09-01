@@ -139,7 +139,6 @@ void UPlayer::Move()
 	if (pState == PlayerState::ALIVE)
 	{
 		Velocity.x = 0.0f;
-		//Velocity.y = 0.0f;
 
 		if (GetAsyncKeyState(VK_LEFT) & 0x8000)
 		{
@@ -152,15 +151,12 @@ void UPlayer::Move()
 
 		if (bIsGrounded && (GetAsyncKeyState(VK_SPACE) & 0x8000))
 		{
-			Velocity.y += 0.05f;
+			Velocity.y = 0.005f;
 			bIsGrounded = false;
 		}
 
-
 		Location.x += Velocity.x * deltaTime;
 		Location.y += Velocity.y * deltaTime;
-
-		// 바닥 착지 처리 필요(충돌)
 		
 	}
 }

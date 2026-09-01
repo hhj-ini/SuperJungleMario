@@ -133,6 +133,9 @@ void URenderer::Release()
 	// 렌더 타겟을 초기화
 	DeviceContext->OMSetRenderTargets(0, nullptr, nullptr);
 
+	DeviceContext->ClearState();
+	DeviceContext->Flush();
+
 	ReleaseFrameBuffer();
 	ReleaseDeviceAndSwapChain();
 }
