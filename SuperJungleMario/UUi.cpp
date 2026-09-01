@@ -1,5 +1,30 @@
 #include "UUi.h"
 
+POINT charPositions[] =
+{
+	{ 94, 49 },
+	{ 129, 45 },
+	{ 168, 49 },
+	{ 198, 45 },
+	{ 237, 49 },
+	{ 623, 47 },
+	{ 658, 45 },
+	{ 693, 45 },
+	{ 722, 45 },
+	{ 757, 42 },
+	{ 856, 47 },
+	{ 881, 42 },
+	{ 915, 45 },
+	{ 950, 42 }
+};
+
+char charList[] =
+{
+	'M', 'A', 'R', 'I', 'O',
+	'W', 'O', 'R', 'L', 'D',
+	'T', 'I', 'M', 'E'
+};
+
 UUi::UUi(FVertexUI* UIVertex, DirectX::XMFLOAT2 NDCoord, DirectX::XMFLOAT4 rgba, DirectX::XMFLOAT4 uv, float scale)
 	:UIVertex(UIVertex)
 	,NDCoord(NDCoord)
@@ -28,8 +53,8 @@ DirectX::XMFLOAT4 UUi::Translate(char input)
 	float cellWidth = 110.0f;
 	float cellHeight = 110.0f;
 
-	int col = 0;
-	int row = 0;
+	float col = 0;
+	float row = 0;
 
 	if ('A' <= input && input <= 'I')
 	{
@@ -45,6 +70,16 @@ DirectX::XMFLOAT4 UUi::Translate(char input)
 	{
 		col = 2;
 		row = input - 'S';
+	}
+	else if ('0' <= input && input <= '8')
+	{
+		col = 6.1;
+		row = input - '0';
+	}
+	else if (input == '9')
+	{
+		col = 7.1;
+		row = input - '9';
 	}
 
 	float u0 = (cellHeight * row + cellHeight) / textureHeight;

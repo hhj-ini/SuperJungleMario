@@ -46,7 +46,7 @@ float4 mainPS(PS_INPUT input) : SV_TARGET
     float4 rgba = uiTexture.Sample(uiSampler, input.uv);
     
     // 흰색이 아니면 버림
-    if (rgba.r < 0.7f || rgba.g < 0.7f || rgba.b < 0.7f)
+    if (rgba.r < 0.85f || rgba.g < 0.85f || rgba.b < 0.85f)
     {
         discard;
     }
