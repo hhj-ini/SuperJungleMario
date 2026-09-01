@@ -49,6 +49,6 @@ class UPrimitive
 	}
 	UPrimitive() {}
 	// 텍스쳐 포인터 저장
-	ID3D11ShaderResourceView* TextureSRVPtr[2] = { nullptr, nullptr };
+	ID3D11ShaderResourceView* TextureSRVPtr[4] = { nullptr, nullptr, nullptr, nullptr };
 	EObjectType ObjectType;
 };
