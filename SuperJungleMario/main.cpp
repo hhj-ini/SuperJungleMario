@@ -116,11 +116,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	UINT numVerticesUI = sizeof(ui_vertices) / sizeof(FVertexUI);
 	ID3D11Buffer* UIBuffer = renderer.CreateUIVertexBuffer(ui_vertices, sizeof(ui_vertices));
 	// UI GameStart 리스트 생성
-	size_t GameStartUICnt = 12;
+	size_t GameStartUICnt = 11;
 	UUi** GameStartUIList = new UUi * [GameStartUICnt];
-	GameStartUIList[0] = new UUi(ui_vertices, DirectX::XMFLOAT2(0.5f, 0.5f), DirectX::XMFLOAT4(0.3, 0.2, 0.1, 1), UUi::Translate(charListStart[0]), 1.0f);
-
-	for (int i = 1; i < GameStartUICnt; i++)
+	for (int i = 0; i < GameStartUICnt; i++)
 	{
 		GameStartUIList[i] = new UUi(ui_vertices, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT4(1, 1, 1, 1), UUi::Translate(charListStart[i]), 1.0f);
 	}
@@ -328,8 +326,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		if (bGameStart)
 		{
-			GameStartUIList[0]->setNDCoord(renderer.GetNDCoordinate(charPositionsStart[0], 1024, 1024));
-			UIList[0]->Render(renderer, UIBuffer, numVerticesUI, 0.5f, 0.5f);
+			// 첫화면 렌더
 		}
 		if (bUIRender)
 		{
@@ -345,11 +342,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 		if (bGameStart)
 		{
-			for (int i = 1; i < GameStartUICnt; i++)
+			for (int i = 0; i < GameStartUICnt; i++)
 			{
 				GameStartUIList[i]->setNDCoord(renderer.GetNDCoordinate(charPositionsStart[i], 1024, 1024));
 			}
-			for (size_t i = 1; i < GameStartUICnt; i++)
+			for (size_t i = 0; i < GameStartUICnt; i++)
 			{
 				GameStartUIList[i]->Render(renderer, UIBuffer, numVerticesUI, fontSize, fontSize);
 			}
