@@ -26,6 +26,8 @@
 #include "ResourceManager.h"
 
 
+#include "UProjectile.h"
+
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 // 각종 메시지를 처리할 함수
@@ -165,6 +167,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	UBall* enemy = new UEmeny;
 	PrimitiveList[primitiveCount++] = enemy;
+
+	
+	// 프로젝타일 테스트
+	UPrimitive* projectile = new UProjectile;
+	PrimitiveList[primitiveCount++] = projectile;
+	if (UProjectile* ms = dynamic_cast<UProjectile*>(projectile))
+	{
+		ms->SetOwner(player);
+	}
 
 
 	// 텍스쳐 파일 로드 테스트 코드
@@ -310,6 +321,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			if (UMushroom* ms = dynamic_cast<UMushroom*>(PrimitiveList[mushroomIdx]))
 			{
 				ms->SetState(UMushroom::MushroomState::ANIMATING);
+			}
+		}
+		
+		// 프로젝타일 테스트용
+		if (ImGui::Button("Projectile"))
+		{
+			if (UProjectile* ms = dynamic_cast<UProjectile*>(projectile))
+			{
+				ms->SetState(UProjectile::EProjectileState::ROLLING);
 			}
 		}
 	
