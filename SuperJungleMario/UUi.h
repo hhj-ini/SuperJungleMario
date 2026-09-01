@@ -6,6 +6,10 @@ extern POINT charPositions[];
 
 extern char charList[];
 
+extern POINT charPositionsStart[];
+
+extern char charListStart[];
+
 class UUi
 {
 public:
@@ -31,4 +35,14 @@ public:
 	void Render(URenderer& renderer, ID3D11Buffer* vertexBuffer, UINT numVertices, float UIWidth, float UIHeight);
 
 	static DirectX::XMFLOAT4 Translate(char input);
+
+	void RenderGameStart(URenderer& renderer, ID3D11Buffer* vertexBuffer, UINT numVertices, float UIWidth, float UIHeight);
+
+	static void UpdateGameTime(int currentTime);
+
+	static void UpdateScoreUI(int score);
+
+	static void UpdateCoinUI(int coin);
+
+	void UpdateUV(int index);
 };

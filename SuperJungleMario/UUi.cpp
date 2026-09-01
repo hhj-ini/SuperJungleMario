@@ -22,6 +22,20 @@ char charList[] =
 	'0', '0', '0'
 };
 
+POINT charPositionsStart[] =
+{
+	{ 355, 352 }, { 390, 350 }, { 425, 350 }, { 454, 349 }, { 489, 346 },
+	{ 570, 348 }, { 610, 350 }, { 643, 347 },
+	{ 519, 505 }, { 614, 500 },
+};
+
+char charListStart[] =
+{
+	'W', 'O', 'R', 'L', 'D',
+	'1', '/', '1',
+	'X', '3',
+};
+
 UUi::UUi(FVertexUI* UIVertex, DirectX::XMFLOAT2 NDCoord, DirectX::XMFLOAT4 rgba, DirectX::XMFLOAT4 uv, float scale)
 	:UIVertex(UIVertex)
 	, NDCoord(NDCoord)
@@ -37,9 +51,48 @@ void UUi::Render(URenderer& renderer, ID3D11Buffer* vertexBuffer, UINT numVertic
 	renderer.RenderUI(vertexBuffer, numVertices);
 }
 
+//void UUi::RenderGameStart(URenderer& renderer, ID3D11Buffer* vertexBuffer, UINT numVertices, float UIWidth, float UIHeight)
+//{
+//	renderer.UpdateUI(DirectX::XMFLOAT2(0, 0), vertexBuffer, UIWidth, UIHeight, UUi::uv, UUi::rgba);
+//	renderer.RenderUI(vertexBuffer, numVertices);
+//}
+
+
 void UUi::setNDCoord(DirectX::XMFLOAT2 NDCoord)
 {
 	UUi::NDCoord = NDCoord;
+}
+
+void UUi::UpdateGameTime(int currentTime)
+{
+	if (currentTime < 0)
+	{
+		// game over 로직 차후 구현
+	}
+	charList[28] = '0' + currentTime % 10;
+	charList[27] = '0' + (currentTime / 10) % 10;
+	charList[26] = '0' + (currentTime / 100) % 10;
+}
+
+void UUi::UpdateScoreUI(int score)
+{
+	charList[19] = '0' + score % 10;
+	charList[18] = '0' + (score / 10) % 10;
+	charList[17] = '0' + (score / 100) % 10;
+	charList[16] = '0' + (score / 1000) % 10;
+	charList[15] = '0' + (score / 10000) % 10;
+	charList[14] = '0' + (score / 100000) % 10;
+}
+
+void UUi::UpdateCoinUI(int coin)
+{
+	charList[22] = '0' + coin % 10;
+	charList[21] = '0' + (coin / 10) % 10;
+}
+
+void UUi::UpdateUV(int index)
+{
+	UUi::uv = Translate(charList[index]);
 }
 
 // char input을 u, v 좌표로 변환 
@@ -82,6 +135,11 @@ DirectX::XMFLOAT4 UUi::Translate(char input)
 	{
 		col = 8.1;
 		row = 1;
+	}
+	else if (input == '.')
+	{
+		col = 8.1;
+		row = 8;
 	}
 
 	float u0 = (cellHeight * row + cellHeight) / textureHeight;
