@@ -140,7 +140,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	/////////// 여기서 테스트용 객체 추가하시면 됩니다 ////////////////
 
+	//UBall* player = new UPlayer;
+	int playerIdx = UBall::TotalNumBalls;
 	UBall* player = new UPlayer;
+	PrimitiveList[playerIdx] = player;
 
 	// Main Loop(Quit Message가 들어오기 전까지 아래 Loop를 무한히 실행하게 됨.
 	while (bIsExit == false)
@@ -164,44 +167,42 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			}	
 	
 		}
-		player->Move();
 
 
 		// 카메라가 플레이어 추적
-		/*camera.Follow(player->Location);
-		renderer.ViewMatrix = camera.GetViewMatrix();*/
+		camera.Follow(player->Location);
+		renderer.ViewMatrix = camera.GetViewMatrix();
 
 		// 카메라가 플레이어를 추적하지 않음
-		renderer.ViewMatrix = DirectX::XMMatrixIdentity();
+		// renderer.ViewMatrix = DirectX::XMMatrixIdentity();
 
-		//for (size_t i = 0; i < UBall::TotalNumBalls; ++i)
-		//{
-		//	for (size_t j = i + 1; j < UBall::TotalNumBalls; ++j) 
-		//	{
-		//		if (j == mushroomIdx || i == mushroomIdx) continue;	// 임시로 버섯 충돌 로직 영향 받지 않도록 함
-		//		PrimitiveList[i]->CollisionCheck(PrimitiveList[j]);
-		//	}
-		//	if (UMushroom* ms = dynamic_cast<UMushroom*>(PrimitiveList[i]))
-		//	{
-		//		ms->Move();
-		//	}
-		//	else if (UBall* b = dynamic_cast<UBall*>(PrimitiveList[i]))
-		//	{
-		//		b->Move();
-		//		b->UpdateVelocity(bGravity, bFriction);
-		//	}
-		//	
-		//}
+		for (size_t i = 0; i < UBall::TotalNumBalls; ++i)
+		{
+			for (size_t j = i + 1; j < UBall::TotalNumBalls; ++j) 
+			{
+				if (j == mushroomIdx || i == mushroomIdx) continue;	// 임시로 버섯 충돌 로직 영향 받지 않도록 함
+				PrimitiveList[i]->CollisionCheck(PrimitiveList[j]);
+			}
+			if (UMushroom* ms = dynamic_cast<UMushroom*>(PrimitiveList[i]))
+			{
+				ms->Move();
+			}
+			else if (UBall* b = dynamic_cast<UBall*>(PrimitiveList[i]))
+			{
+				b->Move();
+				b->UpdateVelocity(bGravity, bFriction);
+			}
+			
+		}
 
 		renderer.Prepare();
 		renderer.PrepareShader();
 
-		player->Render(renderer, cubeBuffer, numVerticescube);
 
-		/*for (size_t i = 0; i < UBall::TotalNumBalls; ++i)
+		for (size_t i = 0; i < UBall::TotalNumBalls; ++i)
 		{
 			PrimitiveList[i]->Render(renderer, cubeBuffer, numVerticescube);
-		}*/
+		}
 
 		// UI 렌더링 
 		//renderer.PrepareUIShader();
@@ -224,14 +225,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			}
 		}
 		
-		//// 나만의 무기 - 당구 게임 모드
-		//if (ImGui::Checkbox("Cue Sports Mode!!!!", &bFriction))
-		//{
-		//	if (bFriction)
-		//	{
-		//		bGravity = false;
-		//	}
-		//}
 
 		// 버섯 무빙 테스트용
 		if (ImGui::Button("Mushroom"))
