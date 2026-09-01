@@ -231,8 +231,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			}
 			if (UBall* b = dynamic_cast<UBall*>(PrimitiveList[i]))
 			{
-				b->Move();
 				b->UpdateVelocity(bGravity);
+				b->Move();
 				for (int k = 0;k < 40;++k)
 				{
 					b->CollisionCheck(Ground[k]);
