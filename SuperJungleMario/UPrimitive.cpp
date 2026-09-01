@@ -24,28 +24,29 @@ bool UPrimitive::CollisionCheck(UPrimitive* other)
 			other->Location.x += (overlapX) * ((Location.x < other->Location.x) ? 1.0f : -1.0f);
 			other->Location.y += (overlapY) * ((Location.y < other->Location.y) ? 1.0f : -1.0f);
 		}
-		if (other->Velocity.x == 0.0f && other->Velocity.y == 0.0f) { 
+		else if (other->Velocity.x == 0.0f && other->Velocity.y == 0.0f) { 
 			Location.x += (overlapX) * ((Location.x < other->Location.x) ? -1.0f : 1.0f);
 			Location.y += (overlapY) * ((Location.y < other->Location.y) ? -1.0f : 1.0f);
 		}
 
-		Location.x += (overlapX / 2.0f) * ((Location.x < other->Location.x) ? -1.0f : 1.0f);
-		Location.y += (overlapY / 2.0f) * ((Location.y < other->Location.y) ? -1.0f : 1.0f);
-		other->Location.x += (overlapX / 2.0f) * ((Location.x < other->Location.x) ? 1.0f : -1.0f);
-		other->Location.y += (overlapY / 2.0f) * ((Location.y < other->Location.y) ? 1.0f : -1.0f);
-
+		else {
+			Location.x += (overlapX / 2.0f) * ((Location.x < other->Location.x) ? -1.0f : 1.0f);
+			Location.y += (overlapY / 2.0f) * ((Location.y < other->Location.y) ? -1.0f : 1.0f);
+			other->Location.x += (overlapX / 2.0f) * ((Location.x < other->Location.x) ? 1.0f : -1.0f);
+			other->Location.y += (overlapY / 2.0f) * ((Location.y < other->Location.y) ? 1.0f : -1.0f);
+		}
 		//겹치는 간격이 작은쪽의 속도를 멈춤
 
-		//if (overlapX < overlapY) {
-		//	Velocity.x = 0.0f;
-		//	other->Velocity.x = 0.0f;
+		if (overlapX < overlapY) {
+			Velocity.x = 0.0f;
+			other->Velocity.x = 0.0f;
 
-		//}
-		//else {
-		//	Velocity.y = 0.0f;
-		//	other->Velocity.y = 0.0f;
-		//}
-		//return true;
+		}
+		else {
+			Velocity.y = 0.0f;
+			other->Velocity.y = 0.0f;
+		}
+		return true;
 	}
 
 	return false;
