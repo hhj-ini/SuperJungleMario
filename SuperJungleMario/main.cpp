@@ -21,6 +21,7 @@
 #include "UI.h"
 #include "UCamera.h"
 #include "UBox.h"
+#include "ResourceManager.h"
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -135,9 +136,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 
 	// 텍스쳐 파일 로드 테스트 코드
-	ID3D11Resource* MushroomTest = nullptr;
-	ID3D11ShaderResourceView* MushroomTestSRV = nullptr;
-	renderer.LoadTexture(L"Resource\\Mushroom.png", MushroomTest, MushroomTestSRV);
+	//ID3D11Resource* MushroomTest = nullptr;
+	//ID3D11ShaderResourceView* MushroomTestSRV = nullptr;
+	//renderer.LoadTexture(L"Resource\\Mushroom.png", MushroomTest, MushroomTestSRV);
 
 
 	//// Box 추가////
@@ -196,7 +197,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 
 		renderer.Prepare();
-		renderer.PrepareShaderResource(MushroomTestSRV);
+		//renderer.PrepareShaderResource(MushroomTestSRV);
 		renderer.PrepareShader();
 
 		for (size_t i = 0; i < UBall::TotalNumBalls; ++i)
@@ -282,8 +283,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	renderer.ReleaseShader();
 
 	// 리소스 소멸
-	renderer.ReleaseResource(MushroomTest);
-	renderer.ReleaseSRV(MushroomTestSRV);
+	//renderer.ReleaseResource(MushroomTest);
+	//renderer.ReleaseSRV(MushroomTestSRV);
+
+	ResourceManager::GetInstance().ReleaseResource(&renderer);
 
 	// D3D11 소멸시키는 함수를 호출
 	renderer.Release();

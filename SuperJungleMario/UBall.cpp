@@ -99,6 +99,7 @@ void UBall::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)
 //}
 
 
+
 void UBall::Move()
 {
 	if (bIsHold)
