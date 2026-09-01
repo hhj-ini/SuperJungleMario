@@ -99,6 +99,7 @@ bool UBall::CollisionCheck(UPrimitive* other)
 }
 
 
+
 void UBall::Move()
 {
 	if (bIsHold)
