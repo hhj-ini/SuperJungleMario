@@ -323,9 +323,9 @@ ID3D11Buffer* URenderer::CreateUIVertexBuffer(FVertexUI* vertices, UINT byteWidt
 	// Create a vertex buffer
 	D3D11_BUFFER_DESC vertexbufferdesc = {};
 	vertexbufferdesc.ByteWidth = byteWidth;
-	vertexbufferdesc.Usage = D3D11_USAGE_IMMUTABLE;
+	vertexbufferdesc.Usage = D3D11_USAGE_DYNAMIC;
 	vertexbufferdesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	//vertexbufferdesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	vertexbufferdesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
 	D3D11_SUBRESOURCE_DATA vertexbufferSRD = { vertices };
 
@@ -398,5 +398,43 @@ void URenderer::UpdateConstantBuffer(FVector Offset, float Radius, FPos HoldPos,
 			constants->CurrPos = CurrPos;
 		}
 		DeviceContext->Unmap(ConstantBuffer, 0);
+	}
+}
+
+// 화면 픽셀 좌표를 NDC 좌표로 변환
+FNDCoordinate URenderer::GetNDCoordinate(POINT point, int width, int height)
+{
+	float ndcX = 2.0f * (static_cast<float>(point.x) / width) - 1.0f;
+	float ndcY = 1.0f - 2.0f * (static_cast<float>(point.y) / height);
+	return FNDCoordinate(ndcX, ndcY);
+}
+
+// UI 위치 등등 업데이트 
+void URenderer::UpdateUI(FNDCoordinate NDCoord, ID3D11Buffer* vertexBuffer, float UIWidth, float UIHeight)
+{
+	if (vertexBuffer)
+	{
+		D3D11_MAPPED_SUBRESOURCE vertexBufferMSR;
+
+		DeviceContext->Map(vertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &vertexBufferMSR);
+
+		FVertexUI* ui = (FVertexUI*)vertexBufferMSR.pData;
+		{
+			FVertexUI corners[4] =
+			{
+				{NDCoord.x - UIWidth / 2, NDCoord.y - UIHeight / 2, 0, 0, 1, 1, 1, 1}, // 일단 uv, rgba를 고정시켜 놓음
+				{NDCoord.x + UIWidth / 2, NDCoord.y - UIHeight / 2, 1, 0, 1, 1, 1, 1}, // buffer를 map했을때 읽기, 쓰기를 동시에 하면 안됨
+				{NDCoord.x - UIWidth / 2, NDCoord.y + UIHeight / 2, 0, 1, 1, 1, 1, 1},
+				{NDCoord.x + UIWidth / 2, NDCoord.y + UIHeight / 2, 1, 1, 1, 1, 1, 1}
+			};
+			// lb rb lt rt
+			int index[6] = { 0, 2, 1, 1, 2, 3 };
+
+			for (int i = 0; i < 6; i++)
+			{
+				ui[i] = corners[index[i]];
+			}
+		}
+		DeviceContext->Unmap(vertexBuffer, 0);
 	}
 }

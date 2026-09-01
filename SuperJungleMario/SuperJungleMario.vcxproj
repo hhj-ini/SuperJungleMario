@@ -152,6 +152,7 @@
     <ClCompile Include="UMushroom.cpp" />
     <ClCompile Include="UPrimitive.cpp" />
     <ClCompile Include="URenderer.cpp" />
+    <ClCompile Include="UUi.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ImGui\imconfig.h" />
@@ -168,6 +169,7 @@
     <ClInclude Include="UMushroom.h" />
     <ClInclude Include="UPrimitive.h" />
     <ClInclude Include="URenderer.h" />
+    <ClInclude Include="UUi.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="ShaderW0.hlsl">

@@ -17,6 +17,7 @@
 #include "UBall.h"
 #include "UMushroom.h"
 #include "UI.h"
+#include "UUi.h"
 
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -90,6 +91,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	// UI 버텍스 버퍼 생성
 	UINT numVerticesUI = sizeof(ui_vertices) / sizeof(FVertexUI);
 	ID3D11Buffer* UIBuffer = renderer.CreateUIVertexBuffer(ui_vertices, sizeof(ui_vertices));
+	// UI 리스트 생성 일단 2개
+	size_t uiCnt = 2;
+	UUi** UIList = new UUi*[uiCnt];
+	UIList[0] = new UUi(ui_vertices, FNDCoordinate(0.0f, 0.0f), 1.0f);
+	UIList[1] = new UUi(ui_vertices, FNDCoordinate(0.0f, 0.0f), 1.0f);
 
 	UINT numVerticesLine = sizeof(line_vertices) / sizeof(FVertexSimple);
 	ID3D11Buffer* LineBuffer = renderer.CreateVertexBuffer(line_vertices, sizeof(line_vertices));
@@ -124,6 +130,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	// 라인 렌더링 여부
 	bool bLineRender = false;
 
+	// UI 렌더링 여부
+	bool bUIRender = false;
+
 
 
 	/////////// 여기서 테스트용 객체 추가하시면 됩니다 ////////////////
@@ -132,10 +141,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	// 접근할때
 	// PrimitiveList[mushroomIdx]->render(...); 이런식으로 하면 됩니다.
 	// for 문이랑 로직 중첩되지 않도록 주의해주시면 돼요
-
+	
+	int x1 = 500; // ui 테스트용 임시 초기 좌표
+	int y1 = 500;
+	int x2 = 200;
+	int y2 = 600;
 
 	/////////// 여기서 테스트용 객체 추가하시면 됩니다 ////////////////
-
+	
 
 
 
@@ -158,7 +171,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			{
 				bIsExit = true;
 				break;
-			}	
+			}
 			else if (msg.message == WM_LBUTTONDOWN)
 			{	// 공 피킹
 				holdPos.x = (LOWORD(msg.lParam) - 512.0f) / 512.0f;
@@ -195,7 +208,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		for (size_t i = 0; i < UBall::TotalNumBalls; ++i)
 		{
-			for (size_t j = i + 1; j < UBall::TotalNumBalls; ++j) 
+			for (size_t j = i + 1; j < UBall::TotalNumBalls; ++j)
 			{
 				if (j == mushroomIdx || i == mushroomIdx) continue;	// 임시로 버섯 충돌 로직 영향 받지 않도록 함
 				PrimitiveList[i]->CollisionCheck(PrimitiveList[j]);
@@ -209,7 +222,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				b->Move();
 				b->UpdateVelocity(bGravity, bFriction);
 			}
-			
+
 		}
 
 		renderer.Prepare();
@@ -221,8 +234,19 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 
 		// UI 렌더링 
-		//renderer.PrepareUIShader();
-		//renderer.RenderUI(UIBuffer, numVerticesUI);
+		if (bUIRender)
+		{
+			POINT cursor1 = { static_cast<long>(x1), static_cast<long>(y1) }; // 여기에 실제 좌표 넣어야함
+			POINT cursor2 = { static_cast<long>(x2), static_cast<long>(y2) };
+			UIList[0]->setNDCoord(renderer.GetNDCoordinate(cursor1, 1024, 1024)); // 픽셀 좌표를 NDC로 변환
+			UIList[1]->setNDCoord(renderer.GetNDCoordinate(cursor2, 1024, 1024));
+			renderer.PrepareUIShader();
+
+			for (size_t i = 0; i < uiCnt; i++)
+			{
+				UIList[i]->Render(renderer, UIBuffer, numVerticesUI, 0.4f, 0.4f);
+			}
+		}
 
 		// ImGui 렌더링 준비, 컨트롤 설정, 렌더링 요청
 		ImGui_ImplDX11_NewFrame();
@@ -232,6 +256,18 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		// 사용자가 직접 UI를 구성하는 공간
 		ImGui::Begin("Jungle Property Window");
 		ImGui::Text("Hello Jungle World!");
+
+		// UI 위치변경 테스트용
+		ImGui::Checkbox("Show UI", &bUIRender);
+		if (bUIRender)
+		{
+			ImGui::Text("UI 1 position");
+			ImGui::SliderInt("x1", &x1, 0, 1024);
+			ImGui::SliderInt("y1", &y1, 0, 1024);
+			ImGui::Text("UI 2 position");
+			ImGui::SliderInt("x2", &x2, 0, 1024);
+			ImGui::SliderInt("y2", &y2, 0, 1024);
+		}
 
 		if (ImGui::Checkbox("Gravity", &bGravity))
 		{

@@ -10,6 +10,12 @@
 #pragma comment(lib, "d3d11")
 #pragma comment(lib, "d3dcompiler")
 
+// NDC 좌표 담을 구조체
+struct FNDCoordinate
+{
+	float x;
+	float y;
+};
 
 
 class URenderer	// 본 사전 학습 에서는 URenderer의 모든 멤버 변수, 함수를 public 으로 선언합니다.
@@ -146,4 +152,8 @@ public:
 	void ReleaseConstantBuffer();
 
 	void UpdateConstantBuffer(FVector Offset, float Radius, FPos HoldPos = {}, FPos CurrPos = {});
+
+	FNDCoordinate GetNDCoordinate(POINT point, int width, int height);
+
+	void UpdateUI(FNDCoordinate NDCoord, ID3D11Buffer* vertexBuffer, float UIWidth, float UIHeight);
 };
