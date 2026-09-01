@@ -1,5 +1,14 @@
 #include "UPrimitive.h"
 #include <cmath>
+#include <DirectXMath.h>
+
+void UPrimitive::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)
+{
+	DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(Location.x, Location.y, Location.z);
+
+	renderer.UpdateConstantBuffer(world, renderer.ViewMatrix);
+	renderer.RenderPrimitive(pBuffer, num);
+}
 
 bool UPrimitive::CollisionCheck(UPrimitive* other)
 {

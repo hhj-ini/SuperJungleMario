@@ -2,8 +2,10 @@
 #include <Windows.h>
 #include <d3d11.h>
 #include <d3dcompiler.h>
+#include <DirectXMath.h>
 
 #include "SuperJungleMario.h"
+
 
 // D3D 사용에 필요한 라이브러리들을 링크합니다.
 #pragma comment(lib, "user32")
@@ -15,6 +17,8 @@
 class URenderer	// 본 사전 학습 에서는 URenderer의 모든 멤버 변수, 함수를 public 으로 선언합니다.
 {
 public:
+	DirectX::XMMATRIX ViewMatrix = DirectX::XMMatrixIdentity();
+
 	// Direct3D 11 장치(Device)와 장치 컨텍스트(Device Context) 및 
 	// 스왑 체인(Swap Chain)을 관리하기 위한 포인터들
 
@@ -101,7 +105,7 @@ public:
 
 	void CreateShader();
 
-	void CreateUIShader();
+	//void CreateUIShader();
 
 	void ReleaseShader();
 
@@ -115,7 +119,7 @@ public:
 	// 실질적인 Rendering 요청을 할 RenderPrimitive 함수
 	void RenderPrimitive(ID3D11Buffer* pBuffer, UINT numVertices);
 
-	void PrepareUIShader();
+	//void PrepareUIShader();
 
 	void RenderUI(ID3D11Buffer* pBuffer, UINT numVertices);
 
@@ -135,15 +139,13 @@ public:
 
 	struct FConstants
 	{
-		FVector Offset;
-		float Radius;
-		FPos HoldPos;
-		FPos CurrPos;
+		DirectX::XMFLOAT4X4 World;
+		DirectX::XMFLOAT4X4 View;
 	};
 
 	void CreateConstantBuffer();
 
 	void ReleaseConstantBuffer();
 
-	void UpdateConstantBuffer(FVector Offset, float Radius, FPos HoldPos = {}, FPos CurrPos = {});
+	void UpdateConstantBuffer(const DirectX::XMMATRIX& world, const DirectX::XMMATRIX& view);
 };
