@@ -231,11 +231,20 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			}
 			if (UBall* b = dynamic_cast<UBall*>(PrimitiveList[i]))
 			{
-				b->UpdateVelocity(bGravity);
 				b->Move();
-				for (int k = 0;k < 40;++k)
+				b->UpdateVelocity(bGravity);
+				for (int k = 0; k < 40; ++k)   // player->Ground 충돌 체크
 				{
-					b->CollisionCheck(Ground[k]);
+					if (b->CollisionCheck(Ground[k]))
+					{
+						if (UPlayer* p = dynamic_cast<UPlayer*>(b))
+						{
+							if (p->Location.y > Ground[k]->Location.y)   
+							{
+								p->bIsGrounded = true;
+							}
+						}
+					}
 				}
 			}	
 		}
