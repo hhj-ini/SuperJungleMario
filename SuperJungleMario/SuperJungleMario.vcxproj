@@ -148,6 +148,7 @@
     <ClCompile Include="ImGui\imgui_tables.cpp" />
     <ClCompile Include="ImGui\imgui_widgets.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="UBall.cpp" />
     <ClCompile Include="UBox.cpp" />
     <ClCompile Include="UEnemy.cpp" />
@@ -167,6 +168,7 @@
     <ClInclude Include="ImGui\imstb_rectpack.h" />
     <ClInclude Include="ImGui\imstb_textedit.h" />
     <ClInclude Include="ImGui\imstb_truetype.h" />
+    <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="Sphere.h" />
     <ClInclude Include="SuperJungleMario.h" />
     <ClInclude Include="UBall.h" />
