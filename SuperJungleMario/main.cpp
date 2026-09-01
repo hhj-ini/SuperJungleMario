@@ -5,6 +5,7 @@
 #include <Windows.h>
 #include <d3d11.h>
 #include <d3dcompiler.h>
+#include <DirectXMath.h>
 
 #include "ImGui/imgui.h"
 #include "ImGui/imgui_internal.h"
@@ -17,6 +18,10 @@
 #include "UBall.h"
 #include "UMushroom.h"
 #include "UPlayer.h"
+<<<<<<< Updated upstream
+=======
+#include "UI.h"
+>>>>>>> Stashed changes
 #include "UCamera.h"
 
 
@@ -64,9 +69,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	bool bIsExit = false;
 
 	// 각종 생성하는 코드를 여기에 추가합니다.
+	UCamera camera;
+
 	URenderer renderer;
 	renderer.Create(hWnd);
 	renderer.CreateShader();
+<<<<<<< Updated upstream
+=======
+	//renderer.CreateUIShader();
+>>>>>>> Stashed changes
 	renderer.CreateConstantBuffer();
 
 	UCamera camera;
@@ -89,9 +100,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	}
 	ID3D11Buffer* cubeBuffer = renderer.CreateVertexBuffer(cube_vertices, sizeof(cube_vertices));
 
+<<<<<<< Updated upstream
+=======
+	// UI 버텍스 버퍼 생성
+	/*UINT numVerticesUI = sizeof(ui_vertices) / sizeof(FVertexUI);
+	ID3D11Buffer* UIBuffer = renderer.CreateUIVertexBuffer(ui_vertices, sizeof(ui_vertices));*/
+>>>>>>> Stashed changes
 
-	UINT numVerticesLine = sizeof(line_vertices) / sizeof(FVertexSimple);
-	ID3D11Buffer* LineBuffer = renderer.CreateVertexBuffer(line_vertices, sizeof(line_vertices));
+	//UINT numVerticesLine = sizeof(line_vertices) / sizeof(FVertexSimple);
+	//ID3D11Buffer* LineBuffer = renderer.CreateVertexBuffer(line_vertices, sizeof(line_vertices));
 
 	size_t ballPoolCnt = 50;	// 초기에 50개만큼 공 풀 확보
 
@@ -110,8 +127,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	
 	LARGE_INTEGER startTime, endTime;
 	double elapsedTime = 0.0;	
-
-	
 
 	// 나만의 무기
 	bool bFriction = false;
@@ -214,8 +229,33 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		player->Move();
 
 		camera.Follow(player->Location);
+<<<<<<< Updated upstream
 
 		renderer.ViewMatrix = camera.GetViewMatrix();
+=======
+		renderer.ViewMatrix = camera.GetViewMatrix();
+
+		// renderer.ViewMatrix = DirectX::XMMatrixIdentity();
+
+		//for (size_t i = 0; i < UBall::TotalNumBalls; ++i)
+		//{
+		//	for (size_t j = i + 1; j < UBall::TotalNumBalls; ++j) 
+		//	{
+		//		if (j == mushroomIdx || i == mushroomIdx) continue;	// 임시로 버섯 충돌 로직 영향 받지 않도록 함
+		//		PrimitiveList[i]->CollisionCheck(PrimitiveList[j]);
+		//	}
+		//	if (UMushroom* ms = dynamic_cast<UMushroom*>(PrimitiveList[i]))
+		//	{
+		//		ms->Move();
+		//	}
+		//	else if (UBall* b = dynamic_cast<UBall*>(PrimitiveList[i]))
+		//	{
+		//		b->Move();
+		//		b->UpdateVelocity(bGravity, bFriction);
+		//	}
+		//	
+		//}
+>>>>>>> Stashed changes
 
 		renderer.Prepare();
 		renderer.PrepareShader();
@@ -308,7 +348,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	// 생성된 버텍스 버퍼를 소멸 - 셰이더 소멸 전 호출
 	renderer.ReleaseVertexBuffer(cubeBuffer);
-	renderer.ReleaseVertexBuffer(LineBuffer);
+	//renderer.ReleaseVertexBuffer(LineBuffer);
 
 	// 상수 버퍼 소멸
 	renderer.ReleaseConstantBuffer();

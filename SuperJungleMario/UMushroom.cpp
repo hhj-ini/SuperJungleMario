@@ -18,12 +18,20 @@ void UMushroom::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)
 {
 	if (mrState == MushroomState::ENABLE || mrState == MushroomState::ANIMATING)
 	{	// 버섯이 애니메이션 중이거나, 활성화 상태일 때만 렌더링
+<<<<<<< Updated upstream
 		// renderer.UpdateConstantBuffer(Location, Radius);
+=======
+		/*renderer.UpdateConstantBuffer(Location, Radius);
+		renderer.RenderPrimitive(pBuffer, num);*/
+>>>>>>> Stashed changes
 
 		DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(Location.x, Location.y, Location.z);
 
 		renderer.UpdateConstantBuffer(world, renderer.ViewMatrix);
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 		renderer.RenderPrimitive(pBuffer, num);
 	}
 }

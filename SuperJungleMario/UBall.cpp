@@ -27,7 +27,11 @@ UBall::~UBall()
 
 void UBall::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)
 {
+<<<<<<< Updated upstream
 	/*renderer.UpdateConstantBuffer(world, renderer.ViewMatrix);
+=======
+	/*renderer.UpdateConstantBuffer(Location, Radius);
+>>>>>>> Stashed changes
 	renderer.RenderPrimitive(pBuffer, num);*/
 }
 

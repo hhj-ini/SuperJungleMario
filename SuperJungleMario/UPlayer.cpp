@@ -20,6 +20,27 @@ void UPlayer::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)
 {
 	/*renderer.UpdateConstantBuffer(Location, Radius);
 	renderer.RenderPrimitive(pBuffer, num);*/
+<<<<<<< Updated upstream
+=======
+	using namespace DirectX;
+
+	XMMATRIX scale = XMMatrixScaling(
+		Radius * scaleMod,
+		Radius * scaleMod,
+		Radius * scaleMod
+	);
+
+	XMMATRIX translation = XMMatrixTranslation(
+		Location.x,
+		Location.y,
+		Location.z
+	);
+
+	XMMATRIX world = scale * translation;
+
+	renderer.UpdateConstantBuffer(world, renderer.ViewMatrix);
+	renderer.RenderPrimitive(pBuffer, num);
+>>>>>>> Stashed changes
 }
 
 //bool UPlayer::CollisionCheck(UPrimitive* other)

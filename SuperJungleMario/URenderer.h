@@ -6,6 +6,7 @@
 
 #include "SuperJungleMario.h"
 
+
 // D3D 사용에 필요한 라이브러리들을 링크합니다.
 #pragma comment(lib, "user32")
 #pragma comment(lib, "d3d11")
@@ -104,7 +105,7 @@ public:
 
 	void CreateShader();
 
-	void CreateUIShader();
+	//void CreateUIShader();
 
 	void ReleaseShader();
 
@@ -118,7 +119,7 @@ public:
 	// 실질적인 Rendering 요청을 할 RenderPrimitive 함수
 	void RenderPrimitive(ID3D11Buffer* pBuffer, UINT numVertices);
 
-	void PrepareUIShader();
+	//void PrepareUIShader();
 
 	void RenderUI(ID3D11Buffer* pBuffer, UINT numVertices);
 
