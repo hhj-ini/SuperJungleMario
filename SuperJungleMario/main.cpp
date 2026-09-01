@@ -247,6 +247,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			{
 				b->Move();
 				b->UpdateVelocity(bGravity);
+				b->UpdateAnimation(elapsedTime / 1000.0f);	// deltaTime 단위는 초 단위로 전달
 				for (int k = 0; k < 40; ++k)   // player->Ground 충돌 체크
 				{
 					if (b->CollisionCheck(Ground[k]))
@@ -280,12 +281,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				continue;
 			}
 		}
-
-		for (int i = 0; i < 1; ++i)  // 임시로 5개의 goomba만 애니메이션 업데이트
-		{
-			GoombaList[i]->UpdateAnimation(elapsedTime / 1000.0f); 
-		}
-
 
 		renderer.Prepare();
 		//renderer.PrepareShaderResource(MushroomTestSRV);
