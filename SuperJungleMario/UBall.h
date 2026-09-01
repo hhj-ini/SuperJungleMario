@@ -32,7 +32,7 @@ public:
 
 	virtual void Move();
 
-	void UpdateVelocity(bool bGravity, bool bFriction);
+	virtual void UpdateVelocity(bool bGravity, bool bFriction);
 
 
 };
