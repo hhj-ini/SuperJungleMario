@@ -47,8 +47,13 @@ public:
 	ID3D11Buffer* ConstantBuffer = nullptr;
 	// 셰이더에 데이터를 전달하기 위한 상수 버퍼
 
-
-	FLOAT ClearColor[4] = { 0.025f, 0.025f, 0.025f, 1.0f };
+	FLOAT ClearColor[4] =
+	{
+		0.250f,
+		0.205f,
+		0.745f,
+		1.0f
+	};
 	// 화면을 초기화(Clear) 할 때 사용할 색상(RGBA)
 
 	D3D11_VIEWPORT ViewportInfo;
