@@ -1,16 +1,15 @@
 #include "UBox.h"
 
-UBox::UBox()
+UBox::UBox(float x, float y, float w, float h)
 {
-	Location.x = ((float)(rand() % 180 - 90)) * 0.01f;
-	Location.y = ((float)(rand() % 180 - 90)) * 0.01f;
-
+	Location.x = x*scaleMod;
+	Location.y = y * scaleMod;
+	width = w * scaleMod;
+	height = h * scaleMod;
 
 	Radius = 0.0001f;
-	TotalNumBox++;
+	++TotalNumBox;
 
-	width = Radius * scaleMod;
-	height = Radius * scaleMod;
 	bisHold = false;
 }
 

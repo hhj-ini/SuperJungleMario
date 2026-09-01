@@ -20,7 +20,7 @@
 #include "UPlayer.h"
 #include "UI.h"
 #include "UCamera.h"
-
+#include "UBox.h"
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -133,6 +133,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	/////////// 여기서 테스트용 객체 추가하시면 됩니다 ////////////////
 	int mushroomIdx = UBall::TotalNumBalls;
 	PrimitiveList[mushroomIdx] = new UMushroom;
+
 	// 접근할때
 	// PrimitiveList[mushroomIdx]->render(...); 이런식으로 하면 됩니다.
 	// for 문이랑 로직 중첩되지 않도록 주의해주시면 돼요
@@ -144,6 +145,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	int playerIdx = UBall::TotalNumBalls;
 	UBall* player = new UPlayer;
 	PrimitiveList[playerIdx] = player;
+
+
+	//// Box 추가////
+	UBox* Ground[] = new UBox * [10];
+	Ground[0] = new UBox(0.0f, 0.0f, 10.0f, 1.0f);  // 아래 Ground
+	Ground[1] = new UBox(0.0f, 10.0f, 10.0f, 1.0f); // 위 Ground
+	Ground[2] = new UBox(-5.0f, 5.0f, 1.0f, 10.0f); // 왼쪽 Ground
+	Ground[3] = new UBox(5.0f, 5.0f, 1.0f, 10.0f);  // 오른쪽 Ground
+
 
 	// Main Loop(Quit Message가 들어오기 전까지 아래 Loop를 무한히 실행하게 됨.
 	while (bIsExit == false)

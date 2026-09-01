@@ -12,6 +12,7 @@ public:
 
 public:
 	UBox();
+	UBox(float locationX, float locationY, float width, float height); //위치x,y,  가로,세로
 
 	virtual ~UBox();
 
