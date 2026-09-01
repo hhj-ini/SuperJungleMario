@@ -93,6 +93,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	renderer.CreateUIShader();
 	renderer.CreateConstantBuffer();
 	renderer.CreateUISamplerState();
+	renderer.CreateTextureSamplerState();
 
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();

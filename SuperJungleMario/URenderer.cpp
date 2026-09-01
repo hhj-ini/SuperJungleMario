@@ -302,7 +302,7 @@ void URenderer::Prepare()
 
 void URenderer::PrepareShaderResource(ID3D11ShaderResourceView* InSRVPtr)
 {
-	DeviceContext->PSSetSamplers(0, 1, &TextureSamplerStete);
+	DeviceContext->PSSetSamplers(0, 1, &TextureSamplerState);
 	DeviceContext->PSSetShaderResources(0, 1, &InSRVPtr);
 }
 
@@ -331,12 +331,13 @@ void URenderer::RenderPrimitive(ID3D11Buffer* pBuffer, UINT numVertices)
 // RenderUI 하기 전 파이프라인을 모두 UI... 으로 attach
 void URenderer::PrepareUIShader(ID3D11ShaderResourceView* UISRV)
 {
+	// 텍스쳐 바인딩
+	DeviceContext->PSSetShaderResources(0, 1, &UISRV);
+	DeviceContext->PSSetSamplers(0, 1, &UISamplerStete);
+
 	DeviceContext->VSSetShader(UIVertexShader, nullptr, 0);
 	DeviceContext->PSSetShader(UIPixelShader, nullptr, 0);
-	DeviceContext->IASetInputLayout(UIInputLayout);
-	// 텍스쳐 바인딩
-	DeviceContext->PSSetShaderResources(1, 1, &UISRV);
-	DeviceContext->PSSetSamplers(1, 1, &UISamplerStete);
+	DeviceContext->IASetInputLayout(UIInputLayout);	
 }
 
 // ui 렌더링 
@@ -527,7 +528,7 @@ void URenderer::CreateTextureSamplerState()
 	samplerdesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
 	samplerdesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
 
-	Device->CreateSamplerState(&samplerdesc, &TextureSamplerStete);
+	Device->CreateSamplerState(&samplerdesc, &TextureSamplerState);
 }
 
 void URenderer::ReleaseResource(ID3D11Resource*& InResourcePtr)
@@ -555,6 +556,7 @@ void URenderer::CreateUISamplerState()
 	samplerdesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
 	samplerdesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
 	samplerdesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
+	samplerdesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
 
-	Device->CreateSamplerState(&samplerdesc, &UISamplerStete);
+	HRESULT hr = Device->CreateSamplerState(&samplerdesc, &UISamplerStete);
 }
