@@ -20,6 +20,7 @@ class UPrimitive
 
 	virtual void Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num);
 	virtual bool CollisionCheck(UPrimitive* other);
+	inline virtual void Tick() {};	
 
 	// 모든 Primitive 는 텍스처 포인터를 가짐
 	// **상속 받은 클래스에서 꼭 정의해주시면 텍스쳐 적용 가능합니다*

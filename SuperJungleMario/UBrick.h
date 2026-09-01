@@ -8,6 +8,7 @@ class UBrick :
 public:
     virtual bool CollisionCheck(UPrimitive* other) override;
     virtual void Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num) override;
+    virtual void Tick() override;
 
     // Box 전용 함수
     virtual void SetBoxState(EBoxType InType);

@@ -74,5 +74,10 @@ void UBrick::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)
 	renderer.RenderPrimitive(pBuffer, num);
 }
 
+void UBrick::Tick()
+{
+	
+}
+
 void UBrick::SetBoxState(EBoxType InType)
 {}
