@@ -5,11 +5,11 @@
 
 UPlayer::UPlayer()
 {
-	Location.x = ((float)(rand() % 180 - 90)) * 0.01f;
-	Location.y = ((float)(rand() % 180 - 90)) * 0.01f;
+	Location.x = 0.0f;
+	Location.y = 0.0f;
 
-	Velocity.x = 0.001f;
-	Velocity.y = 0.001f;
+	Velocity.x = 0.0f;
+	Velocity.y = 0.0f;
 }
 
 UPlayer::~UPlayer()
@@ -20,8 +20,7 @@ void UPlayer::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)
 {
 	/*renderer.UpdateConstantBuffer(Location, Radius);
 	renderer.RenderPrimitive(pBuffer, num);*/
-<<<<<<< Updated upstream
-=======
+
 	using namespace DirectX;
 
 	XMMATRIX scale = XMMatrixScaling(
@@ -40,7 +39,7 @@ void UPlayer::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)
 
 	renderer.UpdateConstantBuffer(world, renderer.ViewMatrix);
 	renderer.RenderPrimitive(pBuffer, num);
->>>>>>> Stashed changes
+
 }
 
 //bool UPlayer::CollisionCheck(UPrimitive* other)
@@ -105,6 +104,7 @@ void UPlayer::Move()
 {
 
 	Velocity.x = 0.0f;
+	Velocity.y = 0.0f;
 
 	if (GetAsyncKeyState(VK_LEFT) & 0x8000)
 	{

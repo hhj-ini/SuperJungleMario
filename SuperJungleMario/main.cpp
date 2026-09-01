@@ -18,10 +18,7 @@
 #include "UBall.h"
 #include "UMushroom.h"
 #include "UPlayer.h"
-<<<<<<< Updated upstream
-=======
-#include "UI.h"
->>>>>>> Stashed changes
+// #include "UI.h"
 #include "UCamera.h"
 
 
@@ -74,13 +71,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	URenderer renderer;
 	renderer.Create(hWnd);
 	renderer.CreateShader();
-<<<<<<< Updated upstream
-=======
 	//renderer.CreateUIShader();
->>>>>>> Stashed changes
 	renderer.CreateConstantBuffer();
 
-	UCamera camera;
 
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
@@ -100,12 +93,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	}
 	ID3D11Buffer* cubeBuffer = renderer.CreateVertexBuffer(cube_vertices, sizeof(cube_vertices));
 
-<<<<<<< Updated upstream
-=======
 	// UI 버텍스 버퍼 생성
 	/*UINT numVerticesUI = sizeof(ui_vertices) / sizeof(FVertexUI);
 	ID3D11Buffer* UIBuffer = renderer.CreateUIVertexBuffer(ui_vertices, sizeof(ui_vertices));*/
->>>>>>> Stashed changes
 
 	//UINT numVerticesLine = sizeof(line_vertices) / sizeof(FVertexSimple);
 	//ID3D11Buffer* LineBuffer = renderer.CreateVertexBuffer(line_vertices, sizeof(line_vertices));
@@ -173,69 +163,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				bIsExit = true;
 				break;
 			}	
-			//else if (msg.message == WM_LBUTTONDOWN)
-			//{	// 공 피킹
-			//	holdPos.x = (LOWORD(msg.lParam) - 512.0f) / 512.0f;
-			//	holdPos.y = (512.0f - HIWORD(msg.lParam)) / 512.0f;
-
-			//	if (bFriction)
-			//	{
-			//		for (size_t i = 0; i < UBall::TotalNumBalls; ++i)
-			//		{
-
-			//		}
-			//	}
-			//}
-			//else if (msg.message == WM_LBUTTONUP)
-			//{
-			//	currPos.x = (LOWORD(msg.lParam) - 512.0f) / 512.0f;
-			//	currPos.y = (512.0f - HIWORD(msg.lParam)) / 512.0f;
-
-			//	if (bFriction)
-			//	{
-			//		for (size_t i = 0; i < UBall::TotalNumBalls; ++i)
-			//		{
-
-			//			bLineRender = false;
-			//		}
-			//	}
-			//}
-			//else if (msg.message == WM_MOUSEMOVE)
-			//{
-			//	currPos.x = (LOWORD(msg.lParam) - 512.0f) / 512.0f;
-			//	currPos.y = (512.0f - HIWORD(msg.lParam)) / 512.0f;
-			//}
+	
 		}
-
-		for (size_t i = 0; i < UBall::TotalNumBalls; ++i)
-		{
-			for (size_t j = i + 1; j < UBall::TotalNumBalls; ++j) 
-			{
-				if (j == mushroomIdx || i == mushroomIdx) continue;	// 임시로 버섯 충돌 로직 영향 받지 않도록 함
-				PrimitiveList[i]->CollisionCheck(PrimitiveList[j]);
-			}
-			if (UMushroom* ms = dynamic_cast<UMushroom*>(PrimitiveList[i]))
-			{
-				ms->Move();
-			}
-			else if (UBall* b = dynamic_cast<UBall*>(PrimitiveList[i]))
-			{
-				b->Move();
-				b->UpdateVelocity(bGravity, bFriction);
-			}
-			
-		}
-
 		player->Move();
 
-		camera.Follow(player->Location);
-<<<<<<< Updated upstream
+		/*camera.Follow(player->Location);
+		renderer.ViewMatrix = camera.GetViewMatrix();*/
 
-		renderer.ViewMatrix = camera.GetViewMatrix();
-=======
-		renderer.ViewMatrix = camera.GetViewMatrix();
-
-		// renderer.ViewMatrix = DirectX::XMMatrixIdentity();
+		renderer.ViewMatrix = DirectX::XMMatrixIdentity();
 
 		//for (size_t i = 0; i < UBall::TotalNumBalls; ++i)
 		//{
@@ -255,17 +190,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		//	}
 		//	
 		//}
->>>>>>> Stashed changes
 
 		renderer.Prepare();
 		renderer.PrepareShader();
 
 		player->Render(renderer, cubeBuffer, numVerticescube);
 
-		for (size_t i = 0; i < UBall::TotalNumBalls; ++i)
+		/*for (size_t i = 0; i < UBall::TotalNumBalls; ++i)
 		{
 			PrimitiveList[i]->Render(renderer, cubeBuffer, numVerticescube);
-		}
+		}*/
 
 		// ImGui 렌더링 준비, 컨트롤 설정, 렌더링 요청
 		ImGui_ImplDX11_NewFrame();

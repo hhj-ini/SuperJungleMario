@@ -242,14 +242,13 @@ void URenderer::RenderPrimitive(ID3D11Buffer* pBuffer, UINT numVertices)
 	DeviceContext->Draw(numVertices, 0);
 }
 
-<<<<<<< Updated upstream
 // RenderUI 하기 전 파이프라인을 모두 UI... 으로 
-void URenderer::PrepareUIShader()
-{
-	DeviceContext->VSSetShader(UIVertexShader, nullptr, 0);
-	DeviceContext->PSSetShader(UIPixelShader, nullptr, 0);
-	DeviceContext->IASetInputLayout(UIInputLayout);
-}
+//void URenderer::PrepareUIShader()
+//{
+//	DeviceContext->VSSetShader(UIVertexShader, nullptr, 0);
+//	DeviceContext->PSSetShader(UIPixelShader, nullptr, 0);
+//	DeviceContext->IASetInputLayout(UIInputLayout);
+//}
 
 // ui 렌더링 
 void URenderer::RenderUI(ID3D11Buffer* pBuffer, UINT numVertices)
@@ -260,8 +259,7 @@ void URenderer::RenderUI(ID3D11Buffer* pBuffer, UINT numVertices)
 	DeviceContext->Draw(numVertices, 0);
 }
 
-=======
->>>>>>> Stashed changes
+
 //void URenderer::LineRenderPrimitive(ID3D11Buffer* pBuffer, UINT numVertices)
 //{
 //	DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
@@ -273,7 +271,7 @@ void URenderer::RenderUI(ID3D11Buffer* pBuffer, UINT numVertices)
 //	DeviceContext->Draw(numVertices, 0);
 //}
 
-<<<<<<< Updated upstream
+
 // ui 버텍스 버퍼 생성. FVertexUI를 인자로 받음.
 ID3D11Buffer* URenderer::CreateUIVertexBuffer(FVertexUI* vertices, UINT byteWidth)
 {
@@ -291,8 +289,7 @@ ID3D11Buffer* URenderer::CreateUIVertexBuffer(FVertexUI* vertices, UINT byteWidt
 
 	return vertexBuffer;
 }
-=======
->>>>>>> Stashed changes
+
 
 ID3D11Buffer* URenderer::CreateVertexBuffer(FVertexSimple* vertices, UINT byteWidth)
 {
@@ -345,11 +342,6 @@ void URenderer::UpdateConstantBuffer(const DirectX::XMMATRIX& world, const Direc
 	{
 		D3D11_MAPPED_SUBRESOURCE constantbufferMSR;
 		
-		FConstants constants;
-
-		DirectX::XMStoreFloat4x4(&constants.World, DirectX::XMMatrixTranspose(world));
-		DirectX::XMStoreFloat4x4(&constants.View, DirectX::XMMatrixTranspose(view));
-
 		FConstants constants;
 
 		DirectX::XMStoreFloat4x4(&constants.World, DirectX::XMMatrixTranspose(world));

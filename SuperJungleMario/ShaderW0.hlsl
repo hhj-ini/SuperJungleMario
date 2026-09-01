@@ -4,21 +4,12 @@ cbuffer constants : register(b0)
 {
     matrix World;
     matrix View;
-<<<<<<< Updated upstream
-}
-
-struct VS_INPUT
-{
-    float4 position : POSITION;    // Input position from vertex buffer
-    float4 color : COLOR;           // Input color from vertex buffer
-=======
 };
 
 struct VS_INPUT
 {
     float3 position : POSITION; // Input position from vertex buffer
     float4 color : COLOR; // Input color from vertex buffer
->>>>>>> Stashed changes
 };
 
 struct PS_INPUT
@@ -52,35 +43,3 @@ float4 mainPS(PS_INPUT input) : SV_TARGET
     // Output the color directly
     return input.color;
 }
-
-//PS_INPUT mainVS2(VS_INPUT input)
-//{
-//    PS_INPUT output;
-    
-<<<<<<< Updated upstream
-    //// Pass the position directly to the pixel shader (no transformation)
-    //if (input.position.x > 0.5f)
-    //{
-    //    output.position = float4(HoldPos, 0, 1);
-    //}
-    //else
-    //{
-    //    output.position = float4(CurrPos, 0, 1);
-    //}
-=======
-//    //// Pass the position directly to the pixel shader (no transformation)
-//    //if (input.position.x > 0.5f)
-//    //{
-//    //    output.position = float4(HoldPos, 0, 1);
-//    //}
-//    //else
-//    //{
-//    //    output.position = float4(CurrPos, 0, 1);
-//    //}
->>>>>>> Stashed changes
-    
-//    // Pass the color to the pixel shader
-//    output.color = input.color;
-    
-//    return output;
-//}
