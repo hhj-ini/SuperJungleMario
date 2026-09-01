@@ -113,7 +113,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	UINT numVerticesUI = sizeof(ui_vertices) / sizeof(FVertexUI);
 	ID3D11Buffer* UIBuffer = renderer.CreateUIVertexBuffer(ui_vertices, sizeof(ui_vertices));
 	// UI 리스트 생성
-	size_t uiCnt = 14;
+	size_t uiCnt = 29;
 	UUi** UIList = new UUi*[uiCnt];
 	for (int i = 0; i < uiCnt; i++)
 	{
@@ -301,18 +301,18 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		// UI 위치변경 테스트용
 		ImGui::Checkbox("Show UI", &bUIRender);
-		//if (bUIRender)
-		//{
-		//	ImGui::Text("UI 1 position");
-		//	ImGui::SliderInt("x1", &x1, 0, 1024);
-		//	ImGui::SliderInt("y1", &y1, 0, 1024);
-		//	ImGui::Text("UI 2 position");
-		//	ImGui::SliderInt("x2", &x2, 0, 1024);
-		//	ImGui::SliderInt("y2", &y2, 0, 1024);
-		//	ImGui::Text("UI 3 position");
-		//	ImGui::SliderInt("x3", &x3, 0, 1024);
-		//	ImGui::SliderInt("y3", &y3, 0, 1024);
-		//}
+		if (bUIRender)
+		{
+			ImGui::Text("UI 1 position");
+			ImGui::SliderInt("x1", &x1, 0, 1024);
+			ImGui::SliderInt("y1", &y1, 0, 1024);
+			ImGui::Text("UI 2 position");
+			ImGui::SliderInt("x2", &x2, 0, 1024);
+			ImGui::SliderInt("y2", &y2, 0, 1024);
+			ImGui::Text("UI 3 position");
+			ImGui::SliderInt("x3", &x3, 0, 1024);
+			ImGui::SliderInt("y3", &y3, 0, 1024);
+		}
 
 		if (ImGui::Checkbox("Gravity", &bGravity));
 		
