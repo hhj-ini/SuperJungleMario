@@ -134,11 +134,19 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	PrimitiveList[playerIdx] = player;
 
 
-
 	// 텍스쳐 파일 로드 테스트 코드
 	ID3D11Resource* MushroomTest = nullptr;
 	ID3D11ShaderResourceView* MushroomTestSRV = nullptr;
 	renderer.LoadTexture(L"Resource\\Mushroom.png", MushroomTest, MushroomTestSRV);
+
+
+	//// Box 추가////
+	UPrimitive** Ground = nullptr;
+	Ground = new UPrimitive * [40];  // 10을 변수로 변경해야함. 지금은 임시테스트용
+	for (int i = 0;i < 40; ++i)
+	{
+		Ground[i] = new UBox(-1.0f+i*UPrimitive::scaleMod , -0.8f, 1.0f, 1.0f);
+	}
 
 
 	// Main Loop(Quit Message가 들어오기 전까지 아래 Loop를 무한히 실행하게 됨.
@@ -186,6 +194,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			}
 		}
 
+
 		renderer.Prepare();
 		renderer.PrepareShaderResource(MushroomTestSRV);
 		renderer.PrepareShader();
@@ -193,6 +202,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		for (size_t i = 0; i < UBall::TotalNumBalls; ++i)
 		{
 			PrimitiveList[i]->Render(renderer, cubeBuffer, numVerticescube);
+		}
+
+		// Ground 렌더링
+		for (int i = 0;i < 40; ++i)
+		{
+			Ground[i]->Render(renderer, cubeBuffer, numVerticescube);
 		}
 
 		// UI 렌더링 
