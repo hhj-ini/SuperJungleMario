@@ -131,6 +131,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		UIList[i] = new UUi(ui_vertices, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT4(1, 1, 1, 1), UUi::Translate(charList[i]), 1.0f);
 	}
 	UUi* BlackBackground = new UUi(ui_vertices, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT4(1, 1, 1, 1), DirectX::XMFLOAT4(1, 1, 0, 0), 1.0f);
+	UUi* MarioUI = new UUi(ui_vertices, DirectX::XMFLOAT2(-0.2f, 0.025f), DirectX::XMFLOAT4(1, 1, 1, 1), DirectX::XMFLOAT4(1, 1, 0, 0), 1.0f);
 
 	//ID3D11Buffer* cubeBuffer = renderer.CreateVertexBuffer(cube_vertices, sizeof(cube_vertices));
 	ID3D11Buffer* cubeBuffer = renderer.CreateTextureVertexBuffer(cube_vertices, sizeof(cube_vertices));
@@ -161,7 +162,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	// UI 렌더링 여부
 	bool bUIRender = true;
-	bool bGameStart = false;
+	bool bGameStart = true; // 일단 false로 
 	bool bGameEnd = false;
 
 
@@ -208,6 +209,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	ID3D11Resource* UIBlackResource = nullptr;
 	ID3D11ShaderResourceView* UIBlackSRV = nullptr;
 	renderer.LoadTexture(L"Resource\\black.png", UIBlackResource, UIBlackSRV);
+	ID3D11Resource* UIMarioResource = nullptr;
+	ID3D11ShaderResourceView* UIMarioSRV = nullptr;
+	renderer.LoadTexture(L"Resource\\Mario\\Mario1.png", UIMarioResource, UIMarioSRV);
 
 
 	//// Box 추가////
@@ -345,6 +349,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 		if (bGameStart)
 		{
+			renderer.PrepareUIShader(UIMarioSRV);
+			MarioUI->Render(renderer, UIBuffer, numVerticesUI, 0.1f, 0.1f);
+			renderer.PrepareUIShader(UIFontSRV);
 			for (int i = 0; i < GameStartUICnt; i++)
 			{
 				GameStartUIList[i]->setNDCoord(renderer.GetNDCoordinate(charPositionsStart[i], 1024, 1024));
@@ -366,7 +373,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		// UI 테스트용
 		ImGui::Checkbox("Show UI", &bUIRender);
-		ImGui::Checkbox("Show Start UI", &bGameStart);
+		//ImGui::Checkbox("Show Start UI", &bGameStart);
 		//ImGui::SliderInt("Score", &UGameLogic::GameLogic().score, 0, 1000000);
 		//if (bUIRender)
 		//{
