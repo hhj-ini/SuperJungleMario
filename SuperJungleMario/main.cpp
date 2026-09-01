@@ -75,7 +75,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	ImGui_ImplDX11_Init(renderer.Device, renderer.DeviceContext);
 
 	// 버텍스 버퍼 생성 
-	UINT numVerticescube = sizeof(cube_vertices) / sizeof(FVertexSimple);	// 버텍스 갯수 변수화
+	UINT numVerticescube = sizeof(cube_vertices) / sizeof(FVertex);	// 버텍스 갯수 변수화
 	float scaleMod = 0.1f;	// cube 크기 조정
 	for (UINT i = 0; i < numVerticescube; ++i)
 	{
@@ -83,11 +83,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		cube_vertices[i].y *= scaleMod;
 		cube_vertices[i].z *= scaleMod;
 	}
-	ID3D11Buffer* cubeBuffer = renderer.CreateVertexBuffer(cube_vertices, sizeof(cube_vertices));
-
-
-	UINT numVerticesLine = sizeof(line_vertices) / sizeof(FVertexSimple);
-	ID3D11Buffer* LineBuffer = renderer.CreateVertexBuffer(line_vertices, sizeof(line_vertices));
+	//ID3D11Buffer* cubeBuffer = renderer.CreateVertexBuffer(cube_vertices, sizeof(cube_vertices));
+	ID3D11Buffer* cubeBuffer = renderer.CreateTextureVertexBuffer(cube_vertices, sizeof(cube_vertices));
 
 	size_t ballPoolCnt = 50;	// 초기에 50개만큼 공 풀 확보
 
@@ -134,8 +131,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	// 텍스쳐 파일 로드 테스트 코드
 	ID3D11Resource* MushroomTest = nullptr;
-	ID3D11ShaderResourceView* MushroomTestRV = nullptr;
-	renderer.LoadTexture(L"Resource\\Mushroom.png", MushroomTest, MushroomTestRV);
+	ID3D11ShaderResourceView* MushroomTestSRV = nullptr;
+	renderer.LoadTexture(L"Resource\\Mushroom.png", MushroomTest, MushroomTestSRV);
 
 	// Main Loop(Quit Message가 들어오기 전까지 아래 Loop를 무한히 실행하게 됨.
 	while (bIsExit == false)
@@ -206,6 +203,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 
 		renderer.Prepare();
+		renderer.PrepareShaderResource(MushroomTestSRV);
 		renderer.PrepareShader();
 
 		for (size_t i = 0; i < UBall::TotalNumBalls; ++i)
@@ -294,13 +292,17 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	// 생성된 버텍스 버퍼를 소멸 - 셰이더 소멸 전 호출
 	renderer.ReleaseVertexBuffer(cubeBuffer);
-	renderer.ReleaseVertexBuffer(LineBuffer);
+
 
 	// 상수 버퍼 소멸
 	renderer.ReleaseConstantBuffer();
 
 	// 렌더러 소멸 직전에 셰이더를 소멸시키는 함수를 호출
 	renderer.ReleaseShader();
+
+	// 리소스 소멸
+	renderer.ReleaseResource(MushroomTest);
+	renderer.ReleaseSRV(MushroomTestSRV);
 
 	// D3D11 소멸시키는 함수를 호출
 	renderer.Release();
