@@ -162,8 +162,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	// UI 렌더링 여부
 	bool bUIRender = true;
-	bool bGameStart = true; // 일단 false로 
+	bool bGameStart = false; // 일단 false로 
 	bool bGameEnd = false;
+	bool bDeath = false;
 
 
 	/////////// 여기서 테스트용 객체 추가하시면 됩니다 ////////////////
@@ -355,6 +356,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			for (int i = 0; i < GameStartUICnt; i++)
 			{
 				GameStartUIList[i]->setNDCoord(renderer.GetNDCoordinate(charPositionsStart[i], 1024, 1024));
+				GameStartUIList[i]->UpdateUV(i);
 			}
 			for (size_t i = 0; i < GameStartUICnt; i++)
 			{

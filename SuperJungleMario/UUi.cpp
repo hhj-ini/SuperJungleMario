@@ -93,6 +93,11 @@ void UUi::UpdateCoinUI(int coin)
 	charList[21] = '0' + (coin / 10) % 10;
 }
 
+void UUi::UpdateLifeUI(int life)
+{
+	charListStart[10] = '0' + life % 10;
+}
+
 void UUi::UpdateUV(int index)
 {
 	UUi::uv = Translate(charList[index]);
