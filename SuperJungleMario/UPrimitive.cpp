@@ -88,3 +88,7 @@ bool UPrimitive::CollisionCheck(UPrimitive* other)
 	
 	return false;
 }
+
+UPrimitive::UPrimitive()
+	: width(scaleMod), height(scaleMod), Radius(0.0001f)
+{}

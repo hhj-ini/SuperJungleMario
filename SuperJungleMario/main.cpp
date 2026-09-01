@@ -26,7 +26,7 @@
 #include "ResourceManager.h"
 #include "UGameLogic.h"
 
-
+#include "UBrick.h"
 #include "UProjectile.h"
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -188,7 +188,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	PrimitiveList[primitiveCount++] = goomba;
 	GoombaList[0] = goomba;
 
-	
+	UPrimitive* brick = new UBrick;
+	PrimitiveList[primitiveCount++] = brick;
+
 	// 프로젝타일 테스트
 	UPrimitive* projectile = new UProjectile;
 	PrimitiveList[primitiveCount++] = projectile;
@@ -265,15 +267,17 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		for (size_t i = 0; i < primitiveCount; ++i)
 		{
+			PrimitiveList[i]->Tick();
 			for (size_t j = 0; j < primitiveCount; ++j) 
 			{
 				if (i == j) continue;
 				// if (j == mushroomIdx || i == mushroomIdx) continue;	// 임시로 버섯 충돌 로직 영향 받지 않도록 함
 				PrimitiveList[i]->CollisionCheck(PrimitiveList[j]);
 			}
+
 			if (UBall* b = dynamic_cast<UBall*>(PrimitiveList[i]))
 			{
-				b->Move();
+				b->Move();				
 				b->UpdateVelocity(bGravity);
 				b->UpdateAnimation(elapsedTime / 1000.0f);	// deltaTime 단위는 초 단위로 전달
 				for (int k = 0; k < 40; ++k)   // player->Ground 충돌 체크
@@ -402,6 +406,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			if (UProjectile* ms = dynamic_cast<UProjectile*>(projectile))
 			{
 				ms->SetState(UProjectile::EProjectileState::ROLLING);
+			}
+		}
+
+		// 브릭 애니메이션 테스트용
+		if (ImGui::Button("Brick"))
+		{
+			if (UBrick* bp = dynamic_cast<UBrick*>(brick))
+			{
+				bp->AnimState = UBrick::EAnimState::UP;
 			}
 		}
 	

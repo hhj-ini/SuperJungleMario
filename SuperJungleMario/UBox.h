@@ -24,9 +24,10 @@ public:
 	virtual void SetBoxState(EBoxType InType);
 
 public:
-	UBox() {
+	UBox() : UPrimitive()
+	{
 		ObjectType = EObjectType::BOX;
-	};
+	}
 	UBox(float locationX, float locationY, float width, float height); //위치x,y,  가로,세로
 	virtual ~UBox();
 

@@ -1,6 +1,9 @@
 #include "UBrick.h"
 #include "ResourceManager.h"
 
+UBrick::UBrick() : UBox()
+{}
+
 bool UBrick::CollisionCheck(UPrimitive* other)
 {
 	if (EObjectType::ENEMY == other->ObjectType)	// 상대가 적이면 
@@ -68,15 +71,41 @@ void UBrick::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)
 	}
 	renderer.PrepareShaderResource(TextureSRVPtr[0]);
 
-	DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(Location.x, Location.y, Location.z);
-	renderer.UpdateConstantBuffer(world, renderer.ViewMatrix);
+	DirectX::XMMATRIX world = DirectX::XMMatrixScaling(width, height, 1.0f) * DirectX::XMMatrixTranslation(Location.x, Location.y, Location.z);
+	
+	renderer.UpdateConstantBuffer(world, renderer.ViewMatrix, AnimOffset);
 
 	renderer.RenderPrimitive(pBuffer, num);
 }
 
 void UBrick::Tick()
 {
-	
+	switch (AnimState)
+	{
+	case UBrick::EAnimState::STOP:
+		return;
+		break;
+	case UBrick::EAnimState::UP:
+		AnimOffset.y += 0.05;
+
+		if (AnimOffset.y > 0.5f)	// 절반 이상 올라왔으면
+		{
+			AnimState = EAnimState::DOWN;
+		}
+		break;
+	case UBrick::EAnimState::DOWN:
+ 		AnimOffset.y -= 0.098;	// 중력
+
+		if (AnimOffset.y < 0.0f)	// 절반 이상 올라왔으면
+		{
+			AnimOffset.y = 0.0f;
+			AnimState = EAnimState::DOWN;
+		}
+		break;
+	default:
+		break;
+	}
+
 }
 
 void UBrick::SetBoxState(EBoxType InType)
