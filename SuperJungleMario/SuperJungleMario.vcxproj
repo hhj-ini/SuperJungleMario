@@ -152,6 +152,7 @@
     <ClCompile Include="UBall.cpp" />
     <ClCompile Include="UBox.cpp" />
     <ClCompile Include="UEnemy.cpp" />
+    <ClCompile Include="UGameLogic.cpp" />
     <ClCompile Include="UMushroom.cpp" />
     <ClCompile Include="UPlayer.cpp" />
     <ClCompile Include="UPrimitive.cpp" />
@@ -176,6 +177,7 @@
     <ClInclude Include="UBox.h" />
     <ClInclude Include="UCamera.h" />
     <ClInclude Include="UEnemy.h" />
+    <ClInclude Include="UGameLogic.h" />
     <ClInclude Include="UI.h" />
     <ClInclude Include="UMushroom.h" />
     <ClInclude Include="UPlayer.h" />

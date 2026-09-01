@@ -24,6 +24,7 @@
 #include "UBox.h"
 #include "UEnemy.h"
 #include "ResourceManager.h"
+#include "UGameLogic.h"
 
 
 #include "UProjectile.h"
@@ -114,6 +115,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	// UI 버텍스 버퍼 생성
 	UINT numVerticesUI = sizeof(ui_vertices) / sizeof(FVertexUI);
 	ID3D11Buffer* UIBuffer = renderer.CreateUIVertexBuffer(ui_vertices, sizeof(ui_vertices));
+	// UI GameStart 리스트 생성
+	size_t GameStartUICnt = 12;
+	UUi** GameStartUIList = new UUi * [GameStartUICnt];
+	GameStartUIList[0] = new UUi(ui_vertices, DirectX::XMFLOAT2(0.5f, 0.5f), DirectX::XMFLOAT4(0.3, 0.2, 0.1, 1), UUi::Translate(charListStart[0]), 1.0f);
+
+	for (int i = 1; i < GameStartUICnt; i++)
+	{
+		GameStartUIList[i] = new UUi(ui_vertices, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT4(1, 1, 1, 1), UUi::Translate(charListStart[i]), 1.0f);
+	}
 	// UI 리스트 생성
 	size_t uiCnt = 29;
 	UUi** UIList = new UUi*[uiCnt];
@@ -141,12 +151,18 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	// 고성능 타이머 초기화
 	LARGE_INTEGER frequency;
 	QueryPerformanceFrequency(&frequency);
-	
 	LARGE_INTEGER startTime, endTime;
 	double elapsedTime = 0.0;	
+	// 게임 진행 시간 타이머 초기화
+	LARGE_INTEGER frequencyGame,startGameTime, currentGameTime;
+	double GameTime = 0.0;
+	QueryPerformanceFrequency(&frequencyGame);
+	QueryPerformanceCounter(&startGameTime);
 
 	// UI 렌더링 여부
 	bool bUIRender = true;
+	// 게임 시작 누른거 여부
+	bool bGameStart = false;
 
 
 	/////////// 여기서 테스트용 객체 추가하시면 됩니다 ////////////////
@@ -210,6 +226,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	{
 		// 루프 시작 시간 기록
 		QueryPerformanceCounter(&startTime);
+		// 게임 경과 시간 기록
+		QueryPerformanceCounter(&currentGameTime);
+		GameTime = static_cast<double>(currentGameTime.QuadPart - startGameTime.QuadPart) / static_cast<double>(frequencyGame.QuadPart);
+		UUi::UpdateGameTime(402 - GameTime);
 
 		MSG msg;
 
@@ -303,19 +323,35 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 
 		// UI 렌더링 
+		renderer.PrepareUIShader(UITestSRV);
+		const float fontSize = 0.09f;
+
+		if (bGameStart)
+		{
+			GameStartUIList[0]->setNDCoord(renderer.GetNDCoordinate(charPositionsStart[0], 1024, 1024));
+			UIList[0]->Render(renderer, UIBuffer, numVerticesUI, 0.5f, 0.5f);
+		}
 		if (bUIRender)
 		{
 			for (int i = 0; i < uiCnt; i++)
 			{
 				UIList[i]->setNDCoord(renderer.GetNDCoordinate(charPositions[i], 1024, 1024));
+				UIList[i]->UpdateUV(i);
 			}
-			renderer.PrepareUIShader(UITestSRV);
-
-			const float fontSize = 0.09f;
-
 			for (size_t i = 0; i < uiCnt; i++)
 			{
 				UIList[i]->Render(renderer, UIBuffer, numVerticesUI, fontSize, fontSize);
+			}
+		}
+		if (bGameStart)
+		{
+			for (int i = 1; i < GameStartUICnt; i++)
+			{
+				GameStartUIList[i]->setNDCoord(renderer.GetNDCoordinate(charPositionsStart[i], 1024, 1024));
+			}
+			for (size_t i = 1; i < GameStartUICnt; i++)
+			{
+				GameStartUIList[i]->Render(renderer, UIBuffer, numVerticesUI, fontSize, fontSize);
 			}
 		}
 
@@ -328,8 +364,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		ImGui::Begin("Jungle Property Window");
 		ImGui::Text("Hello Jungle World!");
 
-		// UI 위치변경 테스트용
+		// UI 테스트용
 		ImGui::Checkbox("Show UI", &bUIRender);
+		ImGui::Checkbox("Show Start UI", &bGameStart);
+		ImGui::Text("GameTime: %.2f", GameTime);
 		//if (bUIRender)
 		//{
 		//	ImGui::Text("UI 1 position");
