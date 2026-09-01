@@ -90,7 +90,7 @@ float4 mainPSTex(PS_INPUT_TEX input) : SV_TARGET
     // Output the color directly
     float4 textureColor = float4(1.0f, 1.0f, 1.0f, 1.0f);
     textureColor = psTexture.Sample(SampleType, input.texCoord);
-    if (textureColor.a == 0.0f)
+    if (textureColor.a < 0.8f)  // 누끼 정확하게 따지지 않아서 알파값 비교후 discard 하도록 함
     {   // 투명한 부분은 discard 함
         discard;
     }

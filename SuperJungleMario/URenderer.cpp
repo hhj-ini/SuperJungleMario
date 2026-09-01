@@ -133,6 +133,9 @@ void URenderer::Release()
 	// 렌더 타겟을 초기화
 	DeviceContext->OMSetRenderTargets(0, nullptr, nullptr);
 
+	DeviceContext->ClearState();
+	DeviceContext->Flush();
+
 	ReleaseFrameBuffer();
 	ReleaseDeviceAndSwapChain();
 }
@@ -303,6 +306,7 @@ void URenderer::Prepare()
 
 void URenderer::PrepareShaderResource(ID3D11ShaderResourceView* InSRVPtr)
 {
+	DeviceContext->PSSetSamplers(0, 1, &TextureSamplerStete);
 	DeviceContext->PSSetShaderResources(0, 1, &InSRVPtr);
 }
 
@@ -517,6 +521,17 @@ void URenderer::LoadTexture(std::wstring InPath, ID3D11Resource*& InResourcePtr,
 
 	HRESULT hr = DirectX::CreateWICTextureFromFile(Device, DeviceContext, InPath.c_str(),
 		&InResourcePtr, &InRVPtr);
+}
+
+void URenderer::CreateTextureSamplerState()
+{
+	D3D11_SAMPLER_DESC samplerdesc = {};
+	samplerdesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	samplerdesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
+	samplerdesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
+	samplerdesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
+
+	Device->CreateSamplerState(&samplerdesc, &TextureSamplerStete);
 }
 
 void URenderer::ReleaseResource(ID3D11Resource*& InResourcePtr)

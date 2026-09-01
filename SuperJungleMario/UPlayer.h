@@ -6,6 +6,7 @@ class UPlayer : public UBall
 public:
     bool bIsGrounded = true;
     int Life = 1;
+    bool bFacingLeft = false;
 
     const FVector& GetPosition() const { return Location; }
     
@@ -28,8 +29,15 @@ public:
     void SetVelocityY(float y);
 	void TakeDamage(int damage);
 
+    virtual void UpdateAnimation(float deltaTime);
+
     bool IsPlayerDead() const { return pState == PlayerState::DEAD; }
+    bool CollisionCheck(UPrimitive* other) override ;
 
 private:
     PlayerState pState = PlayerState::ALIVE;
+
+    int CurrentFrame = 0;
+    float AnimationTimer = 0.0f;
+    const float FrameInterval = 0.15f;
 };

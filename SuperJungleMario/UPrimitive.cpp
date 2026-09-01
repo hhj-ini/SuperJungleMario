@@ -1,11 +1,13 @@
 #include "UPrimitive.h"
 #include <cmath>
 #include <DirectXMath.h>
+#include <iostream>
 
+using namespace std;
 
 void UPrimitive::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)
 {
-	DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(Location.x, Location.y, Location.z); 
+	DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(width, height, Location.z); 
 	// renderer.PrepareShaderResource(TextureSRVPtr[CurrentFrame]);
   
 	//DirectX::XMMATRIX world = DirectX::XMMatrixScaling(width, height, 1.0f) *
@@ -33,8 +35,11 @@ bool UPrimitive::CollisionCheck(UPrimitive* other)
 
 	// 충돌
 	if(overlapX>0 && overlapY>0){
+		{
+			//충돌처리 구현하시면 됩니다.
+		}
 		return true;
-		
+	}
 		//UBox로 내릴예정, 임시충돌처리
 	//	//밀어내기 구현
 	//	if (bisMove==false && other->bisMove==true) { // 속도가 0, 즉 블럭이면
@@ -79,7 +84,7 @@ bool UPrimitive::CollisionCheck(UPrimitive* other)
 	//	
 	//	return true;
 
-	}
 
+	
 	return false;
 }

@@ -1,6 +1,8 @@
 #pragma once
 #include "UPlayer.h"
 #include <math.h>
+#include "ResourceManager.h"
+#include <cmath>
 
 
 UPlayer::UPlayer()
@@ -16,6 +18,7 @@ UPlayer::UPlayer()
 	Life = 1;
 	width = scaleMod;
 	height = scaleMod;
+	bFacingLeft = false;
 }
 
 UPlayer::~UPlayer()
@@ -43,26 +46,67 @@ void UPlayer::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)
 
 	XMMATRIX world = scale * translation;
 
+	if (!TextureSRVPtr[0])
+	{
+		TextureSRVPtr[0] = ResourceManager::GetInstance().GetSRV(L"Resource\\Mario\\Mario1.png", &renderer);
+	}
+	if (!TextureSRVPtr[1])
+	{
+		TextureSRVPtr[1] = ResourceManager::GetInstance().GetSRV(L"Resource\\Mario\\Mario2.png", &renderer);
+	}
+	if (!TextureSRVPtr[2])
+	{
+		TextureSRVPtr[2] = ResourceManager::GetInstance().GetSRV(L"Resource\\Mario\\Mario3.png", &renderer);
+	}
+	if (!TextureSRVPtr[3])
+	{
+		TextureSRVPtr[3] = ResourceManager::GetInstance().GetSRV(L"Resource\\Mario\\Mario4.png", &renderer);
+	}
+
+	renderer.PrepareShaderResource(TextureSRVPtr[CurrentFrame]);
+
 	renderer.UpdateConstantBuffer(world, renderer.ViewMatrix);
 	renderer.RenderPrimitive(pBuffer, num);
 
 }
 
-//bool UPlayer::CollisionCheck(UPrimitive* other)
-//{
-//	if (this == other)
-//	{
-//		return false;
-//	}
-//
-//	/*UPlayer* Other = nullptr;
-//	if (!(Other = dynamic_cast<UPlayer*>(other)))
-//	{
-//		return false;
-//	}*/
-//
-//	return false;
-//}
+bool UPlayer::CollisionCheck(UPrimitive* other)
+{
+	// 기본 충돌 체크 로직 구현
+
+	// 가로가 겹치는지 확인
+	float sumHalfWidth = (width / 2.0f) + (other->width / 2.0f);
+	float xdistance = std::fabs(Location.x - other->Location.x);
+	float overlapX = sumHalfWidth - xdistance;
+
+	// 세로가 겹치는지 확인
+	float sumHalfHeight = (height / 2.0f) + (other->height / 2.0f);
+	float ydistance = std::fabs(Location.y - other->Location.y);
+	float overlapY = sumHalfHeight - ydistance;
+
+
+	// 충돌
+	if (overlapX > 0 && overlapY > 0) {
+		
+		switch (other->ObjectType)
+		{
+		case EObjectType::BOX: // 박스와 충돌 시 처리
+			if (overlapX > overlapY) { //y축방향으로 충돌시 y속도 0으로 처리
+				bIsGrounded = true;
+				Location.y = other->Location.y + (other->height / 2.0f) + (height / 2.0f);
+				Velocity.y = 0;
+				break;
+			}
+			else { // x축방향으로 충돌시 x속도 0으로 처리
+				Location.x = other->Location.x + (other->width / 2.0f) + (width / 2.0f);
+				Velocity.x = 0;
+			}
+			return true;
+		}
+	}
+	return false;
+}
+
 
 void UPlayer::SetState(UPlayer::PlayerState InState)
 {
@@ -71,7 +115,6 @@ void UPlayer::SetState(UPlayer::PlayerState InState)
 	case PlayerState::ALIVE:
 		pState = PlayerState::ALIVE;
 		break;
-
 	case PlayerState::DEAD:
 		pState = PlayerState::DEAD;
 		break;
@@ -84,29 +127,31 @@ void UPlayer::Move()
 	if (pState == PlayerState::ALIVE)
 	{
 		Velocity.x = 0.0f;
-		//Velocity.y = 0.0f;
 
 		if (GetAsyncKeyState(VK_LEFT) & 0x8000)
 		{
 			Velocity.x -= 0.01f;
+			bFacingLeft = true;
 		}
-		if (GetAsyncKeyState(VK_RIGHT) & 0x8000)
+		else if (GetAsyncKeyState(VK_RIGHT) & 0x8000)
 		{
 			Velocity.x += 0.01f;
+			bFacingLeft = false;
 		}
+		/*else
+		{
+			CurrentFrame = bFacingLeft ? 2 : 0;
+			AnimationTimer = 0.0f;
+		}*/
 
 		if (bIsGrounded && (GetAsyncKeyState(VK_SPACE) & 0x8000))
 		{
-			Velocity.y += 0.05f;
+			Velocity.y = 0.05f;
 			bIsGrounded = false;
 		}
 
-
 		Location.x += Velocity.x * deltaTime;
 		Location.y += Velocity.y * deltaTime;
-
-		// 바닥 착지 처리 필요(충돌)
-		
 	}
 }
 
@@ -127,6 +172,26 @@ void UPlayer::TakeDamage(int damage)
 	{
 		SetState(PlayerState::DEAD);
 	}
+}
 
+void UPlayer::UpdateAnimation(float deltaTime)
+{
+	AnimationTimer += deltaTime;
+	if (AnimationTimer >= FrameInterval)
+	{
+		if (Velocity.x > 0.0f)
+		{
+			CurrentFrame = (CurrentFrame + 1) % 2; // 오른쪽 이동 시 프레임 0과 1을 번갈아가며 사용
+		}
+		else if (Velocity.x < 0.0f)
+		{
+			CurrentFrame = 2 + (CurrentFrame + 1) % 2; // 왼쪽 이동 시 프레임 2와 3을 번갈아가며 사용
+		}
+		else
+		{
+			CurrentFrame = bFacingLeft ? 2 : 0; // 정지 상태에서는 마지막 방향에 따라 프레임 설정
+		}
+		AnimationTimer = 0.0f;
+	}
 }
 

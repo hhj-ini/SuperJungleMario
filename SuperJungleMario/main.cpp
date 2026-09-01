@@ -267,6 +267,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			{
 				b->Move();
 				b->UpdateVelocity(bGravity);
+				b->UpdateAnimation(elapsedTime / 1000.0f);	// deltaTime 단위는 초 단위로 전달
 				for (int k = 0; k < 40; ++k)   // player->Ground 충돌 체크
 				{
 					if (b->CollisionCheck(Ground[k]))
@@ -300,12 +301,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				continue;
 			}
 		}
-
-		for (int i = 0; i < 1; ++i)  // 임시로 5개의 goomba만 애니메이션 업데이트
-		{
-			GoombaList[i]->UpdateAnimation(elapsedTime / 1000.0f); 
-		}
-
 
 		renderer.Prepare();
 		//renderer.PrepareShaderResource(MushroomTestSRV);
@@ -442,6 +437,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	// 생성된 버텍스 버퍼를 소멸 - 셰이더 소멸 전 호출
 	renderer.ReleaseVertexBuffer(cubeBuffer);
+	renderer.ReleaseVertexBuffer(UIBuffer);
 
 	// 상수 버퍼 소멸
 	renderer.ReleaseConstantBuffer();
@@ -452,6 +448,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	// 리소스 소멸
 	//renderer.ReleaseResource(MushroomTest);
 	//renderer.ReleaseSRV(MushroomTestSRV);
+	renderer.ReleaseResource(UITestResource);
+	renderer.ReleaseSRV(UITestSRV);
 
 	ResourceManager::GetInstance().ReleaseResource(&renderer);
 
