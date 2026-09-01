@@ -4,6 +4,7 @@ cbuffer constants : register(b0)
 {
     matrix World;
     matrix View;
+    float3 AnimOffset;
 };
 
 // 텍스처 슬롯 지정
@@ -71,6 +72,7 @@ PS_INPUT_TEX mainVSTex(VS_INPUT_TEX input)
     //output.position = float4(newPos, 1);
     
     float4 position = float4(input.position, 1.0f);
+    position.xyz += AnimOffset;
     
     position = mul(position, World);
     position = mul(position, View);

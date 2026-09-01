@@ -7,7 +7,7 @@ UGameLogic& UGameLogic::GameLogic()
 }
 
 UGameLogic::UGameLogic()
-	: score(0), coin(0)
+	: score(0), coin(0), life(3)
 {
 }
 
@@ -29,4 +29,19 @@ int UGameLogic::getCoin()
 void UGameLogic::addOneCoin()
 {
 	coin++;
+}
+
+int UGameLogic::getLife()
+{
+	return life;
+}
+
+void UGameLogic::addOneLife()
+{
+	life++;
+}
+
+void UGameLogic::removeOneLife()
+{
+	life--;
 }
