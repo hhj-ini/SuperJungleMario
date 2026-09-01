@@ -1,8 +1,7 @@
 // UIShader.hlsl
 
-Texture2D uiTexture : register(t1);
-SamplerState uiSampler : register(s1);
-
+Texture2D uiTexture : register(t0);
+SamplerState uiSampler : register(s0);
 
 struct VS_INPUT
 {

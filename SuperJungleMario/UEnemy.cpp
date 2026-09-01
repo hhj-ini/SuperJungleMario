@@ -7,7 +7,7 @@ UEnemy::UEnemy()
 	Velocity.x = 0.0f;
 	Velocity.y = 0.0f;
 
-	Location.x = 0.0f;
+	Location.x = 1.0f;
 	Location.y = 0.0f;
 	// 위치 설정 필요
 
@@ -15,6 +15,8 @@ UEnemy::UEnemy()
 	height = scaleMod;
 
 	SetState(EnemyState::ALIVE);
+
+	ObjectType = EObjectType::ENEMY;
 }
 
 void UEnemy::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)
@@ -42,11 +44,34 @@ void UEnemy::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)
 
 bool UEnemy::CollisionCheck(UPrimitive* other)
 {
-	if (this == other)
-	{
-		return false;
-	}
+	// 가로가 겹치는지 확인
+	float sumHalfWidth = (width / 2.0f) + (other->width / 2.0f);
+	float xdistance = std::fabs(Location.x - other->Location.x);
+	float overlapX = sumHalfWidth - xdistance;
 
+	// 세로가 겹치는지 확인
+	float sumHalfHeight = (height / 2.0f) + (other->height / 2.0f);
+	float ydistance = std::fabs(Location.y - other->Location.y);
+	float overlapY = sumHalfHeight - ydistance;
+
+
+	// 충돌
+	if (overlapX > 0 && overlapY > 0) {
+
+		switch (other->ObjectType)
+		{
+		case EObjectType::BOX: // 박스와 충돌 시 처리
+			if (overlapX > overlapY) { //y축방향으로 충돌시 y속도 0으로 처리
+				Location.y = other->Location.y + (other->height / 2.0f) + (height / 2.0f);
+				Velocity.y = 0;
+				break;
+			}
+			//else { // x축방향으로 충돌시 x속도 0으로 처리
+			//	Location.x = other->Location.x + (other->width / 2.0f) + (width / 2.0f);
+			//	Velocity.x = 0;
+			//}
+		}
+	}
 	return false;
 }
 
@@ -74,20 +99,12 @@ void UEnemy::SetState(UEnemy::EnemyState InState)
 	}
 }
 
-void UEnemy::OnCollisionWithPlayer(UPlayer* player)
+void UEnemy::OnDeath(UPlayer* player)
 {
 	if (eState == EnemyState::ALIVE)
 	{
-		if (player->GetPosition().y > this->GetPosition().y + 0.5f)  // 플레이어가 적을 밟았을 때
-		{
-			SetState(EnemyState::DEAD);
-			player->SetVelocityY(0.2f); // 플레이어가 튕기도록 설정
-		}
-		else
-		{
-			// 플레이어가 적과 충돌했을 때
-			player->TakeDamage(1);
-		}
+		SetState(EnemyState::DEAD);
+		player->SetVelocityY(0.03f); 
 	}
 }
 

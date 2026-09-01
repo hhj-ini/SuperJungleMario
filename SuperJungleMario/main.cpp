@@ -94,6 +94,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	renderer.CreateUIShader();
 	renderer.CreateConstantBuffer();
 	renderer.CreateUISamplerState();
+	renderer.CreateTextureSamplerState();
 
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
@@ -141,7 +142,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	UPrimitive** PrimitiveList = new UPrimitive*[ballPoolCnt];
 	PrimitiveList[primitiveCount++] = new UBall;
 	
-	bool bGravity = false;	
+	bool bGravity = true;	
 	
 	// FPS 제한을 위한 설정
 	const int targetFPS = 30;
@@ -299,7 +300,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 			if (player && player->IsPlayerDead())
 			{
-				RemoveObject(PrimitiveList, primitiveCount, i);
+				RemoveObject(PrimitiveList, primitiveCount, i);  // 플레이어가 죽으면 게임 종료 추가 필요
 				continue;
 			}
 		}

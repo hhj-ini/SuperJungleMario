@@ -12,7 +12,6 @@ UBox::UBox(float x, float y, float w, float h)
 	++TotalNumBox;
 	bisMove = false;
 	ObjectType = EObjectType::BOX;
-
 }
 
 void UBox::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)
@@ -26,6 +25,11 @@ void UBox::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)
 		DirectX::XMMATRIX world = DirectX::XMMatrixScaling(width, height, 1.0f)*DirectX::XMMatrixTranslation(Location.x, Location.y, Location.z);
 		renderer.UpdateConstantBuffer(world, renderer.ViewMatrix);
 		renderer.RenderPrimitive(pBuffer, num);
+}
+
+void UBox::SetBoxState(EBoxType InType)
+{
+	BoxType = InType;
 }
 
 
@@ -52,13 +56,13 @@ bool UBox::CollisionCheck(UPrimitive* other)
 		default:
 			break;
 
-			return true;
 		}
 
+		return true;
 	}
 
 		return false;
-	}
+}
 
 UBox::~UBox()
 {

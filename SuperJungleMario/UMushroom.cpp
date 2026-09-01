@@ -41,11 +41,34 @@ void UMushroom::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)
 
 bool UMushroom::CollisionCheck(UPrimitive* other)
 {
-	if (this == other)
-	{
-		return false;
+	// 가로가 겹치는지 확인
+	float sumHalfWidth = (width / 2.0f) + (other->width / 2.0f);
+	float xdistance = std::fabs(Location.x - other->Location.x);
+	float overlapX = sumHalfWidth - xdistance;
+
+	// 세로가 겹치는지 확인
+	float sumHalfHeight = (height / 2.0f) + (other->height / 2.0f);
+	float ydistance = std::fabs(Location.y - other->Location.y);
+	float overlapY = sumHalfHeight - ydistance;
+
+
+	// 충돌
+	if (overlapX > 0 && overlapY > 0) {
+
+		switch (other->ObjectType)
+		{
+		case EObjectType::BOX: // 박스와 충돌 시 처리
+			if (overlapX > overlapY) { //y축방향으로 충돌시 y속도 0으로 처리
+				Location.y = other->Location.y + (other->height / 2.0f) + (height / 2.0f);
+				Velocity.y = 0;
+				break;
+			}
+			else { // x축방향으로 충돌시 x속도 0으로 처리
+				Location.x = other->Location.x + (other->width / 2.0f) + (width / 2.0f);
+				Velocity.x = 0;
+			}
+		}
 	}
-	
 	return false;
 }
 
