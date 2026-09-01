@@ -129,6 +129,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	{
 		UIList[i] = new UUi(ui_vertices, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT4(1, 1, 1, 1), UUi::Translate(charList[i]), 1.0f);
 	}
+	UUi* BlackBackground = new UUi(ui_vertices, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT4(1, 1, 1, 1), DirectX::XMFLOAT4(1, 1, 0, 0), 1.0f);
 
 	//ID3D11Buffer* cubeBuffer = renderer.CreateVertexBuffer(cube_vertices, sizeof(cube_vertices));
 	ID3D11Buffer* cubeBuffer = renderer.CreateTextureVertexBuffer(cube_vertices, sizeof(cube_vertices));
@@ -159,8 +160,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	// UI 렌더링 여부
 	bool bUIRender = true;
-	// 게임 시작 누른거 여부
 	bool bGameStart = false;
+	bool bGameEnd = false;
 
 
 	/////////// 여기서 테스트용 객체 추가하시면 됩니다 ////////////////
@@ -171,16 +172,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	// 접근할때
 	// PrimitiveList[mushroomIdx]->render(...); 이런식으로 하면 됩니다.
 	// for 문이랑 로직 중첩되지 않도록 주의해주시면 돼요
-
-	// 점수 사용법 
-	UGameLogic::GameLogic().getScore();
 	
 	int x1 = 94; // ui 테스트용 임시 초기 좌표
 	int y1 = 49;
-	int x2 = 129;
-	int y2 = 45;
-	int x3 = 168;
-	int y3 = 49;
 
 	//int playerIdx = UBall::TotalNumBalls;
 	UBall* player = new UPlayer;
@@ -206,10 +200,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	//ID3D11ShaderResourceView* MushroomTestSRV = nullptr;
 	//renderer.LoadTexture(L"Resource\\Mushroom.png", MushroomTest, MushroomTestSRV);
 
-	// ui 텍스쳐 파일 로드 테스트 코드
-	ID3D11Resource* UITestResource = nullptr;
-	ID3D11ShaderResourceView* UITestSRV = nullptr;
-	renderer.LoadTexture(L"Resource\\font.png", UITestResource, UITestSRV);
+	// ui 텍스쳐 파일 로드
+	ID3D11Resource* UIFontResource = nullptr;
+	ID3D11ShaderResourceView* UIFontSRV = nullptr;
+	renderer.LoadTexture(L"Resource\\font.png", UIFontResource, UIFontSRV);
+	ID3D11Resource* UIBlackResource = nullptr;
+	ID3D11ShaderResourceView* UIBlackSRV = nullptr;
+	renderer.LoadTexture(L"Resource\\black.png", UIBlackResource, UIBlackSRV);
 
 
 	//// Box 추가////
@@ -230,7 +227,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		// 게임 경과 시간 기록
 		QueryPerformanceCounter(&currentGameTime);
 		GameTime = static_cast<double>(currentGameTime.QuadPart - startGameTime.QuadPart) / static_cast<double>(frequencyGame.QuadPart);
-		UUi::UpdateGameTime(402 - GameTime);
+		UUi::UpdateGameTime(403 - GameTime);
+		if (GameTime > 2) // 게임시간이 1초 지나면 첫화면 넘기기
+		{
+			bGameStart = false;
+		}
 
 		MSG msg;
 
@@ -319,15 +320,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 
 		// UI 렌더링 
-		renderer.PrepareUIShader(UITestSRV);
+		renderer.PrepareUIShader(UIBlackSRV);
+		if (bGameStart || bGameEnd)
+		{
+			// 첫화면 렌더. 검은 화면 렌더.
+			BlackBackground->Render(renderer, UIBuffer, numVerticesUI, 5.0f, 5.0f);
+		}
+		renderer.PrepareUIShader(UIFontSRV);
 		UUi::UpdateScoreUI(UGameLogic::GameLogic().score);
 		UUi::UpdateCoinUI(UGameLogic::GameLogic().coin);
 		const float fontSize = 0.09f;
-
-		if (bGameStart)
-		{
-			// 첫화면 렌더
-		}
 		if (bUIRender)
 		{
 			for (int i = 0; i < uiCnt; i++)
@@ -370,12 +372,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		//	ImGui::Text("UI 1 position");
 		//	ImGui::SliderInt("x1", &x1, 0, 1024);
 		//	ImGui::SliderInt("y1", &y1, 0, 1024);
-		//	ImGui::Text("UI 2 position");
-		//	ImGui::SliderInt("x2", &x2, 0, 1024);
-		//	ImGui::SliderInt("y2", &y2, 0, 1024);
-		//	ImGui::Text("UI 3 position");
-		//	ImGui::SliderInt("x3", &x3, 0, 1024);
-		//	ImGui::SliderInt("y3", &y3, 0, 1024);
 		//}
 
 		if (ImGui::Checkbox("Gravity", &bGravity));
@@ -450,8 +446,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	// 리소스 소멸
 	//renderer.ReleaseResource(MushroomTest);
 	//renderer.ReleaseSRV(MushroomTestSRV);
-	renderer.ReleaseResource(UITestResource);
-	renderer.ReleaseSRV(UITestSRV);
+	renderer.ReleaseResource(UIFontResource);
+	renderer.ReleaseSRV(UIFontSRV);
+	renderer.ReleaseResource(UIBlackResource);
+	renderer.ReleaseSRV(UIBlackSRV);
 
 	ResourceManager::GetInstance().ReleaseResource(&renderer);
 

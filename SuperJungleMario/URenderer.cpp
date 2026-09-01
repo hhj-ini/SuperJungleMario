@@ -247,8 +247,6 @@ void URenderer::ReleaseShader()
 		SimpleVertexShader->Release();
 		SimpleVertexShader = nullptr;
 	}
-
-
 	// ui 셰이더 해제
 	if (UIInputLayout)
 	{
@@ -267,7 +265,6 @@ void URenderer::ReleaseShader()
 		UIVertexShader->Release();
 		UIVertexShader = nullptr;
 	}
-
 	// Texture 관련 셰이더 해제
 	if (TextureInputLayout)
 	{
@@ -340,7 +337,7 @@ void URenderer::PrepareUIShader(ID3D11ShaderResourceView* UISRV)
 	DeviceContext->IASetInputLayout(UIInputLayout);
 	// 텍스쳐 바인딩
 	DeviceContext->PSSetShaderResources(1, 1, &UISRV);
-	DeviceContext->PSSetSamplers(1, 1, &UISamplerStete);
+	DeviceContext->PSSetSamplers(1, 1, &UISamplerState);
 }
 
 // ui 렌더링 
@@ -489,7 +486,7 @@ void URenderer::UpdateUI(DirectX::XMFLOAT2 NDCoord, ID3D11Buffer* vertexBuffer, 
 
 		DeviceContext->Map(vertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &vertexBufferMSR);
 
-		FVertexUI* ui = (FVertexUI*)vertexBufferMSR.pData;
+		FVertexUI* ui = (FVertexUI*)vertexBufferMSR.pData; 
 		{
 			FVertexUI corners[4] =
 			{
@@ -560,5 +557,5 @@ void URenderer::CreateUISamplerState()
 	samplerdesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
 	samplerdesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
 
-	Device->CreateSamplerState(&samplerdesc, &UISamplerStete);
+	Device->CreateSamplerState(&samplerdesc, &UISamplerState);
 }

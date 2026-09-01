@@ -47,19 +47,13 @@ public:
 	ID3D11Buffer* ConstantBuffer = nullptr;
 	// 셰이더에 데이터를 전달하기 위한 상수 버퍼
 
-	FLOAT ClearColor[4] =
-	{
-		0.0844f,
-		0.1812f,
-		0.7682f,
-		1.0f
-	};
+	FLOAT ClearColor[4] ={0.0844f, 0.1812f, 0.7682f, 1.0f};
 	// 화면을 초기화(Clear) 할 때 사용할 색상(RGBA)
 
 	D3D11_VIEWPORT ViewportInfo;
 	// 렌더링 영역을 정의하는 뷰포트 정보
 
-	ID3D11SamplerState* UISamplerStete;
+	ID3D11SamplerState* UISamplerState;
 	// ui sampler state. ui 텍스쳐를 어떻게 샘플링 할지를 결정
 
 
