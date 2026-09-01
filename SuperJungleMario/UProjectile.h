@@ -1,6 +1,7 @@
 #pragma once
 #include "UBall.h"
 
+class UPlayer;
 
 class UProjectile :
     public UBall
@@ -22,5 +23,6 @@ public:
 private:
     EProjectileState CurrState;
 
+    UPlayer* Owner;
 };
 
