@@ -1,7 +1,7 @@
 #pragma once
 #include "UPlayer.h"
 #include <math.h>
-
+#include "ResourceManager.h"
 
 UPlayer::UPlayer()
 {
@@ -42,6 +42,12 @@ void UPlayer::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)
 	);
 
 	XMMATRIX world = scale * translation;
+
+	if (!TextureSRVPtr[0])
+	{
+		TextureSRVPtr[0] = ResourceManager::GetInstance().GetSRV(L"Resource\\Mario\\Mario1.png", &renderer);
+	}
+	renderer.PrepareShaderResource(TextureSRVPtr[0]);
 
 	renderer.UpdateConstantBuffer(world, renderer.ViewMatrix);
 	renderer.RenderPrimitive(pBuffer, num);
