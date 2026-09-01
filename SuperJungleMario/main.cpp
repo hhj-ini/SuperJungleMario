@@ -82,7 +82,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	ImGui_ImplDX11_Init(renderer.Device, renderer.DeviceContext);
 
 	// 버텍스 버퍼 생성 
-	UINT numVerticescube = sizeof(cube_vertices) / sizeof(FVertexSimple);	// 버텍스 갯수 변수화
+	UINT numVerticescube = sizeof(cube_vertices) / sizeof(FVertex);	// 버텍스 갯수 변수화
 	float scaleMod = 0.1f;	// cube 크기 조정
 	for (UINT i = 0; i < numVerticescube; ++i)
 	{
@@ -90,11 +90,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		cube_vertices[i].y *= scaleMod;
 		cube_vertices[i].z *= scaleMod;
 	}
-	ID3D11Buffer* cubeBuffer = renderer.CreateVertexBuffer(cube_vertices, sizeof(cube_vertices));
 
 	// UI 버텍스 버퍼 생성
 	UINT numVerticesUI = sizeof(ui_vertices) / sizeof(FVertexUI);
 	ID3D11Buffer* UIBuffer = renderer.CreateUIVertexBuffer(ui_vertices, sizeof(ui_vertices));
+
+	//ID3D11Buffer* cubeBuffer = renderer.CreateVertexBuffer(cube_vertices, sizeof(cube_vertices));
+	ID3D11Buffer* cubeBuffer = renderer.CreateTextureVertexBuffer(cube_vertices, sizeof(cube_vertices));
+
 
 	size_t ballPoolCnt = 50;	// 초기에 50개만큼 공 풀 확보
 
@@ -131,12 +134,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	PrimitiveList[playerIdx] = player;
 
 
-	//// Box 추가////
-	UBox* Ground[] = new UBox * [10];
-	Ground[0] = new UBox(0.0f, 0.0f, 10.0f, 1.0f);  // 아래 Ground
-	Ground[1] = new UBox(0.0f, 10.0f, 10.0f, 1.0f); // 위 Ground
-	Ground[2] = new UBox(-5.0f, 5.0f, 1.0f, 10.0f); // 왼쪽 Ground
-	Ground[3] = new UBox(5.0f, 5.0f, 1.0f, 10.0f);  // 오른쪽 Ground
+
+	// 텍스쳐 파일 로드 테스트 코드
+	ID3D11Resource* MushroomTest = nullptr;
+	ID3D11ShaderResourceView* MushroomTestSRV = nullptr;
+	renderer.LoadTexture(L"Resource\\Mushroom.png", MushroomTest, MushroomTestSRV);
 
 
 	// Main Loop(Quit Message가 들어오기 전까지 아래 Loop를 무한히 실행하게 됨.
@@ -177,19 +179,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				if (j == mushroomIdx || i == mushroomIdx) continue;	// 임시로 버섯 충돌 로직 영향 받지 않도록 함
 				PrimitiveList[i]->CollisionCheck(PrimitiveList[j]);
 			}
-			if (UMushroom* ms = dynamic_cast<UMushroom*>(PrimitiveList[i]))
-			{
-				ms->Move();
-			}
-			else if (UBall* b = dynamic_cast<UBall*>(PrimitiveList[i]))
+			if (UBall* b = dynamic_cast<UBall*>(PrimitiveList[i]))
 			{
 				b->Move();
 				b->UpdateVelocity(bGravity);
 			}
-			
 		}
 
 		renderer.Prepare();
+		renderer.PrepareShaderResource(MushroomTestSRV);
 		renderer.PrepareShader();
 
 		for (size_t i = 0; i < UBall::TotalNumBalls; ++i)
@@ -261,13 +259,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	// 생성된 버텍스 버퍼를 소멸 - 셰이더 소멸 전 호출
 	renderer.ReleaseVertexBuffer(cubeBuffer);
-	//renderer.ReleaseVertexBuffer(LineBuffer);
 
 	// 상수 버퍼 소멸
 	renderer.ReleaseConstantBuffer();
 
 	// 렌더러 소멸 직전에 셰이더를 소멸시키는 함수를 호출
 	renderer.ReleaseShader();
+
+	// 리소스 소멸
+	renderer.ReleaseResource(MushroomTest);
+	renderer.ReleaseSRV(MushroomTestSRV);
 
 	// D3D11 소멸시키는 함수를 호출
 	renderer.Release();

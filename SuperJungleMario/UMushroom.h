@@ -18,6 +18,9 @@ public:
     virtual bool CollisionCheck(UPrimitive* other);
 
     virtual void Move() override;
+   
+    virtual void UpdateVelocity(bool bGravity) override;
+
 
     void SetEnable();
 

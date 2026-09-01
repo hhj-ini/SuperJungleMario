@@ -33,7 +33,5 @@ public:
 	virtual void Move();
 
 	virtual void UpdateVelocity(bool bGravity);
-
-
 };
 
