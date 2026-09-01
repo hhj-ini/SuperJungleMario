@@ -125,7 +125,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	UPrimitive** PrimitiveList = new UPrimitive*[ballPoolCnt];
 	PrimitiveList[primitiveCount++] = new UBall;
 	
-	bool bGravity = true;	
+	bool bGravity = false;	
 	
 	// FPS 제한을 위한 설정
 	const int targetFPS = 30;
@@ -159,6 +159,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	//int playerIdx = UBall::TotalNumBalls;
 	UBall* player = new UPlayer;
 	PrimitiveList[primitiveCount++] = player;
+
+	UBall* enemy = new UEmeny;
+	PrimitiveList[primitiveCount++] = enemy;
 
 
 	// 텍스쳐 파일 로드 테스트 코드

@@ -6,11 +6,12 @@ UEmeny::UEmeny() : UBall()
 	Velocity.x = 0.0f;
 	Velocity.y = 0.0f;
 
-	Location.x = 0.0f;
+	Location.x = 2.0f;
 	Location.y = 0.0f;
 	// 위치 설정 필요
 
 	Radius = 1.0f;
+	SetState(EmenyState::ALIVE);
 }
 
 void UEmeny::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)
@@ -36,10 +37,11 @@ bool UEmeny::CollisionCheck(UPrimitive* other)
 
 void UEmeny::Move()
 {
-	if (eState == EmenyState::ALIVE)
+	if (eState == EmenyState::DEAD)
 	{
-		this->UBall::Move();
+		return;
 	}
+	this->UBall::Move();
 }
 
 void UEmeny::SetState(UEmeny::EmenyState InState)
@@ -48,6 +50,7 @@ void UEmeny::SetState(UEmeny::EmenyState InState)
 	{
 	case EmenyState::ALIVE:
 		eState = EmenyState::ALIVE;
+		Velocity.x = -0.01f;
 		break;
 
 	case EmenyState::DEAD:
