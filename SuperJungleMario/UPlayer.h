@@ -29,6 +29,7 @@ public:
 	void TakeDamage(int damage);
 
     bool IsPlayerDead() const { return pState == PlayerState::DEAD; }
+    bool CollisionCheck(UPrimitive* other) override ;
 
 private:
     PlayerState pState = PlayerState::ALIVE;
