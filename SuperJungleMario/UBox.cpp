@@ -52,13 +52,13 @@ bool UBox::CollisionCheck(UPrimitive* other)
 		default:
 			break;
 
-			return true;
 		}
 
+		return true;
 	}
 
 		return false;
-	}
+}
 
 UBox::~UBox()
 {
