@@ -289,7 +289,7 @@ void URenderer::RenderPrimitive(ID3D11Buffer* pBuffer, UINT numVertices)
 	DeviceContext->Draw(numVertices, 0);
 }
 
-// RenderUI 하기 전 파이프라인을 모두 UI... 으로 
+// RenderUI 하기 전 파이프라인을 모두 UI... 으로 attach
 void URenderer::PrepareUIShader()
 {
 	DeviceContext->VSSetShader(UIVertexShader, nullptr, 0);
@@ -325,6 +325,7 @@ ID3D11Buffer* URenderer::CreateUIVertexBuffer(FVertexUI* vertices, UINT byteWidt
 	vertexbufferdesc.ByteWidth = byteWidth;
 	vertexbufferdesc.Usage = D3D11_USAGE_IMMUTABLE;
 	vertexbufferdesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	//vertexbufferdesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
 	D3D11_SUBRESOURCE_DATA vertexbufferSRD = { vertices };
 
