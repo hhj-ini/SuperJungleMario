@@ -2,7 +2,7 @@
 #include <DirectXMath.h>
 #include "SuperJungleMario.h"
 
-class UCamere
+class UCamera
 {
 public:
 	float x = 0.0f;

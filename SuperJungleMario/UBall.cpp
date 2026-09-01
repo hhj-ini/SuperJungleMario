@@ -12,11 +12,12 @@ UBall::UBall()
 	Velocity.y = ((float)(rand() % 100 - 50)) * 0.001f;
 
 	Radius = ((float)(rand() % 100 + 10)) * 0.01f;
-	Mass = Radius * Radius * 3.14f;
+	//Mass = Radius * Radius * 3.14f;
 	Index = TotalNumBalls++;
 
-	width = Radius * 2.0 * scaleMod;
-	height = Radius * 2.0f * scaleMod;
+	width = Radius * scaleMod;
+	height = Radius * scaleMod;
+	
 }
 
 UBall::~UBall()
@@ -27,8 +28,11 @@ UBall::~UBall()
 
 void UBall::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)
 {
-	renderer.UpdateConstantBuffer(Location, Radius);
-	renderer.RenderPrimitive(pBuffer, num);
+	/*renderer.UpdateConstantBuffer(world, renderer.ViewMatrix);
+=======
+	/*renderer.UpdateConstantBuffer(Location, Radius);
+>>>>>>> Stashed changes
+	renderer.RenderPrimitive(pBuffer, num);*/
 }
 
 //bool UBall::CollisionCheck(UPrimitive* other)
@@ -105,7 +109,7 @@ void UBall::Move()
 	Location.y += Velocity.y * deltaTime;
 	Location.z += Velocity.z * deltaTime;
 
-	float renderRadius = Radius * scaleMod;
+	/*float renderRadius = Radius * scaleMod;
 	if (Location.x <= leftBorder + renderRadius)
 	{
 		Velocity.x *= -1.0f;
@@ -125,33 +129,19 @@ void UBall::Move()
 	{
 		Velocity.y *= -1.0f;
 		Location.y = topBorder - renderRadius;
-	}
+	}*/
 }
 
-void UBall::UpdateVelocity(bool bGravity, bool bFriction)
+void UBall::UpdateVelocity(bool bGravity)
 {
-	if (bIsHold)
-	{
-		return;
-	}
-
 	float gravity = (bGravity) ? GravityAmount : 0.0f;
-	float damping = (bFriction) ? DampingAmount : 1.0f;
 
-	Velocity.x *= damping;
-	Velocity.y *= damping;
-
-	// 무한히 댐핑값 곱해지는 것을 방지
-	if (0.00001f > Velocity.x && -0.00001f < Velocity.x)
+	if(bGravity)
 	{
-		Velocity.x = 0.0f;
-	}
-	if (0.00001f > Velocity.y && -0.00001f < Velocity.y)
-	{
-		Velocity.y = 0.0f;
+		Velocity.y -= gravity * deltaTime;
+		Location.y += Velocity.y;
 	}
 
-
-	Velocity.y -= gravity * deltaTime;
+	
 }
 

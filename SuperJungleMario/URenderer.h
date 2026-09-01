@@ -2,8 +2,11 @@
 #include <Windows.h>
 #include <d3d11.h>
 #include <d3dcompiler.h>
+#include <DirectXMath.h>
+#include <string>
 
 #include "SuperJungleMario.h"
+
 
 // D3D 사용에 필요한 라이브러리들을 링크합니다.
 #pragma comment(lib, "user32")
@@ -21,6 +24,8 @@ struct FNDCoordinate
 class URenderer	// 본 사전 학습 에서는 URenderer의 모든 멤버 변수, 함수를 public 으로 선언합니다.
 {
 public:
+	DirectX::XMMATRIX ViewMatrix = DirectX::XMMatrixIdentity();
+
 	// Direct3D 11 장치(Device)와 장치 컨텍스트(Device Context) 및 
 	// 스왑 체인(Swap Chain)을 관리하기 위한 포인터들
 
@@ -115,6 +120,8 @@ public:
 	// D3D11 렌더링에 필요한 준비 작업을 위한 Prepare 함수
 	void Prepare();
 
+	void PrepareShaderResource(ID3D11ShaderResourceView*& InSRVPtr);
+
 	// Simple Shader 사용을 위한 PrepareShader 함수
 	void PrepareShader();
 
@@ -133,6 +140,8 @@ public:
 		// 버텍스 버퍼 생성, 소멸 함수
 	ID3D11Buffer* CreateVertexBuffer(FVertexSimple* vertices, UINT byteWidth);
 
+	ID3D11Buffer* CreateTextureVertexBuffer(FVertex* vertices, UINT byteWidth);
+
 	void ReleaseVertexBuffer(ID3D11Buffer* vertexBuffer);
 
 
@@ -141,19 +150,34 @@ public:
 
 	struct FConstants
 	{
-		FVector Offset;
-		float Radius;
-		FPos HoldPos;
-		FPos CurrPos;
+		DirectX::XMFLOAT4X4 World;
+		DirectX::XMFLOAT4X4 View;
 	};
 
 	void CreateConstantBuffer();
 
 	void ReleaseConstantBuffer();
 
-	void UpdateConstantBuffer(FVector Offset, float Radius, FPos HoldPos = {}, FPos CurrPos = {});
-
 	FNDCoordinate GetNDCoordinate(POINT point, int width, int height);
 
 	void UpdateUI(FNDCoordinate NDCoord, ID3D11Buffer* vertexBuffer, float UIWidth, float UIHeight);
+
+	void UpdateConstantBuffer(const DirectX::XMMATRIX& world, const DirectX::XMMATRIX& view);
+
+	/////////////////////////////////////////////////////////////
+	// 텍스처 load 관련
+
+	// uv 포함된 셰이더
+	ID3D11VertexShader* TextureVertexShader;
+	ID3D11PixelShader* TexturePixelShader;
+	ID3D11InputLayout* TextureInputLayout;
+
+	
+	// 2dTexture 불러오는 함수 (파일 경로, 텍스쳐 저장할 포인터)
+	void LoadTexture(std::wstring InPath, ID3D11Resource*& InResourcePtr, ID3D11ShaderResourceView*& InRVPtr);
+
+	void ReleaseResource(ID3D11Resource*& InResourcePtr);
+
+	// resource 해제하는 함수
+	void ReleaseSRV(ID3D11ShaderResourceView*& InRVPtr);
 };

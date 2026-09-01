@@ -5,6 +5,7 @@
 #include <Windows.h>
 #include <d3d11.h>
 #include <d3dcompiler.h>
+#include <DirectXMath.h>
 
 #include "ImGui/imgui.h"
 #include "ImGui/imgui_internal.h"
@@ -16,9 +17,11 @@
 #include "Cube.h"
 #include "UBall.h"
 #include "UMushroom.h"
+#include "UPlayer.h"
 #include "UI.h"
 #include "UUi.h"
-
+#include "UCamera.h"
+#include "UBox.h"
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -64,6 +67,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	bool bIsExit = false;
 
 	// 각종 생성하는 코드를 여기에 추가합니다.
+	UCamera camera;
+
 	URenderer renderer;
 	renderer.Create(hWnd);
 	renderer.CreateShader();
@@ -78,7 +83,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	ImGui_ImplDX11_Init(renderer.Device, renderer.DeviceContext);
 
 	// 버텍스 버퍼 생성 
-	UINT numVerticescube = sizeof(cube_vertices) / sizeof(FVertexSimple);	// 버텍스 갯수 변수화
+	UINT numVerticescube = sizeof(cube_vertices) / sizeof(FVertex);	// 버텍스 갯수 변수화
 	float scaleMod = 0.1f;	// cube 크기 조정
 	for (UINT i = 0; i < numVerticescube; ++i)
 	{
@@ -86,7 +91,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		cube_vertices[i].y *= scaleMod;
 		cube_vertices[i].z *= scaleMod;
 	}
-	ID3D11Buffer* cubeBuffer = renderer.CreateVertexBuffer(cube_vertices, sizeof(cube_vertices));
 
 	// UI 버텍스 버퍼 생성
 	UINT numVerticesUI = sizeof(ui_vertices) / sizeof(FVertexUI);
@@ -97,8 +101,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	UIList[0] = new UUi(ui_vertices, FNDCoordinate(0.0f, 0.0f), 1.0f);
 	UIList[1] = new UUi(ui_vertices, FNDCoordinate(0.0f, 0.0f), 1.0f);
 
-	UINT numVerticesLine = sizeof(line_vertices) / sizeof(FVertexSimple);
-	ID3D11Buffer* LineBuffer = renderer.CreateVertexBuffer(line_vertices, sizeof(line_vertices));
+	//ID3D11Buffer* cubeBuffer = renderer.CreateVertexBuffer(cube_vertices, sizeof(cube_vertices));
+	ID3D11Buffer* cubeBuffer = renderer.CreateTextureVertexBuffer(cube_vertices, sizeof(cube_vertices));
+
 
 	size_t ballPoolCnt = 50;	// 초기에 50개만큼 공 풀 확보
 
@@ -118,26 +123,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	LARGE_INTEGER startTime, endTime;
 	double elapsedTime = 0.0;	
 
-	
-
-	// 나만의 무기
-	bool bFriction = false;
-
-	// 클릭 포지션 저장하기
-	FPos currPos;
-	FPos holdPos;
-
-	// 라인 렌더링 여부
-	bool bLineRender = false;
-
 	// UI 렌더링 여부
 	bool bUIRender = false;
-
 
 
 	/////////// 여기서 테스트용 객체 추가하시면 됩니다 ////////////////
 	int mushroomIdx = UBall::TotalNumBalls;
 	PrimitiveList[mushroomIdx] = new UMushroom;
+
 	// 접근할때
 	// PrimitiveList[mushroomIdx]->render(...); 이런식으로 하면 됩니다.
 	// for 문이랑 로직 중첩되지 않도록 주의해주시면 돼요
@@ -148,8 +141,26 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	int y2 = 600;
 
 	/////////// 여기서 테스트용 객체 추가하시면 됩니다 ////////////////
-	
 
+	//UBall* player = new UPlayer;
+	int playerIdx = UBall::TotalNumBalls;
+	UBall* player = new UPlayer;
+	PrimitiveList[playerIdx] = player;
+
+
+	// 텍스쳐 파일 로드 테스트 코드
+	ID3D11Resource* MushroomTest = nullptr;
+	ID3D11ShaderResourceView* MushroomTestSRV = nullptr;
+	renderer.LoadTexture(L"Resource\\Mushroom.png", MushroomTest, MushroomTestSRV);
+
+
+	//// Box 추가////
+	UPrimitive** Ground = nullptr;
+	Ground = new UPrimitive * [40];  // 10을 변수로 변경해야함. 지금은 임시테스트용
+	for (int i = 0;i < 40; ++i)
+	{
+		Ground[i] = new UBox(-1.0f+i*UPrimitive::scaleMod , -0.8f, 1.0f, 1.0f);
+	}
 
 
 	// Main Loop(Quit Message가 들어오기 전까지 아래 Loop를 무한히 실행하게 됨.
@@ -171,40 +182,17 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			{
 				bIsExit = true;
 				break;
-			}
-			else if (msg.message == WM_LBUTTONDOWN)
-			{	// 공 피킹
-				holdPos.x = (LOWORD(msg.lParam) - 512.0f) / 512.0f;
-				holdPos.y = (512.0f - HIWORD(msg.lParam)) / 512.0f;
-
-				if (bFriction)
-				{
-					for (size_t i = 0; i < UBall::TotalNumBalls; ++i)
-					{
-
-					}
-				}
-			}
-			else if (msg.message == WM_LBUTTONUP)
-			{
-				currPos.x = (LOWORD(msg.lParam) - 512.0f) / 512.0f;
-				currPos.y = (512.0f - HIWORD(msg.lParam)) / 512.0f;
-
-				if (bFriction)
-				{
-					for (size_t i = 0; i < UBall::TotalNumBalls; ++i)
-					{
-
-						bLineRender = false;
-					}
-				}
-			}
-			else if (msg.message == WM_MOUSEMOVE)
-			{
-				currPos.x = (LOWORD(msg.lParam) - 512.0f) / 512.0f;
-				currPos.y = (512.0f - HIWORD(msg.lParam)) / 512.0f;
-			}
+			}	
+	
 		}
+
+
+		// 카메라가 플레이어 추적
+		camera.Follow(player->Location);
+		renderer.ViewMatrix = camera.GetViewMatrix();
+
+		// 카메라가 플레이어를 추적하지 않음
+		// renderer.ViewMatrix = DirectX::XMMatrixIdentity();
 
 		for (size_t i = 0; i < UBall::TotalNumBalls; ++i)
 		{
@@ -213,24 +201,27 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				if (j == mushroomIdx || i == mushroomIdx) continue;	// 임시로 버섯 충돌 로직 영향 받지 않도록 함
 				PrimitiveList[i]->CollisionCheck(PrimitiveList[j]);
 			}
-			if (UMushroom* ms = dynamic_cast<UMushroom*>(PrimitiveList[i]))
-			{
-				ms->Move();
-			}
-			else if (UBall* b = dynamic_cast<UBall*>(PrimitiveList[i]))
+			if (UBall* b = dynamic_cast<UBall*>(PrimitiveList[i]))
 			{
 				b->Move();
-				b->UpdateVelocity(bGravity, bFriction);
+				b->UpdateVelocity(bGravity);
 			}
-
 		}
 
+
 		renderer.Prepare();
+		renderer.PrepareShaderResource(MushroomTestSRV);
 		renderer.PrepareShader();
 
 		for (size_t i = 0; i < UBall::TotalNumBalls; ++i)
 		{
 			PrimitiveList[i]->Render(renderer, cubeBuffer, numVerticescube);
+		}
+
+		// Ground 렌더링
+		for (int i = 0;i < 40; ++i)
+		{
+			Ground[i]->Render(renderer, cubeBuffer, numVerticescube);
 		}
 
 		// UI 렌더링 
@@ -269,22 +260,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			ImGui::SliderInt("y2", &y2, 0, 1024);
 		}
 
-		if (ImGui::Checkbox("Gravity", &bGravity))
-		{
-			if (bGravity)
-			{
-				bFriction = false;
-			}
-		}
+		if (ImGui::Checkbox("Gravity", &bGravity));
 		
-		// 나만의 무기 - 당구 게임 모드
-		if (ImGui::Checkbox("Cue Sports Mode!!!!", &bFriction))
-		{
-			if (bFriction)
-			{
-				bGravity = false;
-			}
-		}
 
 		// 버섯 무빙 테스트용
 		if (ImGui::Button("Mushroom"))
@@ -301,11 +278,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		ImGui::Render();
 		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
-		if (bLineRender && bFriction)
-		{
-			renderer.UpdateConstantBuffer(FVector{}, 0.0f, holdPos, currPos);
-		}
-	
 		renderer.SwapBuffer();
 
 		// 미리 정해둔 상한 FPS 를 따르도록 시간을 지연시킴
@@ -331,23 +303,24 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	delete[] PrimitiveList;
 	PrimitiveList = nullptr;
 
-
 	// ImGui 소멸
 	ImGui_ImplDX11_Shutdown();
 	ImGui_ImplWin32_Shutdown();
 	ImGui::DestroyContext();
 
-	// 소멸하는 코드를 여기에 추가합니다.
 
 	// 생성된 버텍스 버퍼를 소멸 - 셰이더 소멸 전 호출
 	renderer.ReleaseVertexBuffer(cubeBuffer);
-	renderer.ReleaseVertexBuffer(LineBuffer);
 
 	// 상수 버퍼 소멸
 	renderer.ReleaseConstantBuffer();
 
 	// 렌더러 소멸 직전에 셰이더를 소멸시키는 함수를 호출
 	renderer.ReleaseShader();
+
+	// 리소스 소멸
+	renderer.ReleaseResource(MushroomTest);
+	renderer.ReleaseSRV(MushroomTestSRV);
 
 	// D3D11 소멸시키는 함수를 호출
 	renderer.Release();

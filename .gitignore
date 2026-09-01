@@ -13,3 +13,4 @@ SuperJungleMario/x64/
 *.suo 
 *.db 
 
+packages/

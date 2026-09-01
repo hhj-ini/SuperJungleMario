@@ -1,5 +1,7 @@
 #include "URenderer.h"
-
+#include <WICTextureLoader.h>
+#include <string>
+#include <filesystem>
 
 // 렌더러 초기화 함수
 void URenderer::Create(HWND hWindow)
@@ -107,7 +109,7 @@ void URenderer::CreateRasterizerState()
 {
 	D3D11_RASTERIZER_DESC rasterizerdesc = {};
 	rasterizerdesc.FillMode = D3D11_FILL_SOLID;		// 채우기 모드
-	rasterizerdesc.CullMode = D3D11_CULL_NONE;		// 백페이스 컬링
+	rasterizerdesc.CullMode = D3D11_CULL_BACK;		// 백페이스 컬링
 
 	Device->CreateRasterizerState(&rasterizerdesc, &RasterizerState);
 }
@@ -154,10 +156,6 @@ void URenderer::CreateShader()
 	D3DCompileFromFile(L"ShaderW0.hlsl", nullptr, nullptr, "mainVS", "vs_5_0", 0, 0, &vertexshaderCSO, nullptr);
 	Device->CreateVertexShader(vertexshaderCSO->GetBufferPointer(), vertexshaderCSO->GetBufferSize(), nullptr, &SimpleVertexShader);
 
-	//// 라인 그리는 셰이더 프로그램 만들기
-	//D3DCompileFromFile(L"ShaderW0.hlsl", nullptr, nullptr, "mainVS2", "vs_5_0", 0, 0, &vertexshaderCSO, nullptr);
-	//Device->CreateVertexShader(vertexshaderCSO->GetBufferPointer(), vertexshaderCSO->GetBufferSize(), nullptr, &LineVertexShader);
-
 	D3DCompileFromFile(L"ShaderW0.hlsl", nullptr, nullptr, "mainPS", "ps_5_0", 0, 0, &pixelshaderCSO, nullptr);
 	Device->CreatePixelShader(pixelshaderCSO->GetBufferPointer(), pixelshaderCSO->GetBufferSize(), nullptr, &SimplePixelShader);
 
@@ -171,6 +169,28 @@ void URenderer::CreateShader()
 		vertexshaderCSO->GetBufferPointer(), vertexshaderCSO->GetBufferSize(), &SimpleInputLayout);
 
 	Stride = sizeof(FVertexSimple);
+
+
+	// 텍스처 셰이더 프로그램 생성
+
+	D3DCompileFromFile(L"ShaderW0.hlsl", nullptr, nullptr, "mainVSTex", "vs_5_0", 0, 0, &vertexshaderCSO, nullptr);
+	Device->CreateVertexShader(vertexshaderCSO->GetBufferPointer(), vertexshaderCSO->GetBufferSize(), nullptr, &TextureVertexShader);
+
+	D3DCompileFromFile(L"ShaderW0.hlsl", nullptr, nullptr, "mainPSTex", "ps_5_0", 0, 0, &pixelshaderCSO, nullptr);
+	Device->CreatePixelShader(pixelshaderCSO->GetBufferPointer(), pixelshaderCSO->GetBufferSize(), nullptr, &TexturePixelShader);
+
+	D3D11_INPUT_ELEMENT_DESC layout2[] =
+	{
+		{"POSITION" , 0 , DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0,D3D11_APPEND_ALIGNED_ELEMENT,  D3D11_INPUT_PER_VERTEX_DATA, 0}
+	};
+
+	Device->CreateInputLayout(layout2, ARRAYSIZE(layout2),
+		vertexshaderCSO->GetBufferPointer(), vertexshaderCSO->GetBufferSize(), &TextureInputLayout);
+
+	Stride = sizeof(FVertex);
+
 
 	vertexshaderCSO->Release();
 	pixelshaderCSO->Release();
@@ -224,12 +244,6 @@ void URenderer::ReleaseShader()
 		SimpleVertexShader = nullptr;
 	}
 
-	//// 자체적으로 만든 라인 셰이더 프로그램 메모리 해제
-	//if (LineVertexShader)
-	//{
-	//	LineVertexShader->Release();
-	//	LineVertexShader = nullptr;
-	//}
 
 	// ui 셰이더 해제
 	if (UIInputLayout)
@@ -249,6 +263,25 @@ void URenderer::ReleaseShader()
 		UIVertexShader->Release();
 		UIVertexShader = nullptr;
 	}
+
+	// Texture 관련 셰이더 해제
+	if (TextureInputLayout)
+	{
+		TextureInputLayout->Release();
+		TextureInputLayout = nullptr;
+	}
+
+	if (TexturePixelShader)
+	{
+		TexturePixelShader->Release();
+		TexturePixelShader = nullptr;
+	}
+
+	if (TextureVertexShader)
+	{
+		TextureVertexShader->Release();
+		TextureVertexShader = nullptr;
+	}
 }
 
 // D3D11 렌더링에 필요한 준비 작업을 위한 Prepare 함수
@@ -267,12 +300,17 @@ void URenderer::Prepare()
 	DeviceContext->OMSetBlendState(nullptr, nullptr, 0xffff'ffff);
 }
 
+void URenderer::PrepareShaderResource(ID3D11ShaderResourceView*& InSRVPtr)
+{
+	DeviceContext->PSSetShaderResources(0, 1, &InSRVPtr);
+}
+
 // Simple Shader 사용을 위한 PrepareShader 함수
 void URenderer::PrepareShader()
 {
-	DeviceContext->VSSetShader(SimpleVertexShader, nullptr, 0);
-	DeviceContext->PSSetShader(SimplePixelShader, nullptr, 0);
-	DeviceContext->IASetInputLayout(SimpleInputLayout);
+	DeviceContext->VSSetShader(TextureVertexShader, nullptr, 0);
+	DeviceContext->PSSetShader(TexturePixelShader, nullptr, 0);
+	DeviceContext->IASetInputLayout(TextureInputLayout);
 
 	if (ConstantBuffer)
 	{
@@ -306,6 +344,7 @@ void URenderer::RenderUI(ID3D11Buffer* pBuffer, UINT numVertices)
 	DeviceContext->Draw(numVertices, 0);
 }
 
+
 //void URenderer::LineRenderPrimitive(ID3D11Buffer* pBuffer, UINT numVertices)
 //{
 //	DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
@@ -316,6 +355,7 @@ void URenderer::RenderUI(ID3D11Buffer* pBuffer, UINT numVertices)
 //
 //	DeviceContext->Draw(numVertices, 0);
 //}
+
 
 // ui 버텍스 버퍼 생성. FVertexUI를 인자로 받음.
 ID3D11Buffer* URenderer::CreateUIVertexBuffer(FVertexUI* vertices, UINT byteWidth)
@@ -336,6 +376,7 @@ ID3D11Buffer* URenderer::CreateUIVertexBuffer(FVertexUI* vertices, UINT byteWidt
 	return vertexBuffer;
 }
 
+
 ID3D11Buffer* URenderer::CreateVertexBuffer(FVertexSimple* vertices, UINT byteWidth)
 {
 	// Create a vertex buffer
@@ -352,6 +393,25 @@ ID3D11Buffer* URenderer::CreateVertexBuffer(FVertexSimple* vertices, UINT byteWi
 
 	return vertexBuffer;
 }
+
+// uv 값이 존재하는 버텍스의 버퍼 생성하는 함수 
+ID3D11Buffer* URenderer::CreateTextureVertexBuffer(FVertex* vertices, UINT byteWidth)
+{
+	// Create a vertex buffer
+	D3D11_BUFFER_DESC vertexbufferdesc = {};
+	vertexbufferdesc.ByteWidth = byteWidth;
+	vertexbufferdesc.Usage = D3D11_USAGE_IMMUTABLE;
+	vertexbufferdesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+
+	D3D11_SUBRESOURCE_DATA vertexbufferSRD = { vertices };
+
+	ID3D11Buffer* vertexBuffer;
+
+	Device->CreateBuffer(&vertexbufferdesc, &vertexbufferSRD, &vertexBuffer);
+
+	return vertexBuffer;
+}
+
 
 void URenderer::ReleaseVertexBuffer(ID3D11Buffer* vertexBuffer)
 {
@@ -381,23 +441,26 @@ void URenderer::ReleaseConstantBuffer()
 	}
 }
 
-void URenderer::UpdateConstantBuffer(FVector Offset, float Radius, FPos HoldPos, FPos CurrPos)
+void URenderer::UpdateConstantBuffer(const DirectX::XMMATRIX& world, const DirectX::XMMATRIX& view)
 {
 	if (ConstantBuffer)	// 버퍼가 있을 때만 아래 코드 실행
 	{
 		D3D11_MAPPED_SUBRESOURCE constantbufferMSR;
+		
+		FConstants constants;
+
+		DirectX::XMStoreFloat4x4(&constants.World, DirectX::XMMatrixTranspose(world));
+		DirectX::XMStoreFloat4x4(&constants.View, DirectX::XMMatrixTranspose(view));
 
 		DeviceContext->Map(ConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &constantbufferMSR);
 
-		FConstants* constants = (FConstants*)constantbufferMSR.pData;
+		FConstants* constant = (FConstants*)constantbufferMSR.pData;
 		{
-			constants->Offset = Offset;
-			constants->Radius = Radius;
-			// 라인 그리기 위한 마우스 좌표 정보들 상수 버퍼에 업데이트
-			constants->HoldPos = HoldPos;
-			constants->CurrPos = CurrPos;
+			constant->World = constants.World;
+			constant->View = constants.View;
 		}
 		DeviceContext->Unmap(ConstantBuffer, 0);
+
 	}
 }
 
@@ -436,5 +499,36 @@ void URenderer::UpdateUI(FNDCoordinate NDCoord, ID3D11Buffer* vertexBuffer, floa
 			}
 		}
 		DeviceContext->Unmap(vertexBuffer, 0);
+	}
+}
+void URenderer::LoadTexture(std::wstring InPath, ID3D11Resource*& InResourcePtr, ID3D11ShaderResourceView*& InRVPtr)
+{
+	if (!std::filesystem::exists(InPath))
+	{
+		// 로드 실패
+		std::wstring error = L"Load Fail" + InPath;
+		MessageBox(NULL, error.c_str(), L"Error", MB_OK);
+		return;
+	}
+
+	HRESULT hr = DirectX::CreateWICTextureFromFile(Device, DeviceContext, InPath.c_str(),
+		&InResourcePtr, &InRVPtr);
+}
+
+void URenderer::ReleaseResource(ID3D11Resource*& InResourcePtr)
+{
+	if (InResourcePtr)
+	{
+		InResourcePtr->Release();
+		InResourcePtr = nullptr;
+	}
+}
+
+void URenderer::ReleaseSRV(ID3D11ShaderResourceView*& InRVPtr)
+{
+	if (InRVPtr)
+	{
+		InRVPtr->Release();
+		InRVPtr = nullptr;
 	}
 }
