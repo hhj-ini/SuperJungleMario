@@ -10,7 +10,7 @@ UBox::UBox(float x, float y, float w, float h)
 	Radius = 0.0001f;
 	++TotalNumBox;
 
-	bisHold = false;
+	bisMove = false;
 }
 
 UBox::~UBox()

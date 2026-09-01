@@ -14,7 +14,7 @@ public:
         ENABLE
     };
 
-    virtual void Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num);
+    virtual void Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num) override;
     virtual bool CollisionCheck(UPrimitive* other);
 
     virtual void Move() override;

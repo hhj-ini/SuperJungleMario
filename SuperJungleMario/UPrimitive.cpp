@@ -4,8 +4,9 @@
 
 void UPrimitive::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)
 {
-	DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(Location.x, Location.y, Location.z);
-
+	DirectX::XMMATRIX world = DirectX::XMMatrixScaling(width, height, 1.0f) *
+		DirectX::XMMatrixTranslation(Location.x, Location.y, Location.z);
+	renderer.PrepareShaderResource(TextureSRVPtr);
 	renderer.UpdateConstantBuffer(world, renderer.ViewMatrix);
 	renderer.RenderPrimitive(pBuffer, num);
 }
@@ -29,13 +30,37 @@ bool UPrimitive::CollisionCheck(UPrimitive* other)
 	if(overlapX>0 && overlapY>0){
 		
 		//밀어내기 구현
-		if (bisHold==false) { // 속도가 0, 즉 블럭이면
+		if (bisMove==false && other->bisMove==true) { // 속도가 0, 즉 블럭이면
 			other->Location.x += (overlapX) * ((Location.x < other->Location.x) ? 1.0f : -1.0f);
 			other->Location.y += (overlapY) * ((Location.y < other->Location.y) ? 1.0f : -1.0f);
+
+			//겹치는 간격이 작은쪽의 속도를 멈춤
+
+			if (overlapX < overlapY) {
+				Velocity.x = 0.0f;
+				other->Velocity.x = 0.0f;
+
+			}
+			else {
+				Velocity.y = 0.0f;
+				other->Velocity.y = 0.0f;
+			}
 		}
-		else if (other->bisHold == false) { 
-			Location.x += (overlapX) * ((Location.x < other->Location.x) ? -1.0f : 1.0f);
-			Location.y += (overlapY) * ((Location.y < other->Location.y) ? -1.0f : 1.0f);
+		else if (other->bisMove == false && bisMove == true) { 
+
+			//겹치는 간격이 작은쪽의 속도를 멈춤
+
+			if (overlapX < overlapY) {
+				Location.x += (overlapX) * ((Location.x < other->Location.x) ? -1.0f : 1.0f);
+				Velocity.x = 0.0f;
+				other->Velocity.x = 0.0f;
+
+			}
+			else {
+				Location.y += (overlapY) * ((Location.y < other->Location.y) ? -1.0f : 1.0f);
+				Velocity.y = 0.0f;
+				other->Velocity.y = 0.0f;
+			}
 		}
 
 		else {
@@ -44,17 +69,7 @@ bool UPrimitive::CollisionCheck(UPrimitive* other)
 			other->Location.x += (overlapX / 2.0f) * ((Location.x < other->Location.x) ? 1.0f : -1.0f);
 			other->Location.y += (overlapY / 2.0f) * ((Location.y < other->Location.y) ? 1.0f : -1.0f);
 		}
-		//겹치는 간격이 작은쪽의 속도를 멈춤
-
-		if (overlapX < overlapY) {
-			Velocity.x = 0.0f;
-			other->Velocity.x = 0.0f;
-
-		}
-		else {
-			Velocity.y = 0.0f;
-			other->Velocity.y = 0.0f;
-		}
+		
 		return true;
 	}
 

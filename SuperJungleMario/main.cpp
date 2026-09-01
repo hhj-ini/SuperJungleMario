@@ -23,6 +23,8 @@
 #include "UCamera.h"
 #include "UBox.h"
 #include "UEmeny.h"
+#include "ResourceManager.h"
+
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -100,12 +102,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	// 버텍스 버퍼 생성 
 	UINT numVerticescube = sizeof(cube_vertices) / sizeof(FVertex);	// 버텍스 갯수 변수화
 	float scaleMod = 0.1f;	// cube 크기 조정
-	for (UINT i = 0; i < numVerticescube; ++i)
-	{
-		cube_vertices[i].x *= scaleMod;
-		cube_vertices[i].y *= scaleMod;
-		cube_vertices[i].z *= scaleMod;
-	}
+	//for (UINT i = 0; i < numVerticescube; ++i)
+	//{
+	//	cube_vertices[i].x *= scaleMod;
+	//	cube_vertices[i].y *= scaleMod;
+	//	cube_vertices[i].z *= scaleMod;
+	//}
 
 	// UI 버텍스 버퍼 생성
 	UINT numVerticesUI = sizeof(ui_vertices) / sizeof(FVertexUI);
@@ -166,9 +168,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 
 	// 텍스쳐 파일 로드 테스트 코드
-	ID3D11Resource* MushroomTest = nullptr;
-	ID3D11ShaderResourceView* MushroomTestSRV = nullptr;
-	renderer.LoadTexture(L"Resource\\Mushroom.png", MushroomTest, MushroomTestSRV);
+	//ID3D11Resource* MushroomTest = nullptr;
+	//ID3D11ShaderResourceView* MushroomTestSRV = nullptr;
+	//renderer.LoadTexture(L"Resource\\Mushroom.png", MushroomTest, MushroomTestSRV);
 
 	// ui 텍스쳐 파일 로드 테스트 코드
 	ID3D11Resource* UITestResource = nullptr;
@@ -246,10 +248,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				continue;
 			}
 		}
-
+		for (int k = 0; k < 40; ++k)
+		{
+			player->CollisionCheck(Ground[k]);
+		}
 
 		renderer.Prepare();
-		renderer.PrepareShaderResource(MushroomTestSRV);
+		//renderer.PrepareShaderResource(MushroomTestSRV);
 		renderer.PrepareShader();
 
 		for (size_t i = 0; i < primitiveCount; ++i)
@@ -359,8 +364,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	renderer.ReleaseShader();
 
 	// 리소스 소멸
-	renderer.ReleaseResource(MushroomTest);
-	renderer.ReleaseSRV(MushroomTestSRV);
+	//renderer.ReleaseResource(MushroomTest);
+	//renderer.ReleaseSRV(MushroomTestSRV);
+
+	ResourceManager::GetInstance().ReleaseResource(&renderer);
 
 	// D3D11 소멸시키는 함수를 호출
 	renderer.Release();
