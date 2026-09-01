@@ -2,6 +2,10 @@
 #include "SuperJungleMario.h"
 #include "URenderer.h"
 
+extern POINT charPositions[];
+
+extern char charList[];
+
 class UUi
 {
 public:
