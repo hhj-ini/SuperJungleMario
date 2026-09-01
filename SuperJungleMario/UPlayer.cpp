@@ -14,9 +14,8 @@ UPlayer::UPlayer()
 
 	bIsGrounded = true;
 	Life = 1;
-	Radius = 1.0f;
-	width = Radius * scaleMod;
-	height = Radius * scaleMod;
+	width = scaleMod;
+	height = scaleMod;
 }
 
 UPlayer::~UPlayer()
@@ -31,9 +30,9 @@ void UPlayer::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)
 	using namespace DirectX;
 
 	XMMATRIX scale = XMMatrixScaling(
-		Radius * scaleMod,
-		Radius * scaleMod,
-		Radius * scaleMod
+		width,
+		height,
+		1.0f
 	);
 
 	XMMATRIX translation = XMMatrixTranslation(

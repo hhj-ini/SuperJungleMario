@@ -62,10 +62,10 @@ void UMushroom::Move()
 	}
 }
 
-void UMushroom::UpdateVelocity(bool bGravity)
-{
-	return; // 버섯에서는 속도처리 하지 않도록 함
-}
+//void UMushroom::UpdateVelocity(bool bGravity)
+//{
+//	//return; // 버섯에서는 속도처리 하지 않도록 함
+//}
 
 void UMushroom::SetState(MushroomState InState)
 {	
@@ -85,7 +85,7 @@ void UMushroom::SetState(MushroomState InState)
 		Velocity.x = 0.01f;
 		Velocity.y = 0.0f;
 
-		UpdateVelocity(true);
+		//UpdateVelocity(true);
 
 		break;
 

@@ -19,7 +19,7 @@ public:
 
     virtual void Move() override;
    
-    virtual void UpdateVelocity(bool bGravity) override;
+    //virtual void UpdateVelocity(bool bGravity) override;
 
 
     void SetEnable();

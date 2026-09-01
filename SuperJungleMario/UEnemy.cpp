@@ -7,11 +7,10 @@ UEnemy::UEnemy()
 	Velocity.x = 0.0f;
 	Velocity.y = 0.0f;
 
-	Location.x = 2.0f;
+	Location.x = 0.0f;
 	Location.y = 0.0f;
 	// 위치 설정 필요
 
-	Radius = 1.0f;
 	SetState(EnemyState::ALIVE);
 }
 
@@ -49,7 +48,7 @@ bool UEnemy::CollisionCheck(UPrimitive* other)
 
 void UEnemy::Move()
 {
-	if (eState == EnemyState::ALIVE)
+	if (eState == EnemyState::DEAD)
 	{
 		return;
 	}
