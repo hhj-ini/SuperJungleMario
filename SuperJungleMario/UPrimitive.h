@@ -36,7 +36,18 @@ class UPrimitive
 	float height;
 	float Radius;
 	bool bisMove;
+	UPrimitive(float x, float y, float w, float h)
+	{
+		Location.x = x;
+		Location.y = y;
+		width = w * scaleMod;
+		height = h * scaleMod;
 
+		Radius = 0.0001f;
+		bisMove = false;
+
+	}
+	UPrimitive() {}
 	// 텍스쳐 포인터 저장
 	ID3D11ShaderResourceView* TextureSRVPtr[2] = { nullptr, nullptr };
 	EObjectType ObjectType;

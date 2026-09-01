@@ -11,7 +11,6 @@ UBall::UBall()
 	Velocity.x = 0.0001f;
 	Velocity.y = 0.0001f;
 
-	Radius = 0.1;
 	//Mass = Radius * Radius * 3.14f;
 	Index = TotalNumBalls++;
 

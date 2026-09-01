@@ -7,7 +7,6 @@ class UBall : public UPrimitive
 public:
 	static int inline TotalNumBalls = 0;
 
-	float Radius = 1.0f;
 	float Mass = 1.0f;
 
 	float Index;
