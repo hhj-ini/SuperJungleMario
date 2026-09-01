@@ -49,7 +49,7 @@ void UBall::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)
 //	}
 //
 //	//// 피킹 중일때는 충돌 연산 처리 안하도록 함
-//	//if (bIsHold || Other->bIsHold)
+//	//if (bisMove || Other->bisMove)
 //	//{
 //	//	return false;
 //	//}
@@ -99,9 +99,10 @@ void UBall::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)
 //}
 
 
+
 void UBall::Move()
 {
-	if (bIsHold)
+	if (bisMove)
 	{
 		return;
 	}

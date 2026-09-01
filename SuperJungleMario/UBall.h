@@ -17,7 +17,7 @@ public:
 
 	float DeltaGravityAmount = 0.098f * 60;
 
-	bool bIsHold = false;
+	bool bisMove = false;
 
 public:
 	UBall();
