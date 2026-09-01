@@ -2,8 +2,8 @@
 
 UBox::UBox(float x, float y, float w, float h)
 {
-	Location.x = x*scaleMod;
-	Location.y = y * scaleMod;
+	Location.x = x;
+	Location.y = y;
 	width = w * scaleMod;
 	height = h * scaleMod;
 

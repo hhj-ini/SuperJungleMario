@@ -148,12 +148,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 
 	//// Box 추가////
-	UBox* Ground[] = new UBox * [10];
-	Ground[0] = new UBox(0.0f, 0.0f, 10.0f, 1.0f);  // 아래 Ground
-	Ground[1] = new UBox(0.0f, 10.0f, 10.0f, 1.0f); // 위 Ground
-	Ground[2] = new UBox(-5.0f, 5.0f, 1.0f, 10.0f); // 왼쪽 Ground
-	Ground[3] = new UBox(5.0f, 5.0f, 1.0f, 10.0f);  // 오른쪽 Ground
-
+	UPrimitive** Ground = nullptr;
+	Ground = new UPrimitive * [10];  // 10을 변수로 변경해야함. 지금은 임시테스트용
+	for (int i = 0;i < 10; ++i)
+	{
+		Ground[i] = new UBox(-1.0f , -0.8f, 1.0f, 1.0f);
+	}
 
 	// Main Loop(Quit Message가 들어오기 전까지 아래 Loop를 무한히 실행하게 됨.
 	while (bIsExit == false)
@@ -205,6 +205,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			
 		}
 
+
 		renderer.Prepare();
 		renderer.PrepareShader();
 
@@ -212,6 +213,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		for (size_t i = 0; i < UBall::TotalNumBalls; ++i)
 		{
 			PrimitiveList[i]->Render(renderer, cubeBuffer, numVerticescube);
+		}
+
+		// Ground 렌더링
+		for (int i = 0;i < 10; ++i)
+		{
+			Ground[i]->Render(renderer, cubeBuffer, numVerticescube);
 		}
 
 		// UI 렌더링 
