@@ -1,5 +1,7 @@
 #include "URenderer.h"
-
+#include <WICTextureLoader.h>
+#include <string>
+#include <filesystem>
 
 // 렌더러 초기화 함수
 void URenderer::Create(HWND hWindow)
@@ -398,4 +400,18 @@ void URenderer::UpdateConstantBuffer(FVector Offset, float Radius, FPos HoldPos,
 		}
 		DeviceContext->Unmap(ConstantBuffer, 0);
 	}
+}
+
+void URenderer::LoadTexture(std::wstring InPath, ID3D11Resource* InTexturePtr, ID3D11ShaderResourceView* InRVPtr)
+{
+	if (!std::filesystem::exists(InPath))
+	{
+		// 로드 실패
+		std::wstring error = L"Load Fail" + InPath;
+		MessageBox(NULL, error.c_str(), L"Error", MB_OK);
+		return;
+	}
+
+	HRESULT hr = DirectX::CreateWICTextureFromFile(Device, DeviceContext, InPath.c_str(),
+		&InTexturePtr, &InRVPtr);
 }

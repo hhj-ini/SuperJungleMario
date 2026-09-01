@@ -2,6 +2,7 @@
 #include <Windows.h>
 #include <d3d11.h>
 #include <d3dcompiler.h>
+#include <string>
 
 #include "SuperJungleMario.h"
 
@@ -146,4 +147,11 @@ public:
 	void ReleaseConstantBuffer();
 
 	void UpdateConstantBuffer(FVector Offset, float Radius, FPos HoldPos = {}, FPos CurrPos = {});
+
+
+	/////////////////////////////////////////////////////////////
+	// 텍스처 load 관련
+	
+	// 2dTexture 불러오는 함수 (파일 경로, 텍스쳐 저장할 포인터)
+	void LoadTexture(std::wstring path, ID3D11Resource* InTexturePtr, ID3D11ShaderResourceView* InRVPtr);
 };

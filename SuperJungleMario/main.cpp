@@ -132,7 +132,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	/////////// 여기서 테스트용 객체 추가하시면 됩니다 ////////////////
 
 
-
+	// 텍스쳐 파일 로드 테스트 코드
+	ID3D11Resource* MushroomTest = nullptr;
+	ID3D11ShaderResourceView* MushroomTestRV = nullptr;
+	renderer.LoadTexture(L"Resource\\Mushroom.png", MushroomTest, MushroomTestRV);
 
 	// Main Loop(Quit Message가 들어오기 전까지 아래 Loop를 무한히 실행하게 됨.
 	while (bIsExit == false)
