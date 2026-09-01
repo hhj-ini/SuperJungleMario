@@ -12,6 +12,8 @@ public:
     enum class PlayerState
     {
         ALIVE,
+        GROWING,  
+        SHRINKING,
         DEAD
     };
 
