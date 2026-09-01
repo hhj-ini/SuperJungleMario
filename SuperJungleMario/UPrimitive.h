@@ -18,9 +18,22 @@ class UPrimitive
 			FLOWER,
 		};
 
+		UPrimitive();
+
+		UPrimitive(float x, float y, float w, float h)	: ObjectType(EObjectType::NONE)
+		{
+			Location.x = x;
+			Location.y = y;
+			width = w * scaleMod;
+			height = h * scaleMod;
+
+			Radius = 0.0001f;
+			bisMove = false;
+		}
+
 	virtual void Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num);
 	virtual bool CollisionCheck(UPrimitive* other);
-	inline virtual void Tick() {};	
+	virtual void Tick() {};
 
 	// 모든 Primitive 는 텍스처 포인터를 가짐
 	// **상속 받은 클래스에서 꼭 정의해주시면 텍스쳐 적용 가능합니다*
@@ -33,22 +46,13 @@ class UPrimitive
 
 	FVector Location;
 	FVector Velocity;
-	float width;
-	float height;
+	float width = scaleMod;
+	float height = scaleMod;
+
 	float Radius;
 	bool bisMove;
-	UPrimitive(float x, float y, float w, float h) 
-	{ 
-		Location.x = x;
-		Location.y = y;
-		width = w * scaleMod;
-		height = h * scaleMod;
-
-		Radius = 0.0001f;
-		bisMove = false;
-
-	}
-	UPrimitive() {}
+	
+	
 	// 텍스쳐 포인터 저장
 	ID3D11ShaderResourceView* TextureSRVPtr[4] = { nullptr, nullptr, nullptr, nullptr };
 	EObjectType ObjectType;
