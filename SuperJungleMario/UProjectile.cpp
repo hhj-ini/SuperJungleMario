@@ -1,0 +1,99 @@
+#include "UProjectile.h"
+#include "ResourceManager.h"
+#include "UPlayer.h"
+
+
+
+void UProjectile::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)
+{
+    if (EProjectileState::WAITING == CurrState)
+    {
+        return;
+    }
+
+    if (EProjectileState::ROLLING == CurrState)
+    {
+        // 렌더하기 전에 텍스쳐 바인딩
+        if (!TextureSRVPtr[0])
+        {
+            TextureSRVPtr[0] = ResourceManager::GetInstance().GetSRV(L"Resource\\Projectile\\Projectile1.png", &renderer);
+        }
+        renderer.PrepareShaderResource(TextureSRVPtr[0]);
+
+    }
+
+    if (EProjectileState::HIT == CurrState)
+    {
+
+    }
+
+    DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(Location.x, Location.y, Location.z);
+    renderer.UpdateConstantBuffer(world, renderer.ViewMatrix);
+
+    renderer.RenderPrimitive(pBuffer, num);
+}
+
+bool UProjectile::CollisionCheck(UPrimitive * other)
+{
+    if (EProjectileState::ROLLING != CurrState)
+    {   // ROLLING 중 일때만 콜리전 활성화
+        return false;
+    }
+
+    // 부딪힌 상대가 적(enemy)이라면 상대에게 데미지 입히기
+    //if (true/* 부딪힌 상대가 적*/)
+    //{
+    //    SetState(EProjectileState::HIT);
+    //}
+
+    //if (true/* 부딪힌 상대가 벽, 땅*/)
+    //{
+    //    SetState(EProjectileState::WAITING);
+    //}
+    
+    return false;
+}
+
+void UProjectile::Move()
+{
+    if (EProjectileState::ROLLING == CurrState)
+    {   // 현재 상태가 ROLLING 일때만 움직이도록 함.
+        UBall::Move();
+    }
+}
+
+void UProjectile::SetState(EProjectileState InState)
+{
+    switch (InState)
+    {
+    case EProjectileState::WAITING:
+        CurrState = EProjectileState::WAITING;
+        break;
+    case EProjectileState::ROLLING:
+        // 애니메이션 재생 필요
+
+        // 속도, 위치 초기화
+        Location.x = Owner->Location.x;
+        Location.y = Owner->Location.y;
+
+        Velocity.x = 0.1f;
+        Velocity.y = -0.1f;
+
+        CurrState = EProjectileState::ROLLING;
+
+        break;
+    case EProjectileState::HIT:
+        // 애니메이션 재생 필요
+        CurrState = EProjectileState::HIT;
+
+        Velocity.x = 0.0f;
+        Velocity.y = 0.0f;
+         
+        break;
+    }
+}
+
+void UProjectile::SetOwner(UPrimitive* InOwner)
+{
+    Owner = dynamic_cast<UPlayer*>(InOwner);
+}
