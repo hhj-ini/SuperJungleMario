@@ -2,13 +2,16 @@
 
 class UGameLogic
 {
-private:
+public: // 나중에 privite으로 
 	int score;
+	int coin;
 	UGameLogic();
 
 public:
-	static UGameLogic& getGameLogic();
+	static UGameLogic& GameLogic();
 
-	void setScore(int score);
 	int getScore();
+	void addScore(int addAmount);
+	int getCoin();
+	void addOneCoin();
 };

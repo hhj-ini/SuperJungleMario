@@ -76,6 +76,22 @@ void UUi::UpdateGameTime(int currentTime)
 	charList[26] = '0' + (currentTime / 100) % 10;
 }
 
+void UUi::UpdateScoreUI(int score)
+{
+	charList[19] = '0' + score % 10;
+	charList[18] = '0' + (score / 10) % 10;
+	charList[17] = '0' + (score / 100) % 10;
+	charList[16] = '0' + (score / 1000) % 10;
+	charList[15] = '0' + (score / 10000) % 10;
+	charList[14] = '0' + (score / 100000) % 10;
+}
+
+void UUi::UpdateCoinUI(int coin)
+{
+	charList[22] = '0' + coin % 10;
+	charList[21] = '0' + (coin / 10) % 10;
+}
+
 void UUi::UpdateUV(int index)
 {
 	UUi::uv = Translate(charList[index]);

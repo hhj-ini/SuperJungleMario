@@ -173,6 +173,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	// 접근할때
 	// PrimitiveList[mushroomIdx]->render(...); 이런식으로 하면 됩니다.
 	// for 문이랑 로직 중첩되지 않도록 주의해주시면 돼요
+
+	// 점수 사용법 
+	UGameLogic::GameLogic().getScore();
 	
 	int x1 = 94; // ui 테스트용 임시 초기 좌표
 	int y1 = 49;
@@ -319,6 +322,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		// UI 렌더링 
 		renderer.PrepareUIShader(UITestSRV);
+		UUi::UpdateScoreUI(UGameLogic::GameLogic().score);
+		UUi::UpdateCoinUI(UGameLogic::GameLogic().coin);
 		const float fontSize = 0.09f;
 
 		if (bGameStart)
@@ -362,7 +367,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		// UI 테스트용
 		ImGui::Checkbox("Show UI", &bUIRender);
 		ImGui::Checkbox("Show Start UI", &bGameStart);
-		ImGui::Text("GameTime: %.2f", GameTime);
+		//ImGui::SliderInt("Score", &UGameLogic::GameLogic().score, 0, 1000000);
 		//if (bUIRender)
 		//{
 		//	ImGui::Text("UI 1 position");

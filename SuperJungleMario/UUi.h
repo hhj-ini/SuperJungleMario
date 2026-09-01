@@ -40,5 +40,9 @@ public:
 
 	static void UpdateGameTime(int currentTime);
 
+	static void UpdateScoreUI(int score);
+
+	static void UpdateCoinUI(int coin);
+
 	void UpdateUV(int index);
 };
