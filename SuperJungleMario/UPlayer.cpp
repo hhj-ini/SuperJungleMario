@@ -1,6 +1,7 @@
 #pragma once
 #include "UPlayer.h"
 #include "UEnemy.h"
+#include "UMushroom.h"
 #include <math.h>
 #include "ResourceManager.h"
 #include <cmath>
@@ -16,7 +17,7 @@ UPlayer::UPlayer()
 	Velocity.y = 0.0f;
 
 	bIsGrounded = true;
-	Life = 1;
+	Hp = 1;
 	width = scaleMod;
 	height = scaleMod;
 	bFacingLeft = false;
@@ -114,9 +115,9 @@ bool UPlayer::CollisionCheck(UPrimitive* other)
 				{
 					TakeDamage(1);
 				}
-
 			}
-			return true;
+		case EObjectType::MUSHROOM:
+			Grow();
 
 		}
 	}
@@ -173,16 +174,27 @@ void UPlayer::SetVelocityY(float y)
 
 void UPlayer::TakeDamage(int damage)
 {
-	--Life;
+	--Hp;
 
-	if (Life >= 1)
+	if (Hp >= 1)
 	{
-		// 작아지는 로직
+		Shrink();
 	}
-	else if (Life == 0)
+	else if (Hp == 0)
 	{
 		SetState(PlayerState::DEAD);
 	}
+}
+
+void UPlayer::Grow()
+{
+	++Hp;
+	//height = scaleMod * 2.0f;
+}
+
+void UPlayer::Shrink()
+{
+	// 플레이어가 작아지는 로직 구현
 }
 
 void UPlayer::UpdateAnimation(float deltaTime)

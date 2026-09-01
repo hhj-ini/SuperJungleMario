@@ -11,22 +11,22 @@ public:
     {
         WAITING,
         ANIMATING,
-        ENABLE
+        ENABLE,
+		DESTROYED
     };
 
     virtual void Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num) override;
     virtual bool CollisionCheck(UPrimitive* other);
 
     virtual void Move() override;
-   
-    //virtual void UpdateVelocity(bool bGravity) override;
-
+    bool IsMushroomDestroyed() const { return mrState == MushroomState::DESTROYED; }
 
     void SetEnable();
 
     void SetAnimation();
 
     void SetState(MushroomState InState);
+    // void UpdateVelocity(bool bGravity) override;
 
 private:
     MushroomState mrState = MushroomState::WAITING;
