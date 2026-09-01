@@ -157,7 +157,7 @@ public:
 
 	DirectX::XMFLOAT2 GetNDCoordinate(POINT point, int width, int height);
 
-	void UpdateUI(DirectX::XMFLOAT2 NDCoord, ID3D11Buffer* vertexBuffer, float UIWidth, float UIHeight, DirectX::XMFLOAT4 rgba);
+	void UpdateUI(DirectX::XMFLOAT2 NDCoord, ID3D11Buffer* vertexBuffer, float UIWidth, float UIHeight, DirectX::XMFLOAT4 uv1uv2, DirectX::XMFLOAT4 rgba);
 
 	void UpdateConstantBuffer(const DirectX::XMMATRIX& world, const DirectX::XMMATRIX& view);
 

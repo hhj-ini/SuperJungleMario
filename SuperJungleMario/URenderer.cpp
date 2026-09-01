@@ -476,7 +476,7 @@ DirectX::XMFLOAT2 URenderer::GetNDCoordinate(POINT point, int width, int height)
 }
 
 // UI 위치 등등 업데이트 
-void URenderer::UpdateUI(DirectX::XMFLOAT2 NDCoord, ID3D11Buffer* vertexBuffer, float UIWidth, float UIHeight, DirectX::XMFLOAT4 rgba)
+void URenderer::UpdateUI(DirectX::XMFLOAT2 NDCoord, ID3D11Buffer* vertexBuffer, float UIWidth, float UIHeight, DirectX::XMFLOAT4 uv1uv2, DirectX::XMFLOAT4 rgba)
 {
 	if (vertexBuffer)
 	{
@@ -488,10 +488,10 @@ void URenderer::UpdateUI(DirectX::XMFLOAT2 NDCoord, ID3D11Buffer* vertexBuffer, 
 		{
 			FVertexUI corners[4] =
 			{
-				{NDCoord.x - UIWidth / 2, NDCoord.y - UIHeight / 2, 0, 1, rgba.x, rgba.y, rgba.z, rgba.w}, // 일단 uv를 고정시켜 놓음
-				{NDCoord.x + UIWidth / 2, NDCoord.y - UIHeight / 2, 1, 1, rgba.x, rgba.y, rgba.z, rgba.w}, // buffer를 map했을때 읽기, 쓰기를 동시에 하면 안됨
-				{NDCoord.x - UIWidth / 2, NDCoord.y + UIHeight / 2, 0, 0, rgba.x, rgba.y, rgba.z, rgba.w},
-				{NDCoord.x + UIWidth / 2, NDCoord.y + UIHeight / 2, 1, 0, rgba.x, rgba.y, rgba.z, rgba.w}
+				{NDCoord.x - UIWidth / 2, NDCoord.y - UIHeight / 2, uv1uv2.z, uv1uv2.y, rgba.x, rgba.y, rgba.z, rgba.w}, // 일단 uv를 고정시켜 놓음
+				{NDCoord.x + UIWidth / 2, NDCoord.y - UIHeight / 2, uv1uv2.x, uv1uv2.y, rgba.x, rgba.y, rgba.z, rgba.w}, // buffer를 map했을때 읽기, 쓰기를 동시에 하면 안됨
+				{NDCoord.x - UIWidth / 2, NDCoord.y + UIHeight / 2, uv1uv2.z, uv1uv2.w, rgba.x, rgba.y, rgba.z, rgba.w},
+				{NDCoord.x + UIWidth / 2, NDCoord.y + UIHeight / 2, uv1uv2.x, uv1uv2.w, rgba.x, rgba.y, rgba.z, rgba.w}
 			};
 			// lb rb lt rt
 			int index[6] = { 0, 2, 1, 1, 2, 3 };

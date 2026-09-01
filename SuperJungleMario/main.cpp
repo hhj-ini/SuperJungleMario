@@ -113,8 +113,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	// UI 리스트 생성 일단 2개
 	size_t uiCnt = 2;
 	UUi** UIList = new UUi*[uiCnt];
-	UIList[0] = new UUi(ui_vertices, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT4(1, 1, 1, 1), 1.0f);
-	UIList[1] = new UUi(ui_vertices, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT4(0.2f, 0.3f, 0.4f, 1), 1.0f);
+	UIList[0] = new UUi(ui_vertices, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT4(1, 1, 1, 1), UUi::Translate('Y'), 1.0f);
+	UIList[1] = new UUi(ui_vertices, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT4(0.2f, 0.3f, 0.4f, 1), DirectX::XMFLOAT4(1, 1, 0, 0), 1.0f);
 
 	//ID3D11Buffer* cubeBuffer = renderer.CreateVertexBuffer(cube_vertices, sizeof(cube_vertices));
 	ID3D11Buffer* cubeBuffer = renderer.CreateTextureVertexBuffer(cube_vertices, sizeof(cube_vertices));
@@ -152,10 +152,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	// PrimitiveList[mushroomIdx]->render(...); 이런식으로 하면 됩니다.
 	// for 문이랑 로직 중첩되지 않도록 주의해주시면 돼요
 	
-	int x1 = 500; // ui 테스트용 임시 초기 좌표
-	int y1 = 500;
-	int x2 = 200;
-	int y2 = 600;
+	int x1 = 150; // ui 테스트용 임시 초기 좌표
+	int y1 = 150;
+	int x2 = 850;
+	int y2 = 150;
 
 	//int playerIdx = UBall::TotalNumBalls;
 	UBall* player = new UPlayer;

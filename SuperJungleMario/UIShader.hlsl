@@ -45,8 +45,8 @@ float4 mainPS(PS_INPUT input) : SV_TARGET
     // uiTexture에서 .Sample로 uiSampler 방식으로 input.uv의 rgba 값을 추출
     float4 rgba = uiTexture.Sample(uiSampler, input.uv);
     
-    // 투명한 부분은 투명하게
-    if (rgba.a == 0)
+    // 흰색이 아니면 버림
+    if (rgba.r < 0.7f || rgba.g < 0.7f || rgba.b < 0.7f)
     {
         discard;
     }
