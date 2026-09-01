@@ -151,6 +151,7 @@
     <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="UBall.cpp" />
     <ClCompile Include="UBox.cpp" />
+    <ClCompile Include="UBrick.cpp" />
     <ClCompile Include="UEnemy.cpp" />
     <ClCompile Include="UGameLogic.cpp" />
     <ClCompile Include="UMushroom.cpp" />
@@ -175,6 +176,7 @@
     <ClInclude Include="SuperJungleMario.h" />
     <ClInclude Include="UBall.h" />
     <ClInclude Include="UBox.h" />
+    <ClInclude Include="UBrick.h" />
     <ClInclude Include="UCamera.h" />
     <ClInclude Include="UEnemy.h" />
     <ClInclude Include="UFlower.h" />

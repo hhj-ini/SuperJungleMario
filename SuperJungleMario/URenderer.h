@@ -174,7 +174,7 @@ public:
 	ID3D11PixelShader* TexturePixelShader;
 	ID3D11InputLayout* TextureInputLayout;
 
-	ID3D11SamplerState* TextureSamplerStete;
+	ID3D11SamplerState* TextureSamplerState;
 
 	// 2dTexture 불러오는 함수 (파일 경로, 텍스쳐 저장할 포인터)
 	void LoadTexture(std::wstring InPath, ID3D11Resource*& InResourcePtr, ID3D11ShaderResourceView*& InRVPtr);
