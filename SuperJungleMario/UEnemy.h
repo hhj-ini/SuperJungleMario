@@ -26,7 +26,6 @@ public:
     void SetState(EnemyState InState);
     void OnCollisionWithPlayer(UPlayer* player);
 
-
     virtual void UpdateAnimation(float deltaTime);
 
 private:
