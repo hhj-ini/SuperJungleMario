@@ -133,10 +133,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	//// Box 추가////
 	UPrimitive** Ground = nullptr;
-	Ground = new UPrimitive * [10];  // 10을 변수로 변경해야함. 지금은 임시테스트용
-	for (int i = 0;i < 10; ++i)
+	Ground = new UPrimitive * [40];  // 10을 변수로 변경해야함. 지금은 임시테스트용
+	for (int i = 0;i < 40; ++i)
 	{
-		Ground[i] = new UBox(-1.0f , -0.8f, 1.0f, 1.0f);
+		Ground[i] = new UBox(-1.0f+i*UPrimitive::scaleMod , -0.8f, 1.0f, 1.0f);
 	}
 
 	// Main Loop(Quit Message가 들어오기 전까지 아래 Loop를 무한히 실행하게 됨.
@@ -199,7 +199,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 
 		// Ground 렌더링
-		for (int i = 0;i < 10; ++i)
+		for (int i = 0;i < 40; ++i)
 		{
 			Ground[i]->Render(renderer, cubeBuffer, numVerticescube);
 		}
