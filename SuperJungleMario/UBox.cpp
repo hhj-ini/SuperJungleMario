@@ -15,7 +15,7 @@ UBox::UBox(float x, float y, float w, float h)
 }
 void UBox::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)
 {
-		if (!TextureSRVPtr)
+		if (!TextureSRVPtr[0])
 		{
 			TextureSRVPtr[0] = ResourceManager::GetInstance().GetSRV(L"Resource\\Ground.png", &renderer);
 		}
