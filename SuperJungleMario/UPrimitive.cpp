@@ -20,11 +20,11 @@ bool UPrimitive::CollisionCheck(UPrimitive* other)
 	if(overlapX>0 && overlapY>0){
 		
 		//밀어내기 구현
-		if (Velocity.x == 0.0f && Velocity.y == 0.0f) { // 속도가 0, 즉 블럭이면
+		if (bisHold==false) { // 속도가 0, 즉 블럭이면
 			other->Location.x += (overlapX) * ((Location.x < other->Location.x) ? 1.0f : -1.0f);
 			other->Location.y += (overlapY) * ((Location.y < other->Location.y) ? 1.0f : -1.0f);
 		}
-		else if (other->Velocity.x == 0.0f && other->Velocity.y == 0.0f) { 
+		else if (other->bisHold == false) { 
 			Location.x += (overlapX) * ((Location.x < other->Location.x) ? -1.0f : 1.0f);
 			Location.y += (overlapY) * ((Location.y < other->Location.y) ? -1.0f : 1.0f);
 		}
@@ -50,4 +50,10 @@ bool UPrimitive::CollisionCheck(UPrimitive* other)
 	}
 
 	return false;
+}
+
+void UPrimitive::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)
+{
+	renderer.UpdateConstantBuffer(Location, width/2);
+	renderer.RenderPrimitive(pBuffer, num);
 }

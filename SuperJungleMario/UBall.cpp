@@ -12,7 +12,7 @@ UBall::UBall()
 	Velocity.y = ((float)(rand() % 100 - 50)) * 0.001f;
 
 	Radius = ((float)(rand() % 100 + 10)) * 0.01f;
-	Mass = Radius * Radius * 3.14f;
+	//Mass = Radius * Radius * 3.14f;
 	Index = TotalNumBalls++;
 
 	width = Radius * scaleMod;

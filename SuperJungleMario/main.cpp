@@ -139,7 +139,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	UPlayer* player = new UPlayer;
 
-
 	// Main Loop(Quit Message가 들어오기 전까지 아래 Loop를 무한히 실행하게 됨.
 	while (bIsExit == false)
 	{
@@ -164,7 +163,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 
 		player->Move();
-
 		//for (size_t i = 0; i < UBall::TotalNumBalls; ++i)
 		//{
 		//	for (size_t j = i + 1; j < UBall::TotalNumBalls; ++j) 
