@@ -119,7 +119,11 @@ bool UPlayer::CollisionCheck(UPrimitive* other)
 			}
 			break;
 		case EObjectType::MUSHROOM:
-			Grow();
+			if (Hp == 1)
+			{
+				Grow();
+			}
+			break;
 
 		}
 	}
@@ -196,16 +200,19 @@ void UPlayer::Grow()
 
 	width *= 1.3f;
 	height *= 1.5f;
-
-	// Location이 캐릭터 중심 좌표라면,
-	// 발바닥 위치를 유지하도록 커진 높이의 절반만큼 위로 올림
 	Location.y += (height - oldHeight) / 2.0f;
 	
 }
 
 void UPlayer::Shrink()
 {
-	// 플레이어가 작아지는 로직 구현
+	--Hp;
+
+	float oldHeight = height;
+
+	width *= 0.7f;
+	height *= 0.5f;
+	Location.y += (oldHeight - height) / 2.0f;
 }
 
 void UPlayer::UpdateAnimation(float deltaTime)
