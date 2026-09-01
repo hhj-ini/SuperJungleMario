@@ -9,6 +9,7 @@ public:
 	static int inline TotalNumBox = 0;
 
 	//int Index;
+	virtual void Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num) override;
 
 public:
 	UBox();
