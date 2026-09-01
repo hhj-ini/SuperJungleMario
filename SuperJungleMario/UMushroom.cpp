@@ -21,7 +21,6 @@ void UMushroom::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)
 		/*renderer.UpdateConstantBuffer(Location, Radius);
 		renderer.RenderPrimitive(pBuffer, num);*/
 
-
 		DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(Location.x, Location.y, Location.z);
 		renderer.UpdateConstantBuffer(world, renderer.ViewMatrix);
 
@@ -54,12 +53,6 @@ void UMushroom::Move()
 	}
 }
 
-//void UMushroom::UpdateVelocity(bool bGravity, bool bFriction)
-//{
-//	return; // 버섯은 속도 일정함
-//}
-
-
 void UMushroom::SetState(MushroomState InState)
 {	
 	switch (InState)
@@ -77,6 +70,8 @@ void UMushroom::SetState(MushroomState InState)
 		mrState = MushroomState::ENABLE;
 		Velocity.x = 0.01f;
 		Velocity.y = 0.0f;
+
+		UpdateVelocity(true);
 
 		break;
 

@@ -109,7 +109,7 @@ void UBall::Move()
 	Location.y += Velocity.y * deltaTime;
 	Location.z += Velocity.z * deltaTime;
 
-	float renderRadius = Radius * scaleMod;
+	/*float renderRadius = Radius * scaleMod;
 	if (Location.x <= leftBorder + renderRadius)
 	{
 		Velocity.x *= -1.0f;
@@ -129,33 +129,19 @@ void UBall::Move()
 	{
 		Velocity.y *= -1.0f;
 		Location.y = topBorder - renderRadius;
-	}
+	}*/
 }
 
-void UBall::UpdateVelocity(bool bGravity, bool bFriction)
+void UBall::UpdateVelocity(bool bGravity)
 {
-	if (bIsHold)
-	{
-		return;
-	}
-
 	float gravity = (bGravity) ? GravityAmount : 0.0f;
-	float damping = (bFriction) ? DampingAmount : 1.0f;
 
-	Velocity.x *= damping;
-	Velocity.y *= damping;
-
-	// 무한히 댐핑값 곱해지는 것을 방지
-	if (0.00001f > Velocity.x && -0.00001f < Velocity.x)
+	if(bGravity)
 	{
-		Velocity.x = 0.0f;
-	}
-	if (0.00001f > Velocity.y && -0.00001f < Velocity.y)
-	{
-		Velocity.y = 0.0f;
+		Velocity.y -= gravity * deltaTime;
+		Location.y += Velocity.y;
 	}
 
-
-	Velocity.y -= gravity * deltaTime;
+	
 }
 
