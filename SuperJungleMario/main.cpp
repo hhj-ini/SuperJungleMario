@@ -98,8 +98,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	// UI 리스트 생성 일단 2개
 	size_t uiCnt = 2;
 	UUi** UIList = new UUi*[uiCnt];
-	UIList[0] = new UUi(ui_vertices, FNDCoordinate(0.0f, 0.0f), 1.0f);
-	UIList[1] = new UUi(ui_vertices, FNDCoordinate(0.0f, 0.0f), 1.0f);
+	UIList[0] = new UUi(ui_vertices, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT4(1, 1, 1, 1), 1.0f);
+	UIList[1] = new UUi(ui_vertices, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT4(0.2f, 0.3f, 0.4f, 1), 1.0f);
 
 	//ID3D11Buffer* cubeBuffer = renderer.CreateVertexBuffer(cube_vertices, sizeof(cube_vertices));
 	ID3D11Buffer* cubeBuffer = renderer.CreateTextureVertexBuffer(cube_vertices, sizeof(cube_vertices));
