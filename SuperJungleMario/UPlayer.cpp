@@ -14,6 +14,9 @@ UPlayer::UPlayer()
 
 	bIsGrounded = true;
 	Life = 1;
+	Radius = 1.0f;
+	width = Radius * scaleMod;
+	height = Radius * scaleMod;
 }
 
 UPlayer::~UPlayer()
@@ -82,7 +85,7 @@ void UPlayer::Move()
 	if (pState == PlayerState::ALIVE)
 	{
 		Velocity.x = 0.0f;
-		Velocity.y = 0.0f;
+		//Velocity.y = 0.0f;
 
 		if (GetAsyncKeyState(VK_LEFT) & 0x8000)
 		{

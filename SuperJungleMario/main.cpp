@@ -100,12 +100,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	// 버텍스 버퍼 생성 
 	UINT numVerticescube = sizeof(cube_vertices) / sizeof(FVertex);	// 버텍스 갯수 변수화
 	float scaleMod = 0.1f;	// cube 크기 조정
-	for (UINT i = 0; i < numVerticescube; ++i)
-	{
-		cube_vertices[i].x *= scaleMod;
-		cube_vertices[i].y *= scaleMod;
-		cube_vertices[i].z *= scaleMod;
-	}
+	//for (UINT i = 0; i < numVerticescube; ++i)
+	//{
+	//	cube_vertices[i].x *= scaleMod;
+	//	cube_vertices[i].y *= scaleMod;
+	//	cube_vertices[i].z *= scaleMod;
+	//}
 
 	// UI 버텍스 버퍼 생성
 	UINT numVerticesUI = sizeof(ui_vertices) / sizeof(FVertexUI);
@@ -246,7 +246,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				continue;
 			}
 		}
-
+		for (int k = 0; k < 40; ++k)
+		{
+			player->CollisionCheck(Ground[k]);
+		}
 
 		renderer.Prepare();
 		renderer.PrepareShaderResource(MushroomTestSRV);
