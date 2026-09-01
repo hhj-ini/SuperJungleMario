@@ -18,7 +18,7 @@
 #include "UBall.h"
 #include "UMushroom.h"
 #include "UPlayer.h"
-// #include "UI.h"
+#include "UI.h"
 #include "UCamera.h"
 
 
@@ -167,9 +167,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 		player->Move();
 
+		// 카메라가 플레이어 추적
 		/*camera.Follow(player->Location);
 		renderer.ViewMatrix = camera.GetViewMatrix();*/
 
+		// 카메라가 플레이어를 추적하지 않음
 		renderer.ViewMatrix = DirectX::XMMatrixIdentity();
 
 		//for (size_t i = 0; i < UBall::TotalNumBalls; ++i)

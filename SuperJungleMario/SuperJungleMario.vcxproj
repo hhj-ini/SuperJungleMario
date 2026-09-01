@@ -168,6 +168,7 @@
     <ClInclude Include="SuperJungleMario.h" />
     <ClInclude Include="UBall.h" />
     <ClInclude Include="UCamera.h" />
+    <ClInclude Include="UI.h" />
     <ClInclude Include="UMushroom.h" />
     <ClInclude Include="UPlayer.h" />
     <ClInclude Include="UPrimitive.h" />

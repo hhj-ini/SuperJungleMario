@@ -176,6 +176,34 @@ void URenderer::CreateShader()
 	pixelshaderCSO->Release();
 }
 
+// ui 전용 셰이더 생성 UIShader.hlsl로.
+void URenderer::CreateUIShader()
+{
+	ID3DBlob* vertexshaderCSO;
+	ID3DBlob* pixelshaderCSO;
+
+	D3DCompileFromFile(L"UIShader.hlsl", nullptr, nullptr, "mainVS", "vs_5_0", 0, 0, &vertexshaderCSO, nullptr);
+	Device->CreateVertexShader(vertexshaderCSO->GetBufferPointer(), vertexshaderCSO->GetBufferSize(), nullptr, &UIVertexShader);
+
+	D3DCompileFromFile(L"UIShader.hlsl", nullptr, nullptr, "mainPS", "ps_5_0", 0, 0, &pixelshaderCSO, nullptr);
+	Device->CreatePixelShader(pixelshaderCSO->GetBufferPointer(), pixelshaderCSO->GetBufferSize(), nullptr, &UIPixelShader);
+
+	D3D11_INPUT_ELEMENT_DESC layout[] =
+	{
+		{"POSITION", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0}
+	};
+
+	Device->CreateInputLayout(layout, ARRAYSIZE(layout),
+		vertexshaderCSO->GetBufferPointer(), vertexshaderCSO->GetBufferSize(), &UIInputLayout);
+
+	UIStride = sizeof(FVertexUI);
+
+	vertexshaderCSO->Release();
+	pixelshaderCSO->Release();
+}
+
 void URenderer::ReleaseShader()
 {
 	if (SimpleInputLayout)

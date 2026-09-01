@@ -105,7 +105,7 @@ public:
 
 	void CreateShader();
 
-	//void CreateUIShader();
+	void CreateUIShader();
 
 	void ReleaseShader();
 
@@ -119,7 +119,7 @@ public:
 	// 실질적인 Rendering 요청을 할 RenderPrimitive 함수
 	void RenderPrimitive(ID3D11Buffer* pBuffer, UINT numVertices);
 
-	//void PrepareUIShader();
+	void PrepareUIShader();
 
 	void RenderUI(ID3D11Buffer* pBuffer, UINT numVertices);
 
