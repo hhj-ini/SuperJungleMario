@@ -14,6 +14,7 @@ UBox::UBox(float x, float y, float w, float h)
 	ObjectType = EObjectType::BOX;
 
 }
+
 void UBox::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)
 {
 		if (!TextureSRVPtr[0])
@@ -25,7 +26,6 @@ void UBox::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)
 		DirectX::XMMATRIX world = DirectX::XMMatrixScaling(width, height, 1.0f)*DirectX::XMMatrixTranslation(Location.x, Location.y, Location.z);
 		renderer.UpdateConstantBuffer(world, renderer.ViewMatrix);
 		renderer.RenderPrimitive(pBuffer, num);
-
 }
 
 

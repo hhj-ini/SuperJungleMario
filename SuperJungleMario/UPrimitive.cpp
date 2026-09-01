@@ -1,7 +1,9 @@
 #include "UPrimitive.h"
 #include <cmath>
 #include <DirectXMath.h>
+#include <iostream>
 
+using namespace std;
 
 void UPrimitive::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)
 {

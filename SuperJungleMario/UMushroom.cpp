@@ -12,7 +12,8 @@ UMushroom::UMushroom()
 	Location.y = 0.0f;
 	// 물음표 위치로 애니메이션 이전에 위치 설정 필요함
 
-	Radius = 0.75f;
+	width = scaleMod;
+	height = scaleMod;
 }
 
 void UMushroom::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)
@@ -30,7 +31,8 @@ void UMushroom::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)
 		}
 		renderer.PrepareShaderResource(TextureSRVPtr[0]);
 
-		DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(Location.x, Location.y, Location.z);
+		//DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(Location.x, Location.y, Location.z);
+		DirectX::XMMATRIX world = DirectX::XMMatrixScaling(width, height, 1.0f) * DirectX::XMMatrixTranslation(Location.x, Location.y, Location.z);
 		renderer.UpdateConstantBuffer(world, renderer.ViewMatrix);
 
 		renderer.RenderPrimitive(pBuffer, num);

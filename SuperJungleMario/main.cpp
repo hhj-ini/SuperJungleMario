@@ -404,6 +404,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	// 생성된 버텍스 버퍼를 소멸 - 셰이더 소멸 전 호출
 	renderer.ReleaseVertexBuffer(cubeBuffer);
+	renderer.ReleaseVertexBuffer(UIBuffer);
 
 	// 상수 버퍼 소멸
 	renderer.ReleaseConstantBuffer();
@@ -414,6 +415,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	// 리소스 소멸
 	//renderer.ReleaseResource(MushroomTest);
 	//renderer.ReleaseSRV(MushroomTestSRV);
+	renderer.ReleaseResource(UITestResource);
+	renderer.ReleaseSRV(UITestSRV);
 
 	ResourceManager::GetInstance().ReleaseResource(&renderer);
 

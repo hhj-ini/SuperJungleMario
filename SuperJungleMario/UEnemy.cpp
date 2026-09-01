@@ -11,6 +11,9 @@ UEnemy::UEnemy()
 	Location.y = 0.0f;
 	// 위치 설정 필요
 
+	width = scaleMod;
+	height = scaleMod;
+
 	SetState(EnemyState::ALIVE);
 }
 
@@ -29,7 +32,8 @@ void UEnemy::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)
 		}
 		renderer.PrepareShaderResource(TextureSRVPtr[CurrentFrame]);
 
-		DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(Location.x, Location.y, Location.z);
+		//DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(Location.x, Location.y, Location.z);
+		DirectX::XMMATRIX world = DirectX::XMMatrixScaling(width, height, 1.0f) * DirectX::XMMatrixTranslation(Location.x, Location.y, Location.z);
 		renderer.UpdateConstantBuffer(world, renderer.ViewMatrix);
 
 		renderer.RenderPrimitive(pBuffer, num);
