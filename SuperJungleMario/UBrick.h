@@ -15,5 +15,7 @@ public:
 
     // 머리 위에 있는 적들의 리스트
     std::unordered_set<UPrimitive*> EnemyList;
+
+    FVector AnimOffset;
 };
 

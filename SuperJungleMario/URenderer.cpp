@@ -469,6 +469,30 @@ void URenderer::UpdateConstantBuffer(const DirectX::XMMATRIX& world, const Direc
 	}
 }
 
+void URenderer::UpdateConstantBuffer(const DirectX::XMMATRIX& world, const DirectX::XMMATRIX& view, const FVector& animOffset)
+{
+	if (ConstantBuffer)	// 버퍼가 있을 때만 아래 코드 실행
+	{
+		D3D11_MAPPED_SUBRESOURCE constantbufferMSR;
+
+		FConstants constants;
+
+		DirectX::XMStoreFloat4x4(&constants.World, DirectX::XMMatrixTranspose(world));
+		DirectX::XMStoreFloat4x4(&constants.View, DirectX::XMMatrixTranspose(view));
+
+		DeviceContext->Map(ConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &constantbufferMSR);
+
+		FConstants* constant = (FConstants*)constantbufferMSR.pData;
+		{
+			constant->World = constants.World;
+			constant->View = constants.View;
+			constant->AnimOffset = animOffset;
+		}
+		DeviceContext->Unmap(ConstantBuffer, 0);
+
+	}
+}
+
 // 화면 픽셀 좌표를 NDC 좌표로 변환
 DirectX::XMFLOAT2 URenderer::GetNDCoordinate(POINT point, int width, int height)
 {

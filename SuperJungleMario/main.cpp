@@ -300,6 +300,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		{
 			UEnemy* enemy = dynamic_cast<UEnemy*>(PrimitiveList[i]);
 			UPlayer* player = dynamic_cast<UPlayer*>(PrimitiveList[i]);
+			UMushroom* mushroom = dynamic_cast<UMushroom*>(PrimitiveList[i]);
 
 			if (enemy && enemy->IsEnemyDead())
 			{
@@ -310,6 +311,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			if (player && player->IsPlayerDead())
 			{
 				RemoveObject(PrimitiveList, primitiveCount, i);  // 플레이어가 죽으면 게임 종료 추가 필요
+				continue;
+			}
+
+			if (mushroom && mushroom->IsMushroomDestroyed())
+			{
+				RemoveObject(PrimitiveList, primitiveCount, i);
 				continue;
 			}
 		}

@@ -148,6 +148,7 @@ public:
 	{
 		DirectX::XMFLOAT4X4 World;
 		DirectX::XMFLOAT4X4 View;
+		FVector AnimOffset;
 	};
 
 	void CreateConstantBuffer();
@@ -159,6 +160,9 @@ public:
 	void UpdateUI(DirectX::XMFLOAT2 NDCoord, ID3D11Buffer* vertexBuffer, float UIWidth, float UIHeight, DirectX::XMFLOAT4 uv1uv2, DirectX::XMFLOAT4 rgba);
 
 	void UpdateConstantBuffer(const DirectX::XMMATRIX& world, const DirectX::XMMATRIX& view);
+
+	// 애니메이션 오프셋 추가 위한 함수. (오버로딩)
+	void UpdateConstantBuffer(const DirectX::XMMATRIX& world, const DirectX::XMMATRIX& view, const FVector& animOffset);
 
 	/////////////////////////////////////////////////////////////
 	// 텍스처 load 관련

@@ -70,6 +70,21 @@ bool UEnemy::CollisionCheck(UPrimitive* other)
 			//	Location.x = other->Location.x + (other->width / 2.0f) + (width / 2.0f);
 			//	Velocity.x = 0;
 			//}
+		case EObjectType::PLAYER:
+			if (UPlayer* player = dynamic_cast<UPlayer*>(other))
+			{
+				if (player->GetPosition().y > Location.y + 0.03f)
+				{
+					OnDeath(player);
+				}
+				else
+				{
+					player->TakeDamage(1);
+				}
+			}
+		case EObjectType::ENEMY:
+			// 적과 충돌 시 처리
+			break;
 		}
 	}
 	return false;
