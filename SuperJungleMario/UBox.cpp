@@ -11,6 +11,7 @@ UBox::UBox(float x, float y, float w, float h)
 	Radius = 0.0001f;
 	++TotalNumBox;
 	bisMove = false;
+	ObjectType = EObjectType::BOX;
 
 }
 void UBox::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)
@@ -45,51 +46,16 @@ bool UBox::CollisionCheck(UPrimitive* other)
 
 	// 충돌
 	if (overlapX > 0 && overlapY > 0) {
-		//밀어내기 구현
-		if (bisMove==false && other->bisMove==true) { // 속도가 0, 즉 블럭이면
-			other->Location.x += (overlapX) * ((Location.x < other->Location.x) ? 1.0f : -1.0f);
-			other->Location.y += (overlapY) * ((Location.y < other->Location.y) ? 1.0f : -1.0f);
 
-			//겹치는 간격이 작은쪽의 속도를 멈춤
+		switch (other->ObjectType)
+		{
+		default:
+			break;
 
-			if (overlapX < overlapY) {
-				Velocity.x = 0.0f;
-				other->Velocity.x = 0.0f;
-
-			}
-			else {
-				Velocity.y = 0.0f;
-				other->Velocity.y = 0.0f;
-			}
-		}
-		else if (other->bisMove == false && bisMove == true) { 
-
-			//겹치는 간격이 작은쪽의 속도를 멈춤
-
-			if (overlapX < overlapY) {
-				Location.x += (overlapX) * ((Location.x < other->Location.x) ? -1.0f : 1.0f);
-				Velocity.x = 0.0f;
-				other->Velocity.x = 0.0f;
-
-			}
-			else {
-				Location.y += (overlapY) * ((Location.y < other->Location.y) ? -1.0f : 1.0f);
-				Velocity.y = 0.0f;
-				other->Velocity.y = 0.0f;
-			}
+			return true;
 		}
 
-		else {
-			Location.x += (overlapX / 2.0f) * ((Location.x < other->Location.x) ? -1.0f : 1.0f);
-			Location.y += (overlapY / 2.0f) * ((Location.y < other->Location.y) ? -1.0f : 1.0f);
-			other->Location.x += (overlapX / 2.0f) * ((Location.x < other->Location.x) ? 1.0f : -1.0f);
-			other->Location.y += (overlapY / 2.0f) * ((Location.y < other->Location.y) ? 1.0f : -1.0f);
-		}
-		
-		return true;
-		}
-
-
+	}
 
 		return false;
 	}
