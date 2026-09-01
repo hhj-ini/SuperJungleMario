@@ -76,14 +76,17 @@ bool UPlayer::CollisionCheck(UPrimitive* other)
 		
 		switch (other->ObjectType)
 		{
-		case EObjectType::BOX:
-			if (Location.y > other->Location.y) {
+		case EObjectType::BOX: // 박스와 충돌 시 처리
+			if (overlapX > overlapY) { //y축방향으로 충돌시 y속도 0으로 처리
 				bIsGrounded = true;
 				Location.y = other->Location.y + (other->height / 2.0f) + (height / 2.0f);
 				Velocity.y = 0;
 				break;
 			}
-
+			else { // x축방향으로 충돌시 x속도 0으로 처리
+				Location.x = other->Location.x + (other->width / 2.0f) + (width / 2.0f);
+				Velocity.x = 0;
+			}
 			return true;
 		}
 	}
@@ -123,7 +126,7 @@ void UPlayer::Move()
 
 		if (bIsGrounded && (GetAsyncKeyState(VK_SPACE) & 0x8000))
 		{
-			Velocity.y = 0.005f;
+			Velocity.y = 0.05f;
 			bIsGrounded = false;
 		}
 
