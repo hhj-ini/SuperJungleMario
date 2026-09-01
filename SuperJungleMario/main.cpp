@@ -74,6 +74,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	renderer.CreateShader();
 	renderer.CreateUIShader();
 	renderer.CreateConstantBuffer();
+	renderer.CreateUISamplerState();
 
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
@@ -153,6 +154,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	ID3D11ShaderResourceView* MushroomTestSRV = nullptr;
 	renderer.LoadTexture(L"Resource\\Mushroom.png", MushroomTest, MushroomTestSRV);
 
+	// ui 텍스쳐 파일 로드 테스트 코드
+	ID3D11Resource* UITestResource = nullptr;
+	ID3D11ShaderResourceView* UITestSRV = nullptr;
+	renderer.LoadTexture(L"Resource\\font.png", UITestResource, UITestSRV);
+
 
 	//// Box 추가////
 	UPrimitive** Ground = nullptr;
@@ -231,7 +237,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			POINT cursor2 = { static_cast<long>(x2), static_cast<long>(y2) };
 			UIList[0]->setNDCoord(renderer.GetNDCoordinate(cursor1, 1024, 1024)); // 픽셀 좌표를 NDC로 변환
 			UIList[1]->setNDCoord(renderer.GetNDCoordinate(cursor2, 1024, 1024));
-			renderer.PrepareUIShader();
+			renderer.PrepareUIShader(UITestSRV);
 
 			for (size_t i = 0; i < uiCnt; i++)
 			{

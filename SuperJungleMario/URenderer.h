@@ -54,6 +54,10 @@ public:
 	D3D11_VIEWPORT ViewportInfo;
 	// 렌더링 영역을 정의하는 뷰포트 정보
 
+	ID3D11SamplerState* UISamplerStete;
+	// ui sampler state. ui 텍스쳐를 어떻게 샘플링 할지를 결정
+
+
 
 public:
 	// 렌더러 초기화 함수
@@ -121,7 +125,7 @@ public:
 	// 실질적인 Rendering 요청을 할 RenderPrimitive 함수
 	void RenderPrimitive(ID3D11Buffer* pBuffer, UINT numVertices);
 
-	void PrepareUIShader();
+	void PrepareUIShader(ID3D11ShaderResourceView* UISRV);
 
 	void RenderUI(ID3D11Buffer* pBuffer, UINT numVertices);
 
@@ -173,4 +177,7 @@ public:
 
 	// resource 해제하는 함수
 	void ReleaseSRV(ID3D11ShaderResourceView*& InRVPtr);
+
+	// ui sampler state 만든다
+	void CreateUISamplerState();
 };

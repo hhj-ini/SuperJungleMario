@@ -328,11 +328,14 @@ void URenderer::RenderPrimitive(ID3D11Buffer* pBuffer, UINT numVertices)
 }
 
 // RenderUI 하기 전 파이프라인을 모두 UI... 으로 attach
-void URenderer::PrepareUIShader()
+void URenderer::PrepareUIShader(ID3D11ShaderResourceView* UISRV)
 {
 	DeviceContext->VSSetShader(UIVertexShader, nullptr, 0);
 	DeviceContext->PSSetShader(UIPixelShader, nullptr, 0);
 	DeviceContext->IASetInputLayout(UIInputLayout);
+	// 텍스쳐 바인딩
+	DeviceContext->PSSetShaderResources(1, 1, &UISRV);
+	DeviceContext->PSSetSamplers(1, 1, &UISamplerStete);
 }
 
 // ui 렌더링 
@@ -485,10 +488,10 @@ void URenderer::UpdateUI(DirectX::XMFLOAT2 NDCoord, ID3D11Buffer* vertexBuffer, 
 		{
 			FVertexUI corners[4] =
 			{
-				{NDCoord.x - UIWidth / 2, NDCoord.y - UIHeight / 2, 0, 0, rgba.x, rgba.y, rgba.z, rgba.w}, // 일단 uv를 고정시켜 놓음
-				{NDCoord.x + UIWidth / 2, NDCoord.y - UIHeight / 2, 1, 0, rgba.x, rgba.y, rgba.z, rgba.w}, // buffer를 map했을때 읽기, 쓰기를 동시에 하면 안됨
-				{NDCoord.x - UIWidth / 2, NDCoord.y + UIHeight / 2, 0, 1, rgba.x, rgba.y, rgba.z, rgba.w},
-				{NDCoord.x + UIWidth / 2, NDCoord.y + UIHeight / 2, 1, 1, rgba.x, rgba.y, rgba.z, rgba.w}
+				{NDCoord.x - UIWidth / 2, NDCoord.y - UIHeight / 2, 0, 1, rgba.x, rgba.y, rgba.z, rgba.w}, // 일단 uv를 고정시켜 놓음
+				{NDCoord.x + UIWidth / 2, NDCoord.y - UIHeight / 2, 1, 1, rgba.x, rgba.y, rgba.z, rgba.w}, // buffer를 map했을때 읽기, 쓰기를 동시에 하면 안됨
+				{NDCoord.x - UIWidth / 2, NDCoord.y + UIHeight / 2, 0, 0, rgba.x, rgba.y, rgba.z, rgba.w},
+				{NDCoord.x + UIWidth / 2, NDCoord.y + UIHeight / 2, 1, 0, rgba.x, rgba.y, rgba.z, rgba.w}
 			};
 			// lb rb lt rt
 			int index[6] = { 0, 2, 1, 1, 2, 3 };
@@ -531,4 +534,15 @@ void URenderer::ReleaseSRV(ID3D11ShaderResourceView*& InRVPtr)
 		InRVPtr->Release();
 		InRVPtr = nullptr;
 	}
+}
+
+// ui sampler state 만든다
+void URenderer::CreateUISamplerState()
+{
+	D3D11_SAMPLER_DESC samplerdesc = {};
+	samplerdesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
+	samplerdesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
+	samplerdesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
+
+	Device->CreateSamplerState(&samplerdesc, &UISamplerStete);
 }
