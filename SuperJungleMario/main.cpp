@@ -22,6 +22,7 @@
 #include "UUi.h"
 #include "UCamera.h"
 #include "UBox.h"
+#include "UEmeny.h"
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -43,6 +44,19 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		return DefWindowProc(hWnd, message, wParam, lParam);
 	}
 
+}
+
+void RemoveObject(UPrimitive** list, size_t& primitiveCount, size_t removeIndex)
+{
+	size_t lastIndex = primitiveCount - 1;
+
+	UPrimitive* deadObject = list[removeIndex];
+
+	list[removeIndex] = list[lastIndex];
+	list[lastIndex] = nullptr;
+
+	--primitiveCount;
+	delete deadObject;
 }
 
 
@@ -106,9 +120,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 
 	size_t ballPoolCnt = 50;	// 초기에 50개만큼 공 풀 확보
+	size_t primitiveCount = 0;	// 현재 공 풀에 들어있는 공 갯수
 
 	UPrimitive** PrimitiveList = new UPrimitive*[ballPoolCnt];
-	PrimitiveList[0] = new UBall;
+	PrimitiveList[primitiveCount++] = new UBall;
 	
 	bool bGravity = true;	
 	
@@ -129,7 +144,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	/////////// 여기서 테스트용 객체 추가하시면 됩니다 ////////////////
 	int mushroomIdx = UBall::TotalNumBalls;
-	PrimitiveList[mushroomIdx] = new UMushroom;
+	//PrimitiveList[mushroomIdx] = new UMushroom;
+	PrimitiveList[primitiveCount++] = new UMushroom;
 
 	// 접근할때
 	// PrimitiveList[mushroomIdx]->render(...); 이런식으로 하면 됩니다.
@@ -140,12 +156,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	int x2 = 200;
 	int y2 = 600;
 
-	/////////// 여기서 테스트용 객체 추가하시면 됩니다 ////////////////
-
-	//UBall* player = new UPlayer;
-	int playerIdx = UBall::TotalNumBalls;
+	//int playerIdx = UBall::TotalNumBalls;
 	UBall* player = new UPlayer;
-	PrimitiveList[playerIdx] = player;
+	PrimitiveList[primitiveCount++] = player;
 
 
 	// 텍스쳐 파일 로드 테스트 코드
@@ -186,7 +199,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	
 		}
 
-
 		// 카메라가 플레이어 추적
 		camera.Follow(player->Location);
 		renderer.ViewMatrix = camera.GetViewMatrix();
@@ -194,17 +206,35 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		// 카메라가 플레이어를 추적하지 않음
 		// renderer.ViewMatrix = DirectX::XMMatrixIdentity();
 
-		for (size_t i = 0; i < UBall::TotalNumBalls; ++i)
+		for (size_t i = 0; i < primitiveCount; ++i)
 		{
-			for (size_t j = i + 1; j < UBall::TotalNumBalls; ++j)
+			for (size_t j = i + 1; j < primitiveCount; ++j) 
 			{
-				if (j == mushroomIdx || i == mushroomIdx) continue;	// 임시로 버섯 충돌 로직 영향 받지 않도록 함
+				// if (j == mushroomIdx || i == mushroomIdx) continue;	// 임시로 버섯 충돌 로직 영향 받지 않도록 함
 				PrimitiveList[i]->CollisionCheck(PrimitiveList[j]);
 			}
 			if (UBall* b = dynamic_cast<UBall*>(PrimitiveList[i]))
 			{
 				b->Move();
 				b->UpdateVelocity(bGravity);
+			}	
+		}
+
+		for (size_t i = 0; i < primitiveCount; ++i)
+		{
+			UEmeny* enemy = dynamic_cast<UEmeny*>(PrimitiveList[i]);
+			UPlayer* player = dynamic_cast<UPlayer*>(PrimitiveList[i]);
+
+			if (enemy && enemy->IsEnemyDead())
+			{
+				RemoveObject(PrimitiveList, primitiveCount, i);
+				continue;
+			}
+
+			if (player && player->IsPlayerDead())
+			{
+				RemoveObject(PrimitiveList, primitiveCount, i);
+				continue;
 			}
 		}
 
@@ -213,7 +243,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		renderer.PrepareShaderResource(MushroomTestSRV);
 		renderer.PrepareShader();
 
-		for (size_t i = 0; i < UBall::TotalNumBalls; ++i)
+		for (size_t i = 0; i < primitiveCount; ++i)
 		{
 			PrimitiveList[i]->Render(renderer, cubeBuffer, numVerticescube);
 		}
@@ -271,7 +301,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				ms->SetState(UMushroom::MushroomState::ANIMATING);
 			}
 		}
-
 	
 		ImGui::End();
 
@@ -300,6 +329,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		delete PrimitiveList[i];
 		PrimitiveList[i] = nullptr;
 	}
+	 
+
 	delete[] PrimitiveList;
 	PrimitiveList = nullptr;
 
