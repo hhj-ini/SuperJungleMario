@@ -238,6 +238,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		{
 			bGameStart = false;
 		}
+		if (UGameLogic::GameLogic().getLife() < 0) 
+		{
+			bGameEnd = true;
+		}
 
 		MSG msg;
 
@@ -327,7 +331,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		// UI 렌더링 
 		renderer.PrepareUIShader(UIBlackSRV);
-		if (bGameStart || bGameEnd)
+		if (bGameStart || bDeath)
 		{
 			// 첫화면 렌더. 검은 화면 렌더.
 			BlackBackground->Render(renderer, UIBuffer, numVerticesUI, 5.0f, 5.0f);
@@ -348,7 +352,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				UIList[i]->Render(renderer, UIBuffer, numVerticesUI, fontSize, fontSize);
 			}
 		}
-		if (bGameStart)
+		if (bGameStart || bDeath)
 		{
 			renderer.PrepareUIShader(UIMarioSRV);
 			MarioUI->Render(renderer, UIBuffer, numVerticesUI, 0.1f, 0.1f);
@@ -356,7 +360,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			for (int i = 0; i < GameStartUICnt; i++)
 			{
 				GameStartUIList[i]->setNDCoord(renderer.GetNDCoordinate(charPositionsStart[i], 1024, 1024));
-				GameStartUIList[i]->UpdateUV(i);
+				GameStartUIList[i]->UpdateUVStart(i);
 			}
 			for (size_t i = 0; i < GameStartUICnt; i++)
 			{

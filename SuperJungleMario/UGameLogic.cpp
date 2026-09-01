@@ -41,7 +41,8 @@ void UGameLogic::addOneLife()
 	life++;
 }
 
-void UGameLogic::removeOneLife()
+void UGameLogic::removeOneLife() // UGameLogic::GameLogic().removeOnelife() 마다 
 {
 	life--;
+	
 }
