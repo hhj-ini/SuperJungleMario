@@ -11,7 +11,7 @@ UMushroom::UMushroom()
 	Location.y = 0.0f;
 	// 물음표 위치로 애니메이션 이전에 위치 설정 필요함
 
-	Radius = 1.0f;
+	Radius = 0.75f;
 }
 
 void UMushroom::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)
@@ -51,6 +51,11 @@ void UMushroom::Move()
 		// 위로 올라가는 애니메이션 멈추기
 		SetState(MushroomState::ENABLE);
 	}
+}
+
+void UMushroom::UpdateVelocity(bool bGravity)
+{
+	return; // 버섯에서는 속도처리 하지 않도록 함
 }
 
 void UMushroom::SetState(MushroomState InState)
