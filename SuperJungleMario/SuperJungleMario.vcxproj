@@ -150,6 +150,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="UBall.cpp" />
     <ClCompile Include="UMushroom.cpp" />
+    <ClCompile Include="UPlayer.cpp" />
     <ClCompile Include="UPrimitive.cpp" />
     <ClCompile Include="URenderer.cpp" />
   </ItemGroup>
@@ -165,7 +166,9 @@
     <ClInclude Include="Sphere.h" />
     <ClInclude Include="SuperJungleMario.h" />
     <ClInclude Include="UBall.h" />
+    <ClInclude Include="UCamera.h" />
     <ClInclude Include="UMushroom.h" />
+    <ClInclude Include="UPlayer.h" />
     <ClInclude Include="UPrimitive.h" />
     <ClInclude Include="URenderer.h" />
   </ItemGroup>

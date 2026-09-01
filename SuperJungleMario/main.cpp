@@ -16,6 +16,8 @@
 #include "Cube.h"
 #include "UBall.h"
 #include "UMushroom.h"
+#include "UPlayer.h"
+#include "UCamera.h"
 
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -66,6 +68,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	renderer.Create(hWnd);
 	renderer.CreateShader();
 	renderer.CreateConstantBuffer();
+
+	UCamera camera;
 
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
@@ -131,7 +135,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	/////////// 여기서 테스트용 객체 추가하시면 됩니다 ////////////////
 
-
+	UBall* player = new UPlayer;
 
 
 	// Main Loop(Quit Message가 들어오기 전까지 아래 Loop를 무한히 실행하게 됨.
@@ -154,38 +158,38 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				bIsExit = true;
 				break;
 			}	
-			else if (msg.message == WM_LBUTTONDOWN)
-			{	// 공 피킹
-				holdPos.x = (LOWORD(msg.lParam) - 512.0f) / 512.0f;
-				holdPos.y = (512.0f - HIWORD(msg.lParam)) / 512.0f;
+			//else if (msg.message == WM_LBUTTONDOWN)
+			//{	// 공 피킹
+			//	holdPos.x = (LOWORD(msg.lParam) - 512.0f) / 512.0f;
+			//	holdPos.y = (512.0f - HIWORD(msg.lParam)) / 512.0f;
 
-				if (bFriction)
-				{
-					for (size_t i = 0; i < UBall::TotalNumBalls; ++i)
-					{
+			//	if (bFriction)
+			//	{
+			//		for (size_t i = 0; i < UBall::TotalNumBalls; ++i)
+			//		{
 
-					}
-				}
-			}
-			else if (msg.message == WM_LBUTTONUP)
-			{
-				currPos.x = (LOWORD(msg.lParam) - 512.0f) / 512.0f;
-				currPos.y = (512.0f - HIWORD(msg.lParam)) / 512.0f;
+			//		}
+			//	}
+			//}
+			//else if (msg.message == WM_LBUTTONUP)
+			//{
+			//	currPos.x = (LOWORD(msg.lParam) - 512.0f) / 512.0f;
+			//	currPos.y = (512.0f - HIWORD(msg.lParam)) / 512.0f;
 
-				if (bFriction)
-				{
-					for (size_t i = 0; i < UBall::TotalNumBalls; ++i)
-					{
+			//	if (bFriction)
+			//	{
+			//		for (size_t i = 0; i < UBall::TotalNumBalls; ++i)
+			//		{
 
-						bLineRender = false;
-					}
-				}
-			}
-			else if (msg.message == WM_MOUSEMOVE)
-			{
-				currPos.x = (LOWORD(msg.lParam) - 512.0f) / 512.0f;
-				currPos.y = (512.0f - HIWORD(msg.lParam)) / 512.0f;
-			}
+			//			bLineRender = false;
+			//		}
+			//	}
+			//}
+			//else if (msg.message == WM_MOUSEMOVE)
+			//{
+			//	currPos.x = (LOWORD(msg.lParam) - 512.0f) / 512.0f;
+			//	currPos.y = (512.0f - HIWORD(msg.lParam)) / 512.0f;
+			//}
 		}
 
 		for (size_t i = 0; i < UBall::TotalNumBalls; ++i)
@@ -207,8 +211,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			
 		}
 
+		player->Move();
+
+		camera.Follow(player->Location);
+
+		renderer.ViewMatrix = camera.GetViewMatrix();
+
 		renderer.Prepare();
 		renderer.PrepareShader();
+
+		player->Render(renderer, cubeBuffer, numVerticescube);
 
 		for (size_t i = 0; i < UBall::TotalNumBalls; ++i)
 		{
@@ -232,14 +244,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			}
 		}
 		
-		// 나만의 무기 - 당구 게임 모드
-		if (ImGui::Checkbox("Cue Sports Mode!!!!", &bFriction))
-		{
-			if (bFriction)
-			{
-				bGravity = false;
-			}
-		}
+		//// 나만의 무기 - 당구 게임 모드
+		//if (ImGui::Checkbox("Cue Sports Mode!!!!", &bFriction))
+		//{
+		//	if (bFriction)
+		//	{
+		//		bGravity = false;
+		//	}
+		//}
 
 		// 버섯 무빙 테스트용
 		if (ImGui::Button("Mushroom"))
@@ -256,10 +268,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		ImGui::Render();
 		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
-		if (bLineRender && bFriction)
+		/*if (bLineRender && bFriction)
 		{
 			renderer.UpdateConstantBuffer(FVector{}, 0.0f, holdPos, currPos);
-		}
+		}*/
 	
 		renderer.SwapBuffer();
 

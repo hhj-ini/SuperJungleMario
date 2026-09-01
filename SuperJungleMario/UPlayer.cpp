@@ -18,8 +18,8 @@ UPlayer::~UPlayer()
 
 void UPlayer::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)
 {
-	renderer.UpdateConstantBuffer(Location, Radius);
-	renderer.RenderPrimitive(pBuffer, num);
+	/*renderer.UpdateConstantBuffer(Location, Radius);
+	renderer.RenderPrimitive(pBuffer, num);*/
 }
 
 //bool UPlayer::CollisionCheck(UPrimitive* other)
@@ -109,30 +109,30 @@ void UPlayer::Move()
 	// 바닥 착지 처리 필요(충돌)
 }
 
-void UBall::UpdateVelocity(bool bGravity, bool bFriction)
-{
-	if (bIsHold)
-	{
-		return;
-	}
-
-	float gravity = (bGravity) ? GravityAmount : 0.0f;
-	float damping = (bFriction) ? DampingAmount : 1.0f;
-
-	Velocity.x *= damping;
-	Velocity.y *= damping;
-
-	// 무한히 댐핑값 곱해지는 것을 방지
-	if (0.00001f > Velocity.x && -0.00001f < Velocity.x)
-	{
-		Velocity.x = 0.0f;
-	}
-	if (0.00001f > Velocity.y && -0.00001f < Velocity.y)
-	{
-		Velocity.y = 0.0f;
-	}
-
-
-	Velocity.y -= gravity * deltaTime;
-}
+//void UBall::UpdateVelocity(bool bGravity, bool bFriction)
+//{
+//	if (bIsHold)
+//	{
+//		return;
+//	}
+//
+//	float gravity = (bGravity) ? GravityAmount : 0.0f;
+//	float damping = (bFriction) ? DampingAmount : 1.0f;
+//
+//	Velocity.x *= damping;
+//	Velocity.y *= damping;
+//
+//	// 무한히 댐핑값 곱해지는 것을 방지
+//	if (0.00001f > Velocity.x && -0.00001f < Velocity.x)
+//	{
+//		Velocity.x = 0.0f;
+//	}
+//	if (0.00001f > Velocity.y && -0.00001f < Velocity.y)
+//	{
+//		Velocity.y = 0.0f;
+//	}
+//
+//
+//	Velocity.y -= gravity * deltaTime;
+//}
 
