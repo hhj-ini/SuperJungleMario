@@ -24,7 +24,7 @@ public:
     virtual void Move() override;
 
     void SetState(EnemyState InState);
-    void OnCollisionWithPlayer(UPlayer* player);
+    void OnDeath(UPlayer* player);
 
     virtual void UpdateAnimation(float deltaTime);
 

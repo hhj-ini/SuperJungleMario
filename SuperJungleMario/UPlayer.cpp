@@ -1,5 +1,6 @@
 #pragma once
 #include "UPlayer.h"
+#include "UEnemy.h"
 #include <math.h>
 #include "ResourceManager.h"
 #include <cmath>
@@ -19,6 +20,7 @@ UPlayer::UPlayer()
 	width = scaleMod;
 	height = scaleMod;
 	bFacingLeft = false;
+	ObjectType = EObjectType::PLAYER;
 }
 
 UPlayer::~UPlayer()
@@ -101,7 +103,21 @@ bool UPlayer::CollisionCheck(UPrimitive* other)
 				Location.x = other->Location.x + (other->width / 2.0f) + (width / 2.0f);
 				Velocity.x = 0;
 			}
+		case EObjectType::ENEMY:
+			if (UEnemy* enemy = dynamic_cast<UEnemy*>(other))
+			{
+				if (Location.y > enemy->GetPosition().y + 0.03f)
+				{
+					enemy->OnDeath(this);
+				}
+				else
+				{
+					TakeDamage(1);
+				}
+
+			}
 			return true;
+
 		}
 	}
 	return false;
@@ -138,11 +154,6 @@ void UPlayer::Move()
 			Velocity.x += 0.01f;
 			bFacingLeft = false;
 		}
-		/*else
-		{
-			CurrentFrame = bFacingLeft ? 2 : 0;
-			AnimationTimer = 0.0f;
-		}*/
 
 		if (bIsGrounded && (GetAsyncKeyState(VK_SPACE) & 0x8000))
 		{
@@ -166,7 +177,7 @@ void UPlayer::TakeDamage(int damage)
 
 	if (Life >= 1)
 	{
-		// 작아지는 로직?
+		// 작아지는 로직
 	}
 	else if (Life == 0)
 	{
@@ -181,15 +192,15 @@ void UPlayer::UpdateAnimation(float deltaTime)
 	{
 		if (Velocity.x > 0.0f)
 		{
-			CurrentFrame = (CurrentFrame + 1) % 2; // 오른쪽 이동 시 프레임 0과 1을 번갈아가며 사용
+			CurrentFrame = (CurrentFrame + 1) % 2; 
 		}
 		else if (Velocity.x < 0.0f)
 		{
-			CurrentFrame = 2 + (CurrentFrame + 1) % 2; // 왼쪽 이동 시 프레임 2와 3을 번갈아가며 사용
+			CurrentFrame = 2 + (CurrentFrame + 1) % 2; 
 		}
 		else
 		{
-			CurrentFrame = bFacingLeft ? 2 : 0; // 정지 상태에서는 마지막 방향에 따라 프레임 설정
+			CurrentFrame = bFacingLeft ? 2 : 0; 
 		}
 		AnimationTimer = 0.0f;
 	}

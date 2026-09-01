@@ -12,7 +12,6 @@ UBox::UBox(float x, float y, float w, float h)
 	++TotalNumBox;
 	bisMove = false;
 	ObjectType = EObjectType::BOX;
-
 }
 
 void UBox::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)
