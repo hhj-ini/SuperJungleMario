@@ -113,7 +113,7 @@ public:
 	// D3D11 렌더링에 필요한 준비 작업을 위한 Prepare 함수
 	void Prepare();
 
-	void PrepareShaderResource(ID3D11ShaderResourceView*& InSRVPtr);
+	void PrepareShaderResource(ID3D11ShaderResourceView* InSRVPtr);
 
 	// Simple Shader 사용을 위한 PrepareShader 함수
 	void PrepareShader();

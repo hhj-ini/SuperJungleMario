@@ -22,7 +22,8 @@
 #include "UUi.h"
 #include "UCamera.h"
 #include "UBox.h"
-#include "UEmeny.h"
+#include "UEnemy.h"
+#include "ResourceManager.h"
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -160,6 +161,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	UBall* player = new UPlayer;
 	PrimitiveList[primitiveCount++] = player;
 
+	UBall* GoombaList[1] = { nullptr };	// 임시로 goomba 애니메이션 업데이트
+	UBall* goomba = new UEnemy;
+	PrimitiveList[primitiveCount++] = goomba;
+	GoombaList[0] = goomba;
+
 
 	// 텍스쳐 파일 로드 테스트 코드
 	ID3D11Resource* MushroomTest = nullptr;
@@ -222,7 +228,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		for (size_t i = 0; i < primitiveCount; ++i)
 		{
-			UEmeny* enemy = dynamic_cast<UEmeny*>(PrimitiveList[i]);
+			UEnemy* enemy = dynamic_cast<UEnemy*>(PrimitiveList[i]);
 			UPlayer* player = dynamic_cast<UPlayer*>(PrimitiveList[i]);
 
 			if (enemy && enemy->IsEnemyDead())
@@ -236,6 +242,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				RemoveObject(PrimitiveList, primitiveCount, i);
 				continue;
 			}
+		}
+
+		for (int i = 0; i < 1; ++i)  // 임시로 5개의 goomba만 애니메이션 업데이트
+		{
+			GoombaList[i]->UpdateAnimation(elapsedTime / 1000.0f); 
 		}
 
 

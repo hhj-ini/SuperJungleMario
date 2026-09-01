@@ -98,7 +98,6 @@ bool UBall::CollisionCheck(UPrimitive* other)
 	//return false;
 }
 
-
 void UBall::Move()
 {
 	if (bIsHold)
@@ -141,5 +140,9 @@ void UBall::UpdateVelocity(bool bGravity)
 		Velocity.y -= gravity * deltaTime;
 		Location.y += Velocity.y;
 	}
+}
+
+void UBall::UpdateAnimation(float deltaTime)
+{
 }
 

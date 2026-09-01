@@ -1,4 +1,5 @@
 #include "UMushroom.h"
+#include "ResourceManager.h"
 
 UMushroom::UMushroom()
 	: UBall()
@@ -18,8 +19,16 @@ void UMushroom::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)
 {
 	if (mrState == MushroomState::ENABLE || mrState == MushroomState::ANIMATING)
 	{	// 버섯이 애니메이션 중이거나, 활성화 상태일 때만 렌더링
+
 		/*renderer.UpdateConstantBuffer(Location, Radius);
 		renderer.RenderPrimitive(pBuffer, num);*/
+
+		// 렌더하기 전에 텍스쳐 바인딩
+		if (!TextureSRVPtr[0])
+		{
+			TextureSRVPtr[0] = ResourceManager::GetInstance().GetSRV(L"Resource\\Mushroom.png", &renderer);
+		}
+		renderer.PrepareShaderResource(TextureSRVPtr[0]);
 
 		DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(Location.x, Location.y, Location.z);
 		renderer.UpdateConstantBuffer(world, renderer.ViewMatrix);

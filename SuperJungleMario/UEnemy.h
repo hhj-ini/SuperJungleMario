@@ -2,10 +2,10 @@
 #include "UBall.h"
 #include "UPlayer.h"
 
-class UEmeny : public UBall
+class UEnemy : public UBall
 {
 public:
-    enum class EmenyState
+    enum class EnemyState
     {
         ALIVE,
         DEAD
@@ -15,20 +15,23 @@ public:
     
 
 public:
-    UEmeny();
+    UEnemy();
 
     virtual void Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num);
     virtual bool CollisionCheck(UPrimitive* other);
-    bool IsEnemyDead() const { return eState == EmenyState::DEAD; }
+    bool IsEnemyDead() const { return eState == EnemyState::DEAD; }
 
     virtual void Move() override;
 
-    void SetState(EmenyState InState);
+    void SetState(EnemyState InState);
     void OnCollisionWithPlayer(UPlayer* player);
 
+    virtual void UpdateAnimation(float deltaTime);
 
 private:
-    EmenyState eState = EmenyState::ALIVE;
+    EnemyState eState = EnemyState::ALIVE;
+
+    int CurrentFrame = 0;
+    float AnimationTimer = 0.0f;
+    const float FrameInterval = 0.15f;
 };
-
-

@@ -4,8 +4,8 @@
 
 void UPrimitive::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)
 {
-	DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(Location.x, Location.y, Location.z);
-
+	DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(Location.x, Location.y, Location.z); 
+	// renderer.PrepareShaderResource(TextureSRVPtr[CurrentFrame]);
 	renderer.UpdateConstantBuffer(world, renderer.ViewMatrix);
 	renderer.RenderPrimitive(pBuffer, num);
 }
