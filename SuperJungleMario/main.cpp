@@ -132,6 +132,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	}
 	UUi* BlackBackground = new UUi(ui_vertices, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT4(1, 1, 1, 1), DirectX::XMFLOAT4(1, 1, 0, 0), 1.0f);
 	UUi* MarioUI = new UUi(ui_vertices, DirectX::XMFLOAT2(-0.2f, 0.025f), DirectX::XMFLOAT4(1, 1, 1, 1), DirectX::XMFLOAT4(1, 1, 0, 0), 1.0f);
+	UUi* CoinUI = new UUi(ui_vertices, DirectX::XMFLOAT2(-0.24f, 0.84f), DirectX::XMFLOAT4(1, 1, 1, 1), DirectX::XMFLOAT4(1, 1, 0, 0), 1.0f);
 
 	//ID3D11Buffer* cubeBuffer = renderer.CreateVertexBuffer(cube_vertices, sizeof(cube_vertices));
 	ID3D11Buffer* cubeBuffer = renderer.CreateTextureVertexBuffer(cube_vertices, sizeof(cube_vertices));
@@ -215,6 +216,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	ID3D11Resource* UIMarioResource = nullptr;
 	ID3D11ShaderResourceView* UIMarioSRV = nullptr;
 	renderer.LoadTexture(L"Resource\\Mario\\Mario1.png", UIMarioResource, UIMarioSRV);
+	ID3D11Resource* UICoinResource = nullptr;
+	ID3D11ShaderResourceView* UICoinSRV = nullptr;
+	renderer.LoadTexture(L"Resource\\Coin.png", UICoinResource, UICoinSRV);
 
 
 	//// Box 추가////
@@ -239,6 +243,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		if (GameTime > 2) // 게임시간이 1초 지나면 첫화면 넘기기
 		{
 			bGameStart = false;
+		}
+		if (UGameLogic::GameLogic().getLife() < 0) 
+		{
+			bGameEnd = true;
 		}
 
 		MSG msg;
@@ -300,6 +308,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		{
 			UEnemy* enemy = dynamic_cast<UEnemy*>(PrimitiveList[i]);
 			UPlayer* player = dynamic_cast<UPlayer*>(PrimitiveList[i]);
+			UMushroom* mushroom = dynamic_cast<UMushroom*>(PrimitiveList[i]);
 
 			if (enemy && enemy->IsEnemyDead())
 			{
@@ -310,6 +319,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			if (player && player->IsPlayerDead())
 			{
 				RemoveObject(PrimitiveList, primitiveCount, i);  // 플레이어가 죽으면 게임 종료 추가 필요
+				continue;
+			}
+
+			if (mushroom && mushroom->IsMushroomDestroyed())
+			{
+				RemoveObject(PrimitiveList, primitiveCount, i);
 				continue;
 			}
 		}
@@ -331,17 +346,19 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		// UI 렌더링 
 		renderer.PrepareUIShader(UIBlackSRV);
-		if (bGameStart || bGameEnd)
+		if (bGameStart || bDeath)
 		{
 			// 첫화면 렌더. 검은 화면 렌더.
 			BlackBackground->Render(renderer, UIBuffer, numVerticesUI, 5.0f, 5.0f);
 		}
-		renderer.PrepareUIShader(UIFontSRV);
 		UUi::UpdateScoreUI(UGameLogic::GameLogic().score);
 		UUi::UpdateCoinUI(UGameLogic::GameLogic().coin);
 		const float fontSize = 0.09f;
 		if (bUIRender)
 		{
+			renderer.PrepareUIShader(UICoinSRV);
+			CoinUI->Render(renderer, UIBuffer, numVerticesUI, 0.1f, 0.1f);
+			renderer.PrepareUIShader(UIFontSRV);
 			for (int i = 0; i < uiCnt; i++)
 			{
 				UIList[i]->setNDCoord(renderer.GetNDCoordinate(charPositions[i], 1024, 1024));
@@ -352,7 +369,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				UIList[i]->Render(renderer, UIBuffer, numVerticesUI, fontSize, fontSize);
 			}
 		}
-		if (bGameStart)
+		if (bGameStart || bDeath)
 		{
 			renderer.PrepareUIShader(UIMarioSRV);
 			MarioUI->Render(renderer, UIBuffer, numVerticesUI, 0.1f, 0.1f);
@@ -360,7 +377,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			for (int i = 0; i < GameStartUICnt; i++)
 			{
 				GameStartUIList[i]->setNDCoord(renderer.GetNDCoordinate(charPositionsStart[i], 1024, 1024));
-				GameStartUIList[i]->UpdateUV(i);
+				GameStartUIList[i]->UpdateUVStart(i);
 			}
 			for (size_t i = 0; i < GameStartUICnt; i++)
 			{

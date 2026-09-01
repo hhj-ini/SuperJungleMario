@@ -47,4 +47,6 @@ public:
 	static void UpdateLifeUI(int life);
 
 	void UpdateUV(int index);
+
+	void UpdateUVStart(int index);
 };

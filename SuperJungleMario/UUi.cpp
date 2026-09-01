@@ -103,6 +103,11 @@ void UUi::UpdateUV(int index)
 	UUi::uv = Translate(charList[index]);
 }
 
+void UUi::UpdateUVStart(int index)
+{
+	UUi::uv = Translate(charListStart[index]);
+}
+
 // char input을 u, v 좌표로 변환 
 DirectX::XMFLOAT4 UUi::Translate(char input)
 {
