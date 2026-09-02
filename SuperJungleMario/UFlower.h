@@ -38,6 +38,9 @@ public:
 
     void SetEnable();
 
+    FlowerState GetState() { return fState; }
+
+
     void SetAnimation();
 
     void FlowFlower();

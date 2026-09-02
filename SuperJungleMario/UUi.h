@@ -30,7 +30,6 @@ public:
 	DirectX::XMFLOAT2 NDCoord;
 	DirectX::XMFLOAT4 rgba;
 	DirectX::XMFLOAT4 uv;
-	float scale; // 일단 넣어둠
 
 	enum class EScoreList
 	{
@@ -46,11 +45,10 @@ public:
 		, NDCoord(0.0f, 0.0f)
 		, rgba(1, 1, 1, 1)
 		, uv(0, 0, 0, 0)
-		, scale(1.0f)
 	{
 	}
 
-	UUi(FVertexUI* UIVertex, DirectX::XMFLOAT2 NDCoord, DirectX::XMFLOAT4 rgba, DirectX::XMFLOAT4 uv, float scale);
+	UUi(FVertexUI* UIVertex, DirectX::XMFLOAT2 NDCoord = DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT4 rgba = DirectX::XMFLOAT4(1, 1, 1, 1), DirectX::XMFLOAT4 uv = DirectX::XMFLOAT4(1, 1, 0, 0));
 
 	void setNDCoord(DirectX::XMFLOAT2 NDCoord);
 

@@ -25,14 +25,10 @@
 #include "UEnemy.h"
 #include "ResourceManager.h"
 #include "UGameLogic.h"
-
 #include "UBrick.h"
 #include "UProjectile.h"
-
 #include "UFlower.h"
-
 #include "UQuestionBox.h"
-
 #include "Map.h"
 #include "UBackground.h"
 #include "USoundManager.h"
@@ -54,7 +50,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		PostQuitMessage(0);
 		break;
 	case WM_KEYDOWN:
-		UGameLogic::GetInstance().setStarted();
+		if (!UGameLogic::GetInstance().IsNeedRestart() && !UGameLogic::GetInstance().IsRestart())
+		{
+			UGameLogic::GetInstance().setStarted();
+		}
 		if (wParam == 'A' && UGameLogic::GetInstance().IsNeedRestart())
 		{
 			UGameLogic::GetInstance().setRestart(true);
@@ -140,39 +139,39 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	UUi** UIList = new UUi * [UICnt];
 	for (int i = 0; i < UICnt; i++)
 	{
-		UIList[i] = new UUi(ui_vertices, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT4(1, 1, 1, 1), UUi::Translate(charList[i]), 1.0f);
+		UIList[i] = new UUi(ui_vertices, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT4(1, 1, 1, 1), UUi::Translate(charList[i]));
 	}
-	UUi* CoinUI = new UUi(ui_vertices, DirectX::XMFLOAT2(-0.24f, 0.84f), DirectX::XMFLOAT4(1, 1, 1, 1), DirectX::XMFLOAT4(1, 1, 0, 0), 1.0f);
+	UUi* CoinUI = new UUi(ui_vertices, DirectX::XMFLOAT2(-0.24f, 0.84f));
 	// Black UI part
 	size_t BlackUICnt = 11;
 	UUi** BlackUIList = new UUi * [BlackUICnt];
 	for (int i = 0; i < BlackUICnt; i++)
 	{
-		BlackUIList[i] = new UUi(ui_vertices, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT4(1, 1, 1, 1), UUi::Translate(charListBlack[i]), 1.0f);
+		BlackUIList[i] = new UUi(ui_vertices, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT4(1, 1, 1, 1), UUi::Translate(charListBlack[i]));
 	}
-	UUi* BlackBackground = new UUi(ui_vertices, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT4(1, 1, 1, 1), DirectX::XMFLOAT4(1, 1, 0, 0), 1.0f);
-	UUi* MarioUI = new UUi(ui_vertices, DirectX::XMFLOAT2(-0.2f, 0.025f), DirectX::XMFLOAT4(1, 1, 1, 1), DirectX::XMFLOAT4(1, 1, 0, 0), 1.0f);
+	UUi* BlackBackground = new UUi(ui_vertices);
+	UUi* MarioUI = new UUi(ui_vertices, DirectX::XMFLOAT2(-0.2f, 0.025f));
 	// Start UI part
 	size_t StartUICnt = 43;
 	UUi** StartUIList = new UUi * [StartUICnt];
 	for (int i = 0; i < StartUICnt; i++)
 	{
-		StartUIList[i] = new UUi(ui_vertices, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT4(1, 1, 1, 1), UUi::Translate(charListStart[i]), 1.0f);
+		StartUIList[i] = new UUi(ui_vertices, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT4(1, 1, 1, 1), UUi::Translate(charListStart[i]));
 	}
-	UUi* TitleUI = new UUi(ui_vertices, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT4(1, 1, 1, 1), DirectX::XMFLOAT4(1, 1, 0, 0), 1.0f);
+	UUi* TitleUI = new UUi(ui_vertices);
 	// Ending UI part
 	size_t GameEndUICnt = 60;
 	UUi** GameEndUIList = new UUi * [GameEndUICnt];
 	for (int i = 0; i < GameEndUICnt; i++)
 	{
-		GameEndUIList[i] = new UUi(ui_vertices, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT4(1, 1, 1, 1), UUi::Translate(charListEnd[i]), 1.0f);
+		GameEndUIList[i] = new UUi(ui_vertices, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT4(1, 1, 1, 1), UUi::Translate(charListEnd[i]));
 	}
 	// Over UI part
 	size_t GameOverUICnt = 35;
 	UUi** GameOverUIList = new UUi * [GameOverUICnt];
 	for (int i = 0; i < GameOverUICnt; i++)
 	{
-		GameOverUIList[i] = new UUi(ui_vertices, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT4(1, 1, 1, 1), UUi::Translate(charListOver[i]), 1.0f);
+		GameOverUIList[i] = new UUi(ui_vertices, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT4(1, 1, 1, 1), UUi::Translate(charListOver[i]));
 	}
 	// ui 텍스쳐 파일 로드
 	ID3D11Resource* UIFontResource = nullptr; ID3D11ShaderResourceView* UIFontSRV = nullptr; renderer.LoadTexture(L"Resource\\font.png", UIFontResource, UIFontSRV);
@@ -377,6 +376,21 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			UPlayer* player = dynamic_cast<UPlayer*>(PrimitiveList[i]);
 			UMushroom* mushroom = dynamic_cast<UMushroom*>(PrimitiveList[i]);
 
+			if (player && UGameLogic::GetInstance().IsRestart())
+			{
+				UGameLogic::GetInstance().resetAll();
+				double GameTime = 0.0f;
+				double StartTime = 0.0f;
+				double timer = 0.0f;
+				UGameLogic::GetInstance().setShowBlack(true); // 리스폰
+				player->SetState(UPlayer::PlayerState::ALIVE);
+				player->Location.x = 0.1f;
+				player->Location.y = -0.7f;
+
+				camera.Reset();
+				continue;
+			}
+
 			if (enemy && enemy->IsEnemyDead())
 			{
 				//RemoveObject(PrimitiveList, primitiveCount, i);
@@ -386,7 +400,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			if (player && player->IsPlayerDead())
 			{
 				//RemoveObject(PrimitiveList, primitiveCount, i); 
-				if (!UGameLogic::GetInstance().IsRestart() && UGameLogic::GetInstance().removeOneLife()) // 목숨--
+				if (UGameLogic::GetInstance().removeOneLife()) // 목숨--
 				{
 					UGameLogic::GetInstance().setShowBlack(true); // 리스폰
 					player->SetState(UPlayer::PlayerState::ALIVE);
@@ -398,7 +412,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			}
 			if (player && player->Location.y < -2.5f) // 마리오가 떨어졌으면
 			{
-				if (!UGameLogic::GetInstance().IsRestart() && UGameLogic::GetInstance().removeOneLife()) // 목숨--
+				if (UGameLogic::GetInstance().removeOneLife()) // 목숨--
 				{
 					UGameLogic::GetInstance().setShowBlack(true); // 리스폰
 					player->SetState(UPlayer::PlayerState::ALIVE);
@@ -415,13 +429,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			}
 		}
 
-		if (UGameLogic::GetInstance().IsRestart())
-		{
-			UGameLogic::GetInstance().resetAll();
-			double GameTime = 0.0f;
-			double StartTime = 0.0f;
-			double timer = 0.0f;
-		}
+
 
 		renderer.Prepare();
 		//renderer.PrepareShaderResource(MushroomTestSRV);
@@ -522,7 +530,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		// UI 테스트용
 		ImGui::Text("Game Time %.2f", GameTime);
-		ImGui::Checkbox("UI Test", &UGameLogic::GetInstance().gameOver);
+		//ImGui::Checkbox("UI Test", &UGameLogic::GetInstance().gameOver);
 		//ImGui::SliderInt("Score", &UGameLogic::GameLogic().score, 0, 1000000);
 
 		if (ImGui::Checkbox("Gravity", &bGravity));

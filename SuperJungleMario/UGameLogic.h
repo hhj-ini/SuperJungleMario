@@ -3,7 +3,7 @@
 
 class UGameLogic
 {
-public: // 나중에 privite으로 
+private: // 나중에 privite으로 
 	int score;
 	int coin;
 	int life;

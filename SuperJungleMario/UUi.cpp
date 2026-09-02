@@ -142,12 +142,11 @@ char charListStart[] =
 //	{}
 //};
 
-UUi::UUi(FVertexUI* UIVertex, DirectX::XMFLOAT2 NDCoord, DirectX::XMFLOAT4 rgba, DirectX::XMFLOAT4 uv, float scale)
+UUi::UUi(FVertexUI* UIVertex, DirectX::XMFLOAT2 NDCoord, DirectX::XMFLOAT4 rgba, DirectX::XMFLOAT4 uv)
 	:UIVertex(UIVertex)
 	, NDCoord(NDCoord)
 	, rgba(rgba)
 	, uv(uv)
-	, scale(scale)
 {
 }
 
