@@ -1,14 +1,19 @@
 #include "UBrick.h"
 #include "ResourceManager.h"
+#include "UEnemy.h"
+#include "UPlayer.h"
+#include "UGameLogic.h"
 
 UBrick::UBrick() : UBox()
 {
 	BoxType = EBoxType::BRICK;
+
 }
 
 UBrick::UBrick(float x, float y, float w, float h)	
 	: UBox(x, y, w, h)
 {
+	BoxType = EBoxType::BRICK;
 }
 
 bool UBrick::CollisionCheck(UPrimitive* other)
@@ -47,6 +52,8 @@ bool UBrick::CollisionCheck(UPrimitive* other)
 		{	// 이미 애니메이션이 앞서 진행되고 있는 상황이면 충돌 확인 하지 않고 애니메이션 끝날때까지 플레이어랑 충돌 확인X
 			return false;
 		}
+
+		if (BoxType == EBoxType::HARD) return false;
 		// 1. 플레이어가 블럭 아래에 있는지 확인
 		bool isUnder = (Location.y - other->Location.y) > 0.0f ? true : false;
 		if (!isUnder)	// 아래에 없으면
@@ -72,8 +79,21 @@ bool UBrick::CollisionCheck(UPrimitive* other)
 			
 			//가상함수
 			//마리오가 아래에서 위로 블럭을 쳤을때 작동하는 기능 구현 
-			OnHitFromBelow(); 
-			
+			OnHitFromBelow();
+			AnimState = EAnimState::UP;
+			KillEnemy();
+
+			UPlayer* pp = dynamic_cast<UPlayer*>(other);
+			if (pp && pp->bBigMario)
+			{
+				//BoxType = EBoxType::HARD;
+				//bIsActive = false;
+				BrokenAnimInit();
+				bIsBroken = true;
+				
+				// 50점 
+				UGameLogic::GetInstance().addScore(50, Location.x, Location.y);
+			}
 		}
 	}
 
@@ -87,14 +107,33 @@ void UBrick::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)
 	}
 	renderer.PrepareShaderResource(TextureSRVPtr[0]);
 
-	DirectX::XMMATRIX world = DirectX::XMMatrixScaling(width, height, 1.0f) * DirectX::XMMatrixTranslation(Location.x, Location.y, Location.z);
-	
-	renderer.UpdateConstantBuffer(world, renderer.ViewMatrix, AnimOffset);
+	if (!bIsBroken)
+	{
+		DirectX::XMMATRIX world = DirectX::XMMatrixScaling(width, height, 1.0f) * DirectX::XMMatrixTranslation(Location.x, Location.y, Location.z);
 
-	renderer.RenderPrimitive(pBuffer, num);
+		renderer.UpdateConstantBuffer(world, renderer.ViewMatrix, AnimOffset);
+
+		renderer.RenderPrimitive(pBuffer, num);
+	}
+	else
+	{
+		for (size_t i = 0; i < 4; ++i)
+		{
+			DirectX::XMMATRIX world = DirectX::XMMatrixScaling(width / 4.f, height/ 4.f, 1.0f) * DirectX::XMMatrixTranslation(Location.x, Location.y, Location.z);
+
+			renderer.UpdateConstantBuffer(world, renderer.ViewMatrix, BrokenAnimOffset[i]);
+
+			renderer.RenderPrimitive(pBuffer, num);
+		}
+	}
+	
+
+
 }
 
-void UBrick::Tick()
+
+
+void UBrick::Tick(float deltaTime)
 {
 	switch (AnimState)
 	{
@@ -115,20 +154,80 @@ void UBrick::Tick()
 		if (AnimOffset.y < 0.0f)	// 절반 이상 올라왔으면
 		{
 			AnimOffset.y = 0.0f;
-			AnimState = EAnimState::STOP;
+  			AnimState = EAnimState::STOP;
 		}
 		break;
 	default:
 		break;
 	}
 
+	if (bIsBroken)
+	{
+		float yMax = -1.0f;
+		for (size_t i = 0; i < 4; ++i)
+		{
+			BrokenAnimVelocity[i].y += - 0.98f * deltaTime;
+
+			BrokenAnimOffset[i].x += BrokenAnimVelocity[i].x * deltaTime;
+			BrokenAnimOffset[i].y += BrokenAnimVelocity[i].y * deltaTime;
+
+			if (BrokenAnimOffset[i].y > yMax)
+			{
+				yMax = BrokenAnimOffset[i].y;
+			}
+		}
+
+		if (yMax < 0.0f)
+		{
+			bIsActive = false;
+		}
+
+	}
+
 }
+
+void UBrick::KillEnemy()
+{
+	for (auto elem : EnemyList)
+	{
+		UEnemy* ep = dynamic_cast<UEnemy*>(elem);
+		if (ep)
+		{
+			ep->OnDeath(nullptr);
+		}
+	}
+}
+
+void UBrick::BrokenAnimInit()
+{
+     	for (size_t i = 0; i < 4; ++i)
+	{
+		BrokenAnimOffset[i].x = Location.x;
+		BrokenAnimOffset[i].y = Location.y;
+	}
+
+	BrokenAnimVelocity[0].x = -2.25f;
+	BrokenAnimVelocity[1].x = +3.25f;
+	BrokenAnimVelocity[2].x = -3.0f;
+	BrokenAnimVelocity[3].x = +2.25f;
+	BrokenAnimVelocity[0].y= +2.2f;
+	BrokenAnimVelocity[1].y = +2.2f;
+	BrokenAnimVelocity[2].y = +2.4f;
+	BrokenAnimVelocity[3].y = +2.4f;
+}
+
+
+void UBrick::BrokenAnimSet()
+{
+	
+}
+
 void UBrick::OnHitFromBelow()
 {
 	AnimState = EAnimState::UP;
 	BoxType = EBoxType::HARD;
-
 }
+
 void UBrick::SetAnimState(EAnimState InState)
 {
 	if (EAnimState::STOP != AnimState)

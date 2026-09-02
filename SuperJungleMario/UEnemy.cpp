@@ -1,6 +1,7 @@
 #include "UEnemy.h"
 #include "UPlayer.h"
 #include "ResourceManager.h"
+#include "UGameLogic.h"
 
 UEnemy::UEnemy()
 {
@@ -106,7 +107,7 @@ void UEnemy::OnDeath(UPlayer* player)
 	if (eState == EnemyState::ALIVE)
 	{
 		SetState(EnemyState::DEAD);
-		
+
 		bIsActive = false;
 		// 몬스터가 죽으면 점수 올라감
 		UGameLogic::GetInstance().addScore(100, Location.x, Location.y);
