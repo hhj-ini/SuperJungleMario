@@ -9,7 +9,6 @@ UCoin::UCoin(float x, float y, float w, float h) : UBall(x, y, w, h)
 	height = h * scaleMod;
 	bisMove = false;
 	InitHeight = y;
-
 }
 
 void UCoin::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num) {
@@ -52,7 +51,8 @@ bool UCoin::CollisionCheck(UPrimitive* other) {
 		case EObjectType::PLAYER:
 			fState = CoinState::DESTROYED; // 플레이어와 충돌 시 꽃을 DESTROYED 상태로 변경
 			// 꽃을 먹어도 점수가 1000점 올라감
-			UGameLogic::GetInstance().addScore(200, Location.x, Location.y);
+		
+
 			break;
 
 		default:
@@ -64,6 +64,8 @@ bool UCoin::CollisionCheck(UPrimitive* other) {
 }
 
 void UCoin::SetAnimation() {
+	UGameLogic::GetInstance().addScore(200, Location.x, Location.y);
+	UGameLogic::GetInstance().addOneCoin();
 	Velocity.y = 0.08f; // 꽃이 위로 올라가는 속도 설정
 	fState = CoinState::ANIMATING; // 꽃 상태를 ANIMATING으로 변경
 }
