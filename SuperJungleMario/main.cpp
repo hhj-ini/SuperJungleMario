@@ -193,7 +193,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	UPrimitive* backGround = new UBackground(9.537f, -0.947f, 3376.0f * backGroundScale, 480.0f * backGroundScale);
 	PrimitiveList[primitiveCount++] = backGround;
 
-	PrimitiveList[primitiveCount++] = new UBall;
 	
 	bool bGravity = true;	
 	
@@ -229,7 +228,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	int y1 = 49;
 
 	//int playerIdx = UBall::TotalNumBalls;
-	UBall* player = new UPlayer;
+	UPlayer* player = new UPlayer;
 	PrimitiveList[primitiveCount++] = player;
 
 	UBall* ProjectileList[20] = {};
@@ -253,12 +252,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	//PrimitiveList[primitiveCount++] = question->ItemPtr;
 
 	// 프로젝타일 테스트
-	UPrimitive* projectile = new UProjectile;
-	PrimitiveList[primitiveCount++] = projectile;
-	if (UProjectile* ms = dynamic_cast<UProjectile*>(projectile))
-	{
-		ms->SetOwner(player);
-	}
+	// 
+	//UPrimitive* projectile = new UProjectile;
+	//PrimitiveList[primitiveCount++] = projectile;
+	//if (UProjectile* ms = dynamic_cast<UProjectile*>(projectile))
+	//{
+	//	ms->SetOwner(player);
+	//}
 
 	// 텍스쳐 파일 로드 테스트 코드
 	//ID3D11Resource* MushroomTest = nullptr;
@@ -266,8 +266,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	//renderer.LoadTexture(L"Resource\\Mushroom.png", MushroomTest, MushroomTestSRV);
 
 	//Map 생성
+	int mapObjectStartIndex = primitiveCount;
 	MapReader(PrimitiveList, primitiveCount, &soundManager);
-	ResourceManager::GetInstance().SoundUpload(&soundManager);	// 렌더링 하기 전에 사운드 업로드
+ 	ResourceManager::GetInstance().SoundUpload(&soundManager);	// 렌더링 하기 전에 사운드 업로드
 
 	// Main Loop(Quit Message가 들어오기 전까지 아래 Loop를 무한히 실행하게 됨.
 	while (bIsExit == false)
@@ -374,17 +375,19 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			UPlayer* player = dynamic_cast<UPlayer*>(PrimitiveList[i]);
 			UMushroom* mushroom = dynamic_cast<UMushroom*>(PrimitiveList[i]);
 
-			if (player && UGameLogic::GetInstance().IsRestart())
-			{
-				UGameLogic::GetInstance().resetAll();
-				GameTime = 0.0f;
-				StartTime = 0.0f;
-				timer = 0.0f;
-				player->Reset();
+			//if (player && UGameLogic::GetInstance().IsRestart())
+			//{
+			//	
+			//	MapReader(PrimitiveList, primitiveCount, &soundManager);
+			//	UGameLogic::GetInstance().resetAll();
+			//	GameTime = 0.0f;
+			//	StartTime = 0.0f;
+			//	timer = 0.0f;
+			//	player->Reset();
+			//	camera.Reset();
 
-				camera.Reset();
-				continue;
-			}
+			//	continue;
+			//}
 
 			if (enemy && enemy->IsEnemyDead())
 			{
@@ -392,25 +395,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				continue;
 			}
 			
-			if (player && player->IsPlayerDead())
-			{
-				//RemoveObject(PrimitiveList, primitiveCount, i); 
-				if (!UGameLogic::GetInstance().IsNeedRestart() && UGameLogic::GetInstance().removeOneLife()) // 목숨--
-				{
-					UGameLogic::GetInstance().setShowBlack(true); // 리스폰
-					player->Reset();
-					camera.Reset(); 
-				}
-			}
-			if (player && player->Location.y < -2.5f) // 마리오가 떨어졌으면
-			{
-				if (!UGameLogic::GetInstance().IsNeedRestart() && UGameLogic::GetInstance().removeOneLife()) // 목숨--
-				{
-					UGameLogic::GetInstance().setShowBlack(true); // 리스폰
-					player->Reset();
-					camera.Reset();
-				}
-			}
+		
+		
 			if (mushroom && mushroom->IsMushroomDestroyed())
 			{
 				//RemoveObject(PrimitiveList, primitiveCount, i);
@@ -419,7 +405,44 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 
 
+		if (player && UGameLogic::GetInstance().IsRestart())
+		{
 
+			for (size_t k = mapObjectStartIndex; k < primitiveCount; ++k)
+			{
+				delete PrimitiveList[k];
+				PrimitiveList[k] = nullptr;
+			}
+			primitiveCount = mapObjectStartIndex;
+			MapReader(PrimitiveList, primitiveCount, &soundManager);
+
+			UGameLogic::GetInstance().resetAll();
+			GameTime = 0.0f;
+			StartTime = 0.0f;
+			timer = 0.0f;
+			player->Reset();
+			camera.Reset();
+		}
+		if (player && (player->IsPlayerDead() || player->Location.y < -2.5f))
+		{
+			//RemoveObject(PrimitiveList, primitiveCount, i); 
+			if (!UGameLogic::GetInstance().IsNeedRestart() && UGameLogic::GetInstance().removeOneLife()) // 목숨--
+			{	
+				for (size_t k = mapObjectStartIndex; k < primitiveCount; ++k)
+				{
+					delete PrimitiveList[k];
+					PrimitiveList[k] = nullptr;
+				}
+				primitiveCount = mapObjectStartIndex;
+				MapReader(PrimitiveList, primitiveCount, &soundManager);
+
+				UGameLogic::GetInstance().setShowBlack(true); // 리스폰
+				player->Reset();
+				camera.Reset();
+			}
+		}
+
+	
 		renderer.Prepare();
 		//renderer.PrepareShaderResource(MushroomTestSRV);
 		renderer.PrepareShader();
@@ -428,6 +451,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		{
 			if (PrimitiveList[i]->bIsActive == false) continue;
 			PrimitiveList[i]->Render(renderer, cubeBuffer, numVerticescube);
+
+
 		}
 
 		// Ground 렌더링
@@ -534,14 +559,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			}
 		}
 		
-		// 프로젝타일 테스트용
-		if (ImGui::Button("Projectile"))
-		{
-			if (UProjectile* ms = dynamic_cast<UProjectile*>(projectile))
-			{
-				ms->SetState(UProjectile::EProjectileState::ROLLING);
-			}
-		}
+		//// 프로젝타일 테스트용
+		//if (ImGui::Button("Projectile"))
+		//{
+		//	if (UProjectile* ms = dynamic_cast<UProjectile*>(projectile))
+		//	{
+		//		ms->SetState(UProjectile::EProjectileState::ROLLING);
+		//	}
+		//}
 
 		// Flower 테스트용
 		if (ImGui::Button("->"))
@@ -581,11 +606,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	}
 
 	// 생성된 공들 메모리 해제
-	for (size_t i = 0; i < UBall::TotalNumBalls; ++i)
-	{
-		delete PrimitiveList[i];
-		PrimitiveList[i] = nullptr;
-	}
+	//for (size_t i = 0; i < primitiveCount; ++i)
+	//{
+	//	delete PrimitiveList[i];
+	//	PrimitiveList[i] = nullptr;
+	//}
 	 
 
 	delete[] PrimitiveList;
