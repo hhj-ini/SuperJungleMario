@@ -26,9 +26,31 @@ void UFlag::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)
 
 bool UFlag::CollisionCheck(UPrimitive * other)
 {
-	if (EObjectType::PLAYER == other->ObjectType)
-	{
-		// 스테이지 클리어
+	// 가로가 겹치는지 확인
+	float sumHalfWidth = (width / 2.0f) + (other->width / 2.0f);
+	float xdistance = std::fabs(Location.x - other->Location.x);
+	float overlapX = sumHalfWidth - xdistance;
+
+	// 세로가 겹치는지 확인
+	float sumHalfHeight = (height / 2.0f) + (other->height / 2.0f);
+	float ydistance = std::fabs(Location.y - other->Location.y);
+	float overlapY = sumHalfHeight - ydistance;
+
+	// 충돌
+	if (overlapX > 0 && overlapY > 0) {
+
+		switch (other->ObjectType)
+		{
+		case EObjectType::PLAYER: // 플레이어와 충돌 시 처리
+			Location.y = other->Location.y + (other->height / 2.0f) + (height / 2.0f);
+			Velocity.x = 0;
+			Velocity.y = 0;
+			//스테이지 클리어
+			UGameLogic::GetInstance().addScore(3000);
+			UGameLogic::GetInstance().setEnding();
+			break;
+		}
 	}
+
     return false;
 }

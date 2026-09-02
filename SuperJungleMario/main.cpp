@@ -152,7 +152,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	}
 	UUi* TitleUI = new UUi(ui_vertices, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT4(1, 1, 1, 1), DirectX::XMFLOAT4(1, 1, 0, 0), 1.0f);
 	// Ending UI part
-	size_t GameEndUICnt = 48;
+	size_t GameEndUICnt = 60;
 	UUi** GameEndUIList = new UUi * [GameEndUICnt];
 	for (int i = 0; i < GameEndUICnt; i++)
 	{
@@ -218,6 +218,19 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	UBall* player = new UPlayer;
 	PrimitiveList[primitiveCount++] = player;
 
+	UBall* ProjectileList[20] = {};
+	for (int i = 0; i < 20; ++i)
+	{
+		UBall* projectile = new UProjectile;
+		ProjectileList[i] = projectile;
+		PrimitiveList[primitiveCount++] = projectile;
+
+		if (UProjectile* f = dynamic_cast<UProjectile*>(ProjectileList[i]))
+		{
+			f->SetOwner(player);
+		}
+	}
+
 	UBall* GoombaList[1] = { nullptr };	// 임시로 goomba 애니메이션 업데이트
 	UBall* goomba = new UEnemy;
 	PrimitiveList[primitiveCount++] = goomba;
@@ -269,6 +282,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		{
 			bBlackUI = false;
 		}
+		if (403 - GameTime + StartTime < 0) // 게임시간이 000초가 되면 게임오버 
+		{
+			UGameLogic::GetInstance().setEnding();
+		}
 		//if (static_cast<UPlayer*>(PrimitiveList[2]).IsPlayerDead())
 		//
 		//	bDeath = true;
@@ -308,7 +325,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		for (size_t i = 0; i < primitiveCount; ++i)
 		{
+			if (PrimitiveList[i]->bIsActive == false) continue;
 			PrimitiveList[i]->Tick();
+
 			if (UBall* b = dynamic_cast<UBall*>(PrimitiveList[i]))
 			{
 				b->Move();
@@ -319,10 +338,28 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			for (size_t j = 0; j < primitiveCount; ++j)
 			{
 				if (i == j) continue;
+				if (PrimitiveList[j]->bIsActive == false) continue;
 				// if (j == mushroomIdx || i == mushroomIdx) continue;	// 임시로 버섯 충돌 로직 영향 받지 않도록 함
 				PrimitiveList[i]->CollisionCheck(PrimitiveList[j]);
 			}
 
+		}
+
+		if (UPlayer* firePlayer = dynamic_cast<UPlayer*>(player))
+		{
+			if (firePlayer->ShotFireRequest())
+			{
+				for (int i = 0; i < 20; ++i)
+				{
+					if (UProjectile* f = dynamic_cast<UProjectile*>(ProjectileList[i]))
+					{
+						if (f->ActivateProjectile(firePlayer->Location, firePlayer->bFacingLeft, firePlayer->GetWidth()))
+						{
+							break;
+						}
+					}
+				}
+			}
 		}
 
 		for (size_t i = 0; i < primitiveCount; ++i)
@@ -333,19 +370,19 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 			if (enemy && enemy->IsEnemyDead())
 			{
-				RemoveObject(PrimitiveList, primitiveCount, i);
+				//RemoveObject(PrimitiveList, primitiveCount, i);
 				continue;
 			}
 
 			if (player && player->IsPlayerDead())
 			{
-				RemoveObject(PrimitiveList, primitiveCount, i);  // 플레이어가 죽으면 게임 종료 추가 필요
+				//RemoveObject(PrimitiveList, primitiveCount, i);  // 플레이어가 죽으면 게임 종료 추가 필요
 				continue;
 			}
 
 			if (mushroom && mushroom->IsMushroomDestroyed())
 			{
-				RemoveObject(PrimitiveList, primitiveCount, i);
+				//RemoveObject(PrimitiveList, primitiveCount, i);
 				continue;
 			}
 		}
@@ -356,6 +393,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		for (size_t i = 0; i < primitiveCount; ++i)
 		{
+			if (PrimitiveList[i]->bIsActive == false) continue;
 			PrimitiveList[i]->Render(renderer, cubeBuffer, numVerticescube);
 		}
 
@@ -409,10 +447,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 		if (UGameLogic::GetInstance().IsEnding()) // Ending UI part
 		{
+			UUi::UpdateFinalScoreUI(UGameLogic::GetInstance().getScore());
 			bUIRender = false;
 			renderer.PrepareUIShader(UIFontSRV);
 			for (size_t i = 0; i < GameEndUICnt; i++)
 			{
+				GameEndUIList[i]->UpdateUVEnd(i);
 				GameEndUIList[i]->Render(renderer, UIBuffer, numVerticesUI, fontSize, fontSize, renderer.GetNDCoordinate(charPositionsEnd[i], 1024, 1024));
 			}
 		}

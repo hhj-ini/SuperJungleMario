@@ -52,9 +52,11 @@ class UPrimitive
 
 	float Radius;
 	bool bisMove;
+
+	bool bIsActive = true;
 	
 	
 	// 텍스쳐 포인터 저장
-	ID3D11ShaderResourceView* TextureSRVPtr[12] = {};
+	ID3D11ShaderResourceView* TextureSRVPtr[20] = {};
 	EObjectType ObjectType;
 };

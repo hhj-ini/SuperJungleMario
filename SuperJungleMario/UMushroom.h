@@ -1,5 +1,6 @@
 #pragma once
 #include "UBall.h"
+#include "UGameLogic.h"
 
 
 class UMushroom :

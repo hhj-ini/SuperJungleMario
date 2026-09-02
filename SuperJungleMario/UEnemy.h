@@ -1,6 +1,7 @@
 #pragma once
 #include "UBall.h"
 #include "UPlayer.h"
+#include "UGameLogic.h"
 
 class UEnemy : public UBall
 {
