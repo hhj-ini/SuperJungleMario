@@ -101,6 +101,20 @@ char charListStart[] =
 	'T', 'O', 'P', ':', '3', '3', '0', '6', '5', '0'
 };
 
+//POINT charScoreList [] =
+//{
+//	{'5', '0'},
+//	{'1', '0', '0'},
+//	{'2', '0', '0'},
+//	{'1', '0', '0', '0'},
+//};
+
+//char charScoreList [[]] =
+//{
+//	{ { -0.01f, 0 }, {0.01f, 0} },
+//	{}
+//};
+
 UUi::UUi(FVertexUI* UIVertex, DirectX::XMFLOAT2 NDCoord, DirectX::XMFLOAT4 rgba, DirectX::XMFLOAT4 uv, float scale)
 	:UIVertex(UIVertex)
 	, NDCoord(NDCoord)

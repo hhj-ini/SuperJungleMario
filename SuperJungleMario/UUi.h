@@ -26,6 +26,15 @@ public:
 	DirectX::XMFLOAT4 rgba;
 	DirectX::XMFLOAT4 uv;
 	float scale; // 일단 넣어둠
+
+	enum class EScoreList
+	{
+		NONE = 0,
+		s50,
+		s100,
+		s200,
+		s1000,
+	};
 public:
 	UUi()
 		: UIVertex(nullptr)

@@ -376,7 +376,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 			if (player && player->IsPlayerDead())
 			{
-				//RemoveObject(PrimitiveList, primitiveCount, i);  // 플레이어가 죽으면 게임 종료 추가 필요
+				//RemoveObject(PrimitiveList, primitiveCount, i); 
+				UGameLogic::GetInstance().setEnding(); // 플레이어가 죽으면 게임 종료
 				continue;
 			}
 
@@ -459,6 +460,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		if (UGameLogic::GetInstance().IsShowScore()) // floating score rendering
 		{
 			renderer.PrepareUIShader(UIFontSRV);
+			
+			//UGameLogic::GetInstance().setShowScore(false); // 이러면 한 프레임만 되긴 하는데 일단 이렇게 
 		}
 
 		// ImGui 렌더링 준비, 컨트롤 설정, 렌더링 요청
