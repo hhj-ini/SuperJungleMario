@@ -1,4 +1,6 @@
 #include "UGameLogic.h"
+#include "ResourceManager.h"
+#include "USoundManager.h"
 
 UGameLogic& UGameLogic::GetInstance()
 {
@@ -87,6 +89,7 @@ bool UGameLogic::IsStarted()
 void UGameLogic::setStarted()
 {
 	started = true;
+	soundManager->PlaySoundResource(SoundBufferMap[L"GameOver"]);
 }
 
 bool UGameLogic::IsShowScore()
@@ -105,6 +108,9 @@ bool UGameLogic::IsGameOver()
 void UGameLogic::setGameOver()
 {
 	gameOver = true;
+	soundManager->StopSound(SoundBufferMap[L"BGM"]);
+
+	soundManager->PlaySoundResource(SoundBufferMap[L"GameOver"]);
 	setNeedRestart();
 }
 
@@ -174,4 +180,18 @@ void UGameLogic::setAudioReady()
 DirectX::XMFLOAT2 UGameLogic::getCoordinate()
 {
 	return DirectX::XMFLOAT2(x, y);
+}
+
+void UGameLogic::setSoundManager(USoundManager* InSoundManager)
+{
+	soundManager = InSoundManager;
+
+	std::wstring soundName = L"BGM";	//설정한 이름으로 접근 가능
+	SoundBufferMap[soundName] = ResourceManager::GetInstance().GetSoundResource(L"Resource\\Sound\\GroundTheme.wav", soundManager);
+
+	soundName = L"GameOver";	//설정한 이름으로 접근 가능
+	SoundBufferMap[soundName] = ResourceManager::GetInstance().GetSoundResource(L"Resource\\Sound\\GameoverBgm.wav", soundManager);
+
+	soundName = L"StageClear";	//설정한 이름으로 접근 가능
+	SoundBufferMap[soundName] = ResourceManager::GetInstance().GetSoundResource(L"Resource\\Sound\\StageClear.wav", soundManager);
 }

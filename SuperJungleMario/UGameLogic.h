@@ -1,5 +1,10 @@
 #pragma once
 #include <DirectXMath.h>
+#include <string>
+#include <unordered_map>
+
+class USoundManager;
+struct IDirectSoundBuffer;
 
 class UGameLogic
 {
@@ -20,6 +25,11 @@ private: // 나중에 privite으로
 	bool renderUI;
 	bool audioReady;
 	UGameLogic();
+
+	USoundManager* soundManager;
+
+	// 사운드 버퍼 포인터 저장
+	std::unordered_map<std::wstring, IDirectSoundBuffer*> SoundBufferMap;
 
 public:
 	static UGameLogic& GetInstance();
@@ -64,4 +74,7 @@ public:
 	void setAudioReady();
 
 	DirectX::XMFLOAT2 getCoordinate();
+
+	void setSoundManager(USoundManager* InSoundManager);
+	
 };
