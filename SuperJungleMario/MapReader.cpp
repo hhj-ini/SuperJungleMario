@@ -1,7 +1,13 @@
 #include "Map.h"
 #include "UFlag.h"
+#include "Uprimitive.h"
+#include "UBox.h"
+#include "UEnemy.h"
+#include "UFlower.h"
+#include "UBrick.h"
+#include "UQuestionBox.h"
 
-void MapReader(UPrimitive** AllMapObjects,size_t& objectCount) {
+void MapReader(UPrimitive** AllMapObjects, size_t& objectCount) {
 
 	for (int i = 0;i < MapHeight;++i) {
 		for (int j = 0;j < MapWidth;j++) {
@@ -20,12 +26,12 @@ void MapReader(UPrimitive** AllMapObjects,size_t& objectCount) {
 				break;
 
 			case 'B':
-				AllMapObjects[objectCount++] = new UBox(screenX, screenY, 1.0f, 1.0f);
+				AllMapObjects[objectCount++] = new UBrick(screenX, screenY, 1.0f, 1.0f);
 				//벽돌 생성
 				break;
 
 			case '?':
-				AllMapObjects[objectCount++] = new UBox(screenX, screenY, 1.0f, 1.0f);
+				AllMapObjects[objectCount++] = new UQuestionBox(screenX, screenY, 1.0f, 1.0f);
 				//물음표 블럭 생성
 				break;
 

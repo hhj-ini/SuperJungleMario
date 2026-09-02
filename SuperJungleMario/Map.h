@@ -1,8 +1,7 @@
 #pragma once
-#include "Uprimitive.h"
-#include "UBox.h"
-#include "UEnemy.h"
-#include "UFlower.h"
+
+class UPrimitive;
+
 constexpr int   MapWidth = 212;
 constexpr int   MapHeight = 15;
 
