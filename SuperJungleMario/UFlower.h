@@ -25,16 +25,7 @@ public:
 		DESTROYED // 플레이어가 먹어서 사라짐
     };
 
-	UFlower(float x, float y, float w, float h)
-	{
-		ObjectType = EObjectType::FLOWER;
-		Location.x = x;
-		Location.y = y;
-		width = w * scaleMod;
-		height = h * scaleMod;
-		bisMove = false;
-        InitHeight= y;
-	}
+    UFlower(float x, float y, float w, float h);
     
     virtual void Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num) override;
     virtual bool CollisionCheck(UPrimitive* other)override;
