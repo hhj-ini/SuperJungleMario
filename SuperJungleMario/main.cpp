@@ -379,7 +379,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				GameTime = 0.0f;
 				StartTime = 0.0f;
 				timer = 0.0f;
-				UGameLogic::GetInstance().setShowBlack(true); // 리스폰
 				player->Reset();
 
 				camera.Reset();
