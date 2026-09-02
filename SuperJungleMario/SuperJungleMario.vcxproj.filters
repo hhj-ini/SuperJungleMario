@@ -65,10 +65,9 @@
     <ClCompile Include="MapReader.cpp" />
     <ClCompile Include="UBackground.cpp" />
     <ClCompile Include="UFlag.cpp" />
+    <ClCompile Include="UFlower.cpp" />
     <ClCompile Include="UPipe.cpp" />
-    <ClCompile Include="UFlower.cpp">
-      <Filter>Object</Filter>
-    </ClCompile>
+    <ClCompile Include="USoundManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Cube.h" />
@@ -138,6 +137,7 @@
     <ClInclude Include="UBackground.h" />
     <ClInclude Include="UFlag.h" />
     <ClInclude Include="UPipe.h" />
+    <ClInclude Include="USoundManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

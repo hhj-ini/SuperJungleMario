@@ -5,6 +5,8 @@
 struct ID3D11ShaderResourceView;	// 포인터 위해서 전방선언
 struct ID3D11Resource;
 class URenderer;
+class IDirectSoundBuffer;
+class USoundManager;
 
 class ResourceManager
 {
@@ -18,13 +20,15 @@ public:
 	ID3D11ShaderResourceView* GetSRV(const std::wstring& InPath, URenderer* renderer);
 	//ID3D11Resource* GetResource(std::wstring*)
 
+	IDirectSoundBuffer* GetSoundResource(const std::wstring& InPath, USoundManager* soundManager);
+
 	static ResourceManager& GetInstance();
 
 	void ReleaseResource(URenderer* renderer);
 
 private:
 	std::unordered_map<std::wstring, ID3D11ShaderResourceView*> SRVMap;
-
+	std::unordered_map<std::wstring, IDirectSoundBuffer*> SoundResourceMap;
 	//std::unordered_map<std::wstring, ID3D11Resource*> DXResourceMap;
 };
 

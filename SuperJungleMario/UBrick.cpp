@@ -3,6 +3,7 @@
 #include "UEnemy.h"
 #include "UPlayer.h"
 #include "UGameLogic.h"
+#include "USoundManager.h"
 
 UBrick::UBrick() : UBox()
 {
@@ -92,10 +93,13 @@ bool UBrick::CollisionCheck(UPrimitive* other)
 				BrokenAnimInit();
 				
 				if (BoxType == EBoxType::QUESTION) {
+					bIsBroken = false;
 				}
 				else {
 					bIsBroken = true;
 				}
+				bIsBroken = true;
+				SoundManager->PlaySoundResource(SoundBufferPtr);
 				// 50점 
 				UGameLogic::GetInstance().addScore(50, Location.x, Location.y);
 			}
@@ -190,6 +194,15 @@ void UBrick::Tick(float deltaTime)
 	}
 
 }
+
+void UBrick::SetSoundResource(USoundManager* soundManager)
+{
+	SoundManager = soundManager;
+	SoundBufferPtr = ResourceManager::GetInstance().GetSoundResource(L"Resource\\Sound\\brick.wav", soundManager);
+
+	int a = 0;
+}
+
 
 void UBrick::KillEnemy()
 {

@@ -35,6 +35,7 @@
 
 #include "Map.h"
 #include "UBackground.h"
+#include "USoundManager.h"
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -109,6 +110,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	renderer.CreateUISamplerState();
 	renderer.CreateTextureSamplerState();
 
+	// 사운드매니저 생성
+	USoundManager soundManager;
+	soundManager.InitializeDirectSound(hWnd);
+
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO();
@@ -173,11 +178,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	ID3D11Resource* UIFontResource = nullptr; ID3D11ShaderResourceView* UIFontSRV = nullptr; renderer.LoadTexture(L"Resource\\font.png", UIFontResource, UIFontSRV);
 	ID3D11Resource* UIBlackResource = nullptr; ID3D11ShaderResourceView* UIBlackSRV = nullptr; renderer.LoadTexture(L"Resource\\black.png", UIBlackResource, UIBlackSRV);
 	ID3D11Resource* UIMarioResource = nullptr; ID3D11ShaderResourceView* UIMarioSRV = nullptr; renderer.LoadTexture(L"Resource\\Mario\\Mario1.png", UIMarioResource, UIMarioSRV);
-	ID3D11Resource* UICoinResource = nullptr; ID3D11ShaderResourceView* UICoinSRV = nullptr; renderer.LoadTexture(L"Resource\\Coin.png", UICoinResource, UICoinSRV);
+	//ID3D11Resource* UICoinResource = nullptr; ID3D11ShaderResourceView* UICoinSRV = nullptr; renderer.LoadTexture(L"Resource\\Coin.png", UICoinResource, UICoinSRV);
 	ID3D11Resource* UITitleResource = nullptr; ID3D11ShaderResourceView* UITitleSRV = nullptr; renderer.LoadTexture(L"Resource\\title.png", UITitleResource, UITitleSRV);
-	// UI 렌더링 여부
-	bool bUIRender = true;
-	bool bGameEnd = false;
 
 	//ID3D11Buffer* cubeBuffer = renderer.CreateVertexBuffer(cube_vertices, sizeof(cube_vertices));
 	ID3D11Buffer* cubeBuffer = renderer.CreateTextureVertexBuffer(cube_vertices, sizeof(cube_vertices));
@@ -267,7 +269,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	//renderer.LoadTexture(L"Resource\\Mushroom.png", MushroomTest, MushroomTestSRV);
 
 	//Map 생성
-	MapReader(PrimitiveList, primitiveCount);
+	MapReader(PrimitiveList, primitiveCount, &soundManager);
 
 
 	// Main Loop(Quit Message가 들어오기 전까지 아래 Loop를 무한히 실행하게 됨.
@@ -384,24 +386,24 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			if (player && player->IsPlayerDead())
 			{
 				//RemoveObject(PrimitiveList, primitiveCount, i); 
-				if (UGameLogic::GetInstance().removeOneLife()) // 목숨--
+				if (!UGameLogic::GetInstance().IsRestart() && UGameLogic::GetInstance().removeOneLife()) // 목숨--
 				{
 					UGameLogic::GetInstance().setShowBlack(true); // 리스폰
 					player->SetState(UPlayer::PlayerState::ALIVE);
 					player->Location.x = 0.1f;
-					player->Location.y = -0.5f;
+					player->Location.y = -0.7f;
 
 					camera.Reset(); 
 				}
 			}
-			if (player && player->Location.y < -3.0f) // 마리오가 떨어졌으면
+			if (player && player->Location.y < -2.5f) // 마리오가 떨어졌으면
 			{
-				if (UGameLogic::GetInstance().removeOneLife()) // 목숨--
+				if (!UGameLogic::GetInstance().IsRestart() && UGameLogic::GetInstance().removeOneLife()) // 목숨--
 				{
 					UGameLogic::GetInstance().setShowBlack(true); // 리스폰
 					player->SetState(UPlayer::PlayerState::ALIVE);
 					player->Location.x = 0.1f;
-					player->Location.y = -0.5f;
+					player->Location.y = -0.7f;
 
 					camera.Reset();
 				}
@@ -411,6 +413,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				//RemoveObject(PrimitiveList, primitiveCount, i);
 				continue;
 			}
+		}
+
+		if (UGameLogic::GetInstance().IsRestart())
+		{
+			UGameLogic::GetInstance().resetAll();
+			double GameTime = 0.0f;
+			double StartTime = 0.0f;
+			double timer = 0.0f;
 		}
 
 		renderer.Prepare();
@@ -437,12 +447,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			BlackBackground->Render(renderer, UIBuffer, numVerticesUI, 5.0f, 5.0f, DirectX::XMFLOAT2(0.0f, 0.0f));
 		}
 		UUi::UpdateScoreUI(UGameLogic::GetInstance().getScore());
-		UUi::UpdateCoinUI(UGameLogic::GetInstance().getCoin());
+		UUi::UpdateCoinUI(UGameLogic::GetInstance().getLife());
 		const float fontSize = 0.09f;
-		if (bUIRender) // Top UI part
+		if (UGameLogic::GetInstance().IsRenderUI()) // Top UI part
 		{
-			renderer.PrepareUIShader(UICoinSRV);
-			CoinUI->Render(renderer, UIBuffer, numVerticesUI, 0.1f, 0.1f, DirectX::XMFLOAT2(-0.24f, 0.84f));
+			renderer.PrepareUIShader(UIMarioSRV);
+			CoinUI->Render(renderer, UIBuffer, numVerticesUI, 0.08f, 0.08f, DirectX::XMFLOAT2(-0.24f, 0.84f));
 			renderer.PrepareUIShader(UIFontSRV);
 			for (size_t i = 0; i < UICnt; i++)
 			{
@@ -475,7 +485,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		if (UGameLogic::GetInstance().IsGameOver()) // Game over UI part
 		{
 			UUi::UpdateOverScoreUI(UGameLogic::GetInstance().getScore());
-			bUIRender = false;
+			UGameLogic::GetInstance().setRenderUI(false);
 			renderer.PrepareUIShader(UIFontSRV);
 			for (size_t i = 0; i < GameOverUICnt; i++)
 			{
@@ -486,7 +496,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		if (UGameLogic::GetInstance().IsEnding()) // Ending UI part
 		{
 			UUi::UpdateFinalScoreUI(UGameLogic::GetInstance().getScore());
-			bUIRender = false;
+			UGameLogic::GetInstance().setRenderUI(false);
 			renderer.PrepareUIShader(UIFontSRV);
 			for (size_t i = 0; i < GameEndUICnt; i++)
 			{
@@ -606,7 +616,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	renderer.ReleaseResource(UIFontResource);renderer.ReleaseSRV(UIFontSRV);
 	renderer.ReleaseResource(UIBlackResource);renderer.ReleaseSRV(UIBlackSRV);
 	renderer.ReleaseResource(UIMarioResource);renderer.ReleaseSRV(UIMarioSRV);
-	renderer.ReleaseResource(UICoinResource);renderer.ReleaseSRV(UICoinSRV);
+	//renderer.ReleaseResource(UICoinResource);renderer.ReleaseSRV(UICoinSRV);
 	renderer.ReleaseResource(UITitleResource);renderer.ReleaseSRV(UITitleSRV);
 
 	ResourceManager::GetInstance().ReleaseResource(&renderer);

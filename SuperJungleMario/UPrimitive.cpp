@@ -89,6 +89,11 @@ bool UPrimitive::CollisionCheck(UPrimitive* other)
 	return false;
 }
 
+void UPrimitive::SetSoundResource(USoundManager* soundManager)
+{
+	SoundManager = soundManager;
+}
+
 UPrimitive::UPrimitive()
 	: width(scaleMod), height(scaleMod), Radius(0.0001f)
 {}

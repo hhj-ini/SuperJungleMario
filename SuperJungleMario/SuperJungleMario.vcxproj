@@ -165,6 +165,7 @@
     <ClCompile Include="UProjectile.cpp" />
     <ClCompile Include="UQuestionBox.cpp" />
     <ClCompile Include="URenderer.cpp" />
+    <ClCompile Include="USoundManager.cpp" />
     <ClCompile Include="UUi.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -198,6 +199,7 @@
     <ClInclude Include="UProjectile.h" />
     <ClInclude Include="UQuestionBox.h" />
     <ClInclude Include="URenderer.h" />
+    <ClInclude Include="USoundManager.h" />
     <ClInclude Include="UUi.h" />
   </ItemGroup>
   <ItemGroup>

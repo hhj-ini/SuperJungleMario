@@ -220,8 +220,8 @@ void UProjectile::Move()
     {
         return;
     }
+    
     this->UBall::Move();
-    //Location.x += Velocity.x;
 }
 
 void UProjectile::SetState(EProjectileState InState)
@@ -267,7 +267,7 @@ bool UProjectile::ActivateProjectile(FVector PlayerLocation, bool bFacingLeft, f
     LifeTime = 0; // 초기화
 
 	Location.x = PlayerLocation.x + (bFacingLeft ? -1.0f : 1.0f) * (playerWidth / 2.0f + width / 2.0f);
-	Location.y = PlayerLocation.y;
+	Location.y = PlayerLocation.y + 0.05f;
 
     Velocity.x = bFacingLeft ? -0.025f : 0.025f;
 

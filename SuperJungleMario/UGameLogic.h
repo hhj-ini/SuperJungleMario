@@ -17,6 +17,7 @@ public: // 나중에 privite으로
 	bool respawn;
 	bool needRestart;
 	bool restart;
+	bool renderUI;
 	UGameLogic();
 
 public:
@@ -52,6 +53,11 @@ public:
 
 	bool IsRestart();
 	void setRestart(bool input);
+
+	void resetAll();
+
+	bool IsRenderUI();
+	void setRenderUI(bool input);
 
 	DirectX::XMFLOAT2 getCoordinate();
 };
