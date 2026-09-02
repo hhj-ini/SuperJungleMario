@@ -374,6 +374,8 @@ void UPlayer::Grow()
 	width = scaleMod;
 	height = scaleMod * 2.0f;
 	Location.y += (height - oldHeight) / 2.0f;
+
+	SoundManager->PlaySoundResource(SoundBufferMap[L"powerup"]);
 }
 
 void UPlayer::Shrink()
@@ -445,6 +447,9 @@ void UPlayer::SetSoundResource(USoundManager* soundManager)
 
 	soundName = L"death";	//설정한 이름으로 접근 가능
 	SoundBufferMap[soundName] = ResourceManager::GetInstance().GetSoundResource(L"Resource\\Sound\\death.wav", soundManager);
+
+	soundName = L"powerup";	//설정한 이름으로 접근 가능
+	SoundBufferMap[soundName] = ResourceManager::GetInstance().GetSoundResource(L"Resource\\Sound\\powerup.wav", soundManager);
 }
 
 void UPlayer::Respawn()
