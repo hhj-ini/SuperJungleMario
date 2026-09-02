@@ -34,8 +34,11 @@ class UPrimitive
 
 	virtual void Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num);
 	virtual bool CollisionCheck(UPrimitive* other);
-	virtual void Tick() {};
 	virtual void SetAnimation() {};
+
+	virtual void Tick(float deltaTime) {};
+
+
 	// 모든 Primitive 는 텍스처 포인터를 가짐
 	// **상속 받은 클래스에서 꼭 정의해주시면 텍스쳐 적용 가능합니다*
 	// *.cpp 에서 #include "ResourceManager.h" 추가 하신 후, 아래 함수 내용 처럼 작성해주세요

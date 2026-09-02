@@ -71,5 +71,5 @@ void MapReader(UPrimitive** AllMapObjects, size_t& objectCount) {
 
 	float screenX = MapOriginX + 198.f * mapScale;
 	float screenY = MapOriginY + (float)(MapHeight - 1 - 7.5) * mapScale;
-	AllMapObjects[objectCount++] = new UFlag(screenX, screenY, 2.0f, 8.0f);
+ 	AllMapObjects[objectCount++] = new UFlag(screenX, screenY, 2.0f, 8.0f);
 }

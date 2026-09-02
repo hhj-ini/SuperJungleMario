@@ -12,7 +12,7 @@ void UBackground::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)
 {
 	if (!TextureSRVPtr[0])
 	{
-		TextureSRVPtr[0] = ResourceManager::GetInstance().GetSRV(L"Resource\\world.png", &renderer);
+		TextureSRVPtr[0] = ResourceManager::GetInstance().GetSRV(L"Resource\\World.png", &renderer);
 	}
 	renderer.PrepareShaderResource(TextureSRVPtr[0]);
 	
