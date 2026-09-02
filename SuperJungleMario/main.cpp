@@ -207,6 +207,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	//PrimitiveList[mushroomIdx] = new UMushroom;
 	PrimitiveList[primitiveCount++] = new UMushroom;
 
+	PrimitiveList[primitiveCount++] = new UFlower(0.0f, 0.0f, 1.0f, 1.0f);  // test용으로 flower 추가
+
 	// 접근할때
 	// PrimitiveList[mushroomIdx]->render(...); 이런식으로 하면 됩니다.
 	// for 문이랑 로직 중첩되지 않도록 주의해주시면 돼요

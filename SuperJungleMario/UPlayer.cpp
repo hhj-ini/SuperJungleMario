@@ -234,6 +234,7 @@ bool UPlayer::CollisionCheck(UPrimitive* other)
 				if (prePlayerBottom >= enemyTop && GetVelocity().y < 0.0f)
 				{
 					enemy->OnDeath(this);
+					SetVelocityY(0.03f);
 				}
 				else
 				{
@@ -254,9 +255,8 @@ bool UPlayer::CollisionCheck(UPrimitive* other)
 				FireMario();
 			}
 			break;
-		case EObjectType::PROJECTILE:
+		default:
 			break;
-
 		}
 	}
 	return false;
