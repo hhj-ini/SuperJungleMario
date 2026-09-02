@@ -52,10 +52,7 @@ bool UFlower::CollisionCheck(UPrimitive* other) {
 		case EObjectType::PLAYER: 
 			fState = FlowerState::DESTROYED; // 플레이어와 충돌 시 꽃을 DESTROYED 상태로 변경
 			// 꽃을 먹어도 점수가 1000점 올라감
-			if (fState == FlowerState::ENABLE)
-			{
-				UGameLogic::GetInstance().addScore(1000, Location.x, Location.y);
-			}
+
 			break;
 
 		default:
@@ -65,6 +62,7 @@ bool UFlower::CollisionCheck(UPrimitive* other) {
 
 	return false;
 }
+
 
 void UFlower::SetAnimation() {
 	Velocity.y = 0.01f; // 꽃이 위로 올라가는 속도 설정
