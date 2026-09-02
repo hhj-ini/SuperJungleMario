@@ -15,7 +15,7 @@ int UGameLogic::getScore()
 {
 	return score;
 }
-void UGameLogic::addScore(int addAmount, float xCoord, float yCoord)
+void UGameLogic::addScore(int addAmount, float xCoord, float yCoord) // 해당 객체의 Location.x, y 입력
 {
 	score = score + addAmount;
 	x = xCoord;
