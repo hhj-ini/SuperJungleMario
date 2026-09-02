@@ -54,7 +54,11 @@ public:
 
 	static void UpdateLifeUI(int life);
 
+	static void UpdateFinalScoreUI(int score);
+
 	void UpdateUV(int index);
 
 	void UpdateUVBlack(int index);
+
+	void UpdateUVEnd(int index);
 };

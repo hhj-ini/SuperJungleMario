@@ -34,6 +34,8 @@
 #include "UQuestionBox.h"
 
 #include "Map.h"
+#include "UBackground.h"
+
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 // 각종 메시지를 처리할 함수
@@ -150,7 +152,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	}
 	UUi* TitleUI = new UUi(ui_vertices, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT4(1, 1, 1, 1), DirectX::XMFLOAT4(1, 1, 0, 0), 1.0f);
 	// Ending UI part
-	size_t GameEndUICnt = 48;
+	size_t GameEndUICnt = 60;
 	UUi** GameEndUIList = new UUi * [GameEndUICnt];
 	for (int i = 0; i < GameEndUICnt; i++)
 	{
@@ -175,6 +177,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	size_t primitiveCount = 0;	// 현재 공 풀에 들어있는 공 갯수
 
 	UPrimitive** PrimitiveList = new UPrimitive*[ballPoolCnt];
+
+	const float backGroundScale = 0.006196;
+	UPrimitive* backGround = new UBackground(9.537f, -0.947f, 3376.0f * backGroundScale, 480.0f * backGroundScale);
+	PrimitiveList[primitiveCount++] = backGround;
+
 	PrimitiveList[primitiveCount++] = new UBall;
 	
 	bool bGravity = true;	
@@ -232,9 +239,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	UPrimitive* brick = new UBrick(0.1f, -0.4f, 1.0f, 1.0f);
 	PrimitiveList[primitiveCount++] = brick;
 
-	UQuestionBox* question = new UQuestionBox;
-	PrimitiveList[primitiveCount++] = question;
-	PrimitiveList[primitiveCount++] = question->ItemPtr;
+	//UQuestionBox* question = new UQuestionBox;
+	//PrimitiveList[primitiveCount++] = question;
+	//PrimitiveList[primitiveCount++] = question->ItemPtr;
 
 	// 프로젝타일 테스트
 	UPrimitive* projectile = new UProjectile;
@@ -243,10 +250,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	{
 		ms->SetOwner(player);
 	}
-
-	// Flower 테스트
-	UPrimitive* flower = new UFlower(0.3f, -0.3f, 1.0f, 1.0f);
-	PrimitiveList[primitiveCount++] = flower;
 
 	// 텍스쳐 파일 로드 테스트 코드
 	//ID3D11Resource* MushroomTest = nullptr;
@@ -318,7 +321,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		for (size_t i = 0; i < primitiveCount; ++i)
 		{
+			if (PrimitiveList[i]->bIsActive == false) continue;
 			PrimitiveList[i]->Tick();
+
 			if (UBall* b = dynamic_cast<UBall*>(PrimitiveList[i]))
 			{
 				b->Move();
@@ -329,6 +334,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			for (size_t j = 0; j < primitiveCount; ++j)
 			{
 				if (i == j) continue;
+				if (PrimitiveList[j]->bIsActive == false) continue;
 				// if (j == mushroomIdx || i == mushroomIdx) continue;	// 임시로 버섯 충돌 로직 영향 받지 않도록 함
 				PrimitiveList[i]->CollisionCheck(PrimitiveList[j]);
 			}
@@ -360,19 +366,19 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 			if (enemy && enemy->IsEnemyDead())
 			{
-				RemoveObject(PrimitiveList, primitiveCount, i);
+				//RemoveObject(PrimitiveList, primitiveCount, i);
 				continue;
 			}
 
 			if (player && player->IsPlayerDead())
 			{
-				RemoveObject(PrimitiveList, primitiveCount, i);  // 플레이어가 죽으면 게임 종료 추가 필요
+				//RemoveObject(PrimitiveList, primitiveCount, i);  // 플레이어가 죽으면 게임 종료 추가 필요
 				continue;
 			}
 
 			if (mushroom && mushroom->IsMushroomDestroyed())
 			{
-				RemoveObject(PrimitiveList, primitiveCount, i);
+				//RemoveObject(PrimitiveList, primitiveCount, i);
 				continue;
 			}
 		}
@@ -383,6 +389,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		for (size_t i = 0; i < primitiveCount; ++i)
 		{
+			if (PrimitiveList[i]->bIsActive == false) continue;
 			PrimitiveList[i]->Render(renderer, cubeBuffer, numVerticescube);
 		}
 
@@ -436,10 +443,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 		if (UGameLogic::GetInstance().IsEnding()) // Ending UI part
 		{
+			UUi::UpdateFinalScoreUI(UGameLogic::GetInstance().getScore());
 			bUIRender = false;
 			renderer.PrepareUIShader(UIFontSRV);
 			for (size_t i = 0; i < GameEndUICnt; i++)
 			{
+				GameEndUIList[i]->UpdateUVEnd(i);
 				GameEndUIList[i]->Render(renderer, UIBuffer, numVerticesUI, fontSize, fontSize, renderer.GetNDCoordinate(charPositionsEnd[i], 1024, 1024));
 			}
 		}
@@ -487,14 +496,23 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				bp->AnimState = UBrick::EAnimState::UP;
 			}
 		}
+		
+
 
 		// Flower 테스트용
-		if (ImGui::Button("Flower"))
+		if (ImGui::Button("->"))
 		{
-			if (UFlower* fl = dynamic_cast<UFlower*>(flower))
-			{
-				fl->FlowFlower(); 
-			}
+			player->Location.x += 2.f;
+		}
+
+		if (ImGui::Button("<-"))
+		{
+			player->Location.x -= 2.f;
+		}
+
+		if (ImGui::Button("^"))
+		{
+			player->Location.y += 0.5f;
 		}
 
 		ImGui::End();

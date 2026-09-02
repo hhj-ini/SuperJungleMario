@@ -16,6 +16,7 @@ class UPrimitive
 			MUSHROOM,
 			COIN,
 			FLOWER,
+			PIPE,
 		};
 
 		UPrimitive();
@@ -51,6 +52,8 @@ class UPrimitive
 
 	float Radius;
 	bool bisMove;
+
+	bool bIsActive = true;
 	
 	
 	// 텍스쳐 포인터 저장

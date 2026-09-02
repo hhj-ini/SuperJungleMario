@@ -148,6 +148,56 @@ bool UPlayer::CollisionCheck(UPrimitive* other)
 				}
 				else 	// 2. 박스 아래에서 충돌된 경우
 				{
+					UBox* bp = dynamic_cast<UBox*>(other);
+					
+					Location.y = other->Location.y - ((other->height / 2.0f) + (height / 2.0f));	
+					//if (bp && (UBox::EBoxType::BRICK == bp->BoxType || UBox::EBoxType::QUESTION == bp->BoxType))
+					//{
+					//	// 의도적으로 overlap되도록 함
+					//	//float overlapAcceptDegree = 0.01f;
+					//	//Location.y += overlapAcceptDegree;
+					//}
+					
+					Velocity.y *= -0.5f;
+					break;
+				}
+			}
+			else { // x축방향으로 충돌시 x속도 0으로 처리
+				float rightBoxDistance = std::fabs(Location.x - (other->Location.x + scaleMod));
+				float overlapRightSideBox = sumHalfHeight - rightBoxDistance;
+
+				if (overlapRightSideBox > 0.0f)	// 오른쪽에서 충돌
+				{
+					Location.x = other->Location.x + (other->width / 2.0f) + (width / 2.0f);
+					Velocity.x = 0.0f;
+					break;
+				}
+				else
+				{
+					Location.x = other->Location.x - ((other->width / 2.0f) + (width / 2.0f));
+					Velocity.x = 0.0f;
+					break;
+				}
+
+				bIsGrounded = false;
+			}
+			break;
+		}
+		case EObjectType::PIPE: // 파이프충돌처리
+		{
+			if (overlapX > overlapY) { //y축방향으로 충돌시 y속도 0으로 처리		
+				float onBoxDistance = std::fabs(Location.y - (other->Location.y + scaleMod));
+				float overlapOnTheBox = sumHalfHeight - onBoxDistance;
+
+				if (overlapOnTheBox > 0.0f)	// 1. 박스 위를 걷고있는 경우
+				{
+					bIsGrounded = true;
+					Location.y = other->Location.y + (other->height / 2.0f) + (height / 2.0f);
+					Velocity.y = 0.0f;
+					break;
+				}
+				else 	// 2. 박스 아래에서 충돌된 경우
+				{
 					Location.y = other->Location.y - ((other->height / 2.0f) + (height / 2.0f)) + 0.01f;	// 의도적으로 overlap되도록 함
 					Velocity.y *= -0.5f;
 					break;

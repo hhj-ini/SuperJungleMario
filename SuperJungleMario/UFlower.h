@@ -1,5 +1,6 @@
 #pragma once
 #include "UBall.h"
+#include "UGameLogic.h"
 
 /*
 Flower 작동구조
@@ -34,7 +35,7 @@ public:
 		bisMove = false;
         InitHeight= y;
 	}
-    UFlower() {}
+    
     virtual void Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num) override;
     virtual bool CollisionCheck(UPrimitive* other)override;
 

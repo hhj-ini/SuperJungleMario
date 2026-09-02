@@ -12,6 +12,7 @@ public:
 		QUESTION,	// 물음표 박스 (부서지고 이벤트 발생)
 		HARD,		// 하드박스 (안부서짐)
 		BRICK		// 벽돌박스 (부서지고 이벤트 발생)
+		
 	};
 
 	static int inline TotalNumBox = 0;
@@ -29,6 +30,7 @@ public:
 		ObjectType = EObjectType::BOX;
 	}
 	UBox(float locationX, float locationY, float width, float height); //위치x,y,  가로,세로
+	UBox(float locationX, float locationY, float width, float height, EBoxType bt); //위치x,y,  가로,세로
 	virtual ~UBox();
 
 
