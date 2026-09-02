@@ -355,6 +355,7 @@ void UPlayer::TakeDamage()
 
 	Hp = 0;
 	SetState(PlayerState::DEAD);
+	SoundManager->PlaySoundResource(SoundBufferMap[L"death"]);
 }
 
 void UPlayer::Grow()
@@ -431,6 +432,12 @@ void UPlayer::SetSoundResource(USoundManager* soundManager)
 
 	std::wstring soundName = L"jump";	//설정한 이름으로 접근 가능
 	SoundBufferMap[soundName] = ResourceManager::GetInstance().GetSoundResource(L"Resource\\Sound\\jump.wav", soundManager);
+
+	soundName = L"fireball";	//설정한 이름으로 접근 가능
+	SoundBufferMap[soundName] = ResourceManager::GetInstance().GetSoundResource(L"Resource\\Sound\\fireball.wav", soundManager);
+
+	soundName = L"death";	//설정한 이름으로 접근 가능
+	SoundBufferMap[soundName] = ResourceManager::GetInstance().GetSoundResource(L"Resource\\Sound\\death.wav", soundManager);
 }
 
 void UPlayer::Respawn()
@@ -474,7 +481,7 @@ void UPlayer::RequestFire()
 
 	bShotFireRequest = true;
 	bAttacking = true;
-	
+	SoundManager->PlaySoundResource(SoundBufferMap[L"fireball"]);
 
 	CurrentFrame = bFacingLeft ? 19 : 18;
 
