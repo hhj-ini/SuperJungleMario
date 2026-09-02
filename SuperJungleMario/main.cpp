@@ -630,6 +630,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	ResourceManager::GetInstance().ReleaseResource(&renderer, &soundManager);
 
+	soundManager.ShutdownDirectSound();
 	// D3D11 소멸시키는 함수를 호출
 	renderer.Release();
 	return 0;

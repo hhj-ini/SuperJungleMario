@@ -50,7 +50,6 @@ void USoundManager::ReleaseSoundBuffer(IDirectSoundBuffer* SoundBuffer)
     if (SoundBuffer)
     {
         SoundBuffer->Release();
-        SoundBuffer = nullptr;
     }
 }
 
