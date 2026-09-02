@@ -32,15 +32,19 @@ void UQuestionBox::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)
 	if (!TextureSRVPtr[0])
 	{
 		TextureSRVPtr[0] = ResourceManager::GetInstance().GetSRV(L"Resource\\QMBlock.png", &renderer);
-		renderer.PrepareShaderResource(TextureSRVPtr[0]);
-
 	}
-	if (BoxType == EBoxType::CHANGEDHARD) {
+	if (!TextureSRVPtr[1])
+	{
 		TextureSRVPtr[1] = ResourceManager::GetInstance().GetSRV(L"Resource\\ChangedBlock.png", &renderer);
+	}
+	if (BoxType == EBoxType::CHANGEDHARD)
+	{
 		renderer.PrepareShaderResource(TextureSRVPtr[1]);
 	}
-
-
+	else
+	{
+		renderer.PrepareShaderResource(TextureSRVPtr[0]);
+	}
 	DirectX::XMMATRIX world = DirectX::XMMatrixScaling(width, height, 1.0f) * DirectX::XMMatrixTranslation(Location.x, Location.y, Location.z);
 
 	renderer.UpdateConstantBuffer(world, renderer.ViewMatrix, AnimOffset);
