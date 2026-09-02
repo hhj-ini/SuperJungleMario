@@ -308,7 +308,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		for (size_t i = 0; i < primitiveCount; ++i)
 		{
+			if (PrimitiveList[i]->bIsActive == false) continue;
 			PrimitiveList[i]->Tick();
+
 			if (UBall* b = dynamic_cast<UBall*>(PrimitiveList[i]))
 			{
 				b->Move();
@@ -319,6 +321,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			for (size_t j = 0; j < primitiveCount; ++j)
 			{
 				if (i == j) continue;
+				if (PrimitiveList[j]->bIsActive == false) continue;
 				// if (j == mushroomIdx || i == mushroomIdx) continue;	// 임시로 버섯 충돌 로직 영향 받지 않도록 함
 				PrimitiveList[i]->CollisionCheck(PrimitiveList[j]);
 			}
@@ -333,19 +336,19 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 			if (enemy && enemy->IsEnemyDead())
 			{
-				RemoveObject(PrimitiveList, primitiveCount, i);
+				//RemoveObject(PrimitiveList, primitiveCount, i);
 				continue;
 			}
 
 			if (player && player->IsPlayerDead())
 			{
-				RemoveObject(PrimitiveList, primitiveCount, i);  // 플레이어가 죽으면 게임 종료 추가 필요
+				//RemoveObject(PrimitiveList, primitiveCount, i);  // 플레이어가 죽으면 게임 종료 추가 필요
 				continue;
 			}
 
 			if (mushroom && mushroom->IsMushroomDestroyed())
 			{
-				RemoveObject(PrimitiveList, primitiveCount, i);
+				//RemoveObject(PrimitiveList, primitiveCount, i);
 				continue;
 			}
 		}
@@ -356,6 +359,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		for (size_t i = 0; i < primitiveCount; ++i)
 		{
+			if (PrimitiveList[i]->bIsActive == false) continue;
 			PrimitiveList[i]->Render(renderer, cubeBuffer, numVerticescube);
 		}
 
