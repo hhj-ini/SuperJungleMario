@@ -11,7 +11,7 @@ UGameLogic::UGameLogic()
 	coin(0),
 	life(3),
 	ending(false),
-	started(false),  // 이거 false로 이거 false로이거 false로이거 false로
+	started(false),  
 	gameOver(false),
 	x(0.0f),
 	y(0.0f),
@@ -20,7 +20,8 @@ UGameLogic::UGameLogic()
 	respawn(false),
 	needRestart(false),
 	restart(false),
-	renderUI(true)
+	renderUI(true),
+	audioReady(true) // 이거 false로 이거 false로이거 false로이거 false로
 {
 }
 
@@ -159,6 +160,15 @@ bool UGameLogic::IsRenderUI()
 void UGameLogic::setRenderUI(bool input) 
 {
 	renderUI = input;
+}
+
+bool UGameLogic::IsAudioReady()
+{
+	return audioReady;
+}
+void UGameLogic::setAudioReady()
+{
+	audioReady = true;
 }
 
 DirectX::XMFLOAT2 UGameLogic::getCoordinate()

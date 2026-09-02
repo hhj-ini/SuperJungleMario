@@ -50,7 +50,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		PostQuitMessage(0);
 		break;
 	case WM_KEYDOWN:
-		if (!UGameLogic::GetInstance().IsNeedRestart() && !UGameLogic::GetInstance().IsRestart())
+		if (!UGameLogic::GetInstance().IsNeedRestart() && !UGameLogic::GetInstance().IsRestart() && UGameLogic::GetInstance().IsAudioReady())
 		{
 			UGameLogic::GetInstance().setStarted();
 		}
@@ -615,7 +615,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	//renderer.ReleaseResource(UICoinResource);renderer.ReleaseSRV(UICoinSRV);
 	renderer.ReleaseResource(UITitleResource);renderer.ReleaseSRV(UITitleSRV);
 
-	ResourceManager::GetInstance().ReleaseResource(&renderer);
+	ResourceManager::GetInstance().ReleaseResource(&renderer, &soundManager);
 
 	// D3D11 소멸시키는 함수를 호출
 	renderer.Release();

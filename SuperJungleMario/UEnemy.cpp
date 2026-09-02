@@ -2,6 +2,7 @@
 #include "UPlayer.h"
 #include "ResourceManager.h"
 #include "UGameLogic.h"
+#include "USoundManager.h"
 
 //UEnemy::UEnemy()
 //{
@@ -176,7 +177,7 @@ void UEnemy::OnDeath(UPlayer* player)
 	if (eState == EnemyState::ALIVE)
 	{
 		SetState(EnemyState::DEAD);
-
+		SoundManager->PlaySoundResource(SoundBufferMap[L"GoombaDead"]);
 		bIsActive = false;
 		// 몬스터가 죽으면 점수 올라감
 		UGameLogic::GetInstance().addScore(100, Location.x, Location.y);
@@ -191,4 +192,14 @@ void UEnemy::UpdateAnimation(float deltaTime)
 		CurrentFrame = (CurrentFrame + 1) % 2;
 		AnimationTimer = 0.0f;
 	}
+}
+
+void UEnemy::SetSoundResource(USoundManager* soundManager)
+{
+	SoundManager = soundManager;
+
+	std::wstring soundName = L"GoombaDead";	//설정한 이름으로 접근 가능
+	SoundBufferMap[soundName] = ResourceManager::GetInstance().GetSoundResource(L"Resource\\Sound\\GoombaDead.wav", soundManager);
+	SoundManager->ElaryLoadSoundResource(SoundBufferMap[soundName]);
+
 }
