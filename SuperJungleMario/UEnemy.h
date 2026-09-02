@@ -25,6 +25,7 @@ public:
 
     void SetState(EnemyState InState);
     void OnDeath(UPlayer* player);
+    float GetHeight() const { return height; }
 
     virtual void UpdateAnimation(float deltaTime);
 
