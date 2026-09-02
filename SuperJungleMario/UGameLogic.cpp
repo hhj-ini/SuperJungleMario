@@ -64,6 +64,8 @@ void UGameLogic::addOneLife()
 bool UGameLogic::removeOneLife()
 {
 	life--;
+	soundManager->StopSound(SoundBufferMap[L"BGM"]);
+
 	if (life < 0)
 	{
 		setShowBlack(false);
@@ -78,6 +80,12 @@ bool UGameLogic::IsEnding()
 }
 void UGameLogic::setEnding()
 {
+	if (!ending)
+	{
+		soundManager->StopSound(SoundBufferMap[L"BGM"]);
+		soundManager->StopSound(SoundBufferMap[L"GameOver"]);
+		soundManager->PlaySoundResource(SoundBufferMap[L"StageClear"]);
+	}
 	ending = true;
 	setNeedRestart();
 }
@@ -89,7 +97,7 @@ bool UGameLogic::IsStarted()
 void UGameLogic::setStarted()
 {
 	started = true;
-	soundManager->PlaySoundResource(SoundBufferMap[L"GameOver"]);
+	soundManager->PlaySoundResource(SoundBufferMap[L"BGM"]);
 }
 
 bool UGameLogic::IsShowScore()
@@ -107,10 +115,14 @@ bool UGameLogic::IsGameOver()
 }
 void UGameLogic::setGameOver()
 {
-	gameOver = true;
-	soundManager->StopSound(SoundBufferMap[L"BGM"]);
+	if (!gameOver)	// 처음 한번만 실행되게
+	{
+		soundManager->StopSound(SoundBufferMap[L"BGM"]);
 
-	soundManager->PlaySoundResource(SoundBufferMap[L"GameOver"]);
+		soundManager->PlaySoundResource(SoundBufferMap[L"GameOver"]);
+	}
+	gameOver = true;
+	
 	setNeedRestart();
 }
 
@@ -157,6 +169,8 @@ void UGameLogic::resetAll()
 	needRestart = false;
 	restart = false;
 	renderUI = true;
+	soundManager->StopSound(SoundBufferMap[L"GameOver"]);
+	soundManager->PlaySoundResource(SoundBufferMap[L"BGM"]);
 }
 
 bool UGameLogic::IsRenderUI()
