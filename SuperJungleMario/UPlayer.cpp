@@ -5,6 +5,7 @@
 #include <math.h>
 #include "ResourceManager.h"
 #include <cmath>
+#include <iostream>
 
 
 UPlayer::UPlayer()
@@ -16,6 +17,7 @@ UPlayer::UPlayer()
 	Velocity.x = 0.0f;
 	Velocity.y = 0.0f;
 
+	bBigMario = false;
 	bBigMario = false;
 	bIsGrounded = false;
 
@@ -65,10 +67,17 @@ void UPlayer::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)
 		L"Resource\\Mario\\BigMario3.png",
 		L"Resource\\Mario\\BigMario4.png",
 		L"Resource\\Mario\\BigMario5.png",
-		L"Resource\\Mario\\BigMario6.png"
+		L"Resource\\Mario\\BigMario6.png",
+
+		L"Resource\\Mario\\FireBigMario1.png",
+		L"Resource\\Mario\\FireBigMario2.png",
+		L"Resource\\Mario\\FireBigMario3.png",
+		L"Resource\\Mario\\FireBigMario4.png",
+		L"Resource\\Mario\\FireBigMario5.png",
+		L"Resource\\Mario\\FireBigMario6.png"
 	};
 
-	for (int i = 0; i < 12; ++i)
+	for (int i = 0; i < 18; ++i)
 	{
 		if (!TextureSRVPtr[i])
 		{
@@ -167,11 +176,18 @@ bool UPlayer::CollisionCheck(UPrimitive* other)
 					TakeDamage();
 				}
 			}
-			break;
+			break; 
 		case EObjectType::MUSHROOM:
 			if (Hp == 1)
 			{
+				++Hp;
 				Grow();
+			}
+			break;
+		case EObjectType::FLOWER:
+			if (!bFireMario)
+			{
+				FireMario();
 			}
 			break;
 
@@ -210,13 +226,13 @@ void UPlayer::Move()
 		{
 			Velocity.x -= 0.01f;
 			bFacingLeft = true;
-			bIsGrounded = false;
+			// bIsGrounded = false;
 		}
 		else if (GetAsyncKeyState(VK_RIGHT) & 0x8000)
 		{
 			Velocity.x += 0.01f;
 			bFacingLeft = false;
-			bIsGrounded = false;
+			// bIsGrounded = false;
 		}		
 		
 		Location.x += Velocity.x * deltaTime;
@@ -238,29 +254,35 @@ void UPlayer::TakeDamage()
 
 	--Hp;
 
-	if (Hp >= 1)
+	if (Hp == 2)
+	{
+		bFireMario = false;
+		CurrentFrame = bFacingLeft ? 8 : 6;
+
+		DamageTimer = DamageInvincibleTime;
+		return;
+	}
+
+    if (Hp == 1)
 	{
 		Shrink();
 		DamageTimer = DamageInvincibleTime;
+		return;
 	}
-	else
-	{
-		Hp = 0;
-		SetState(PlayerState::DEAD);
-	}
+
+	Hp = 0;
+	SetState(PlayerState::DEAD);
 }
 
 void UPlayer::Grow()
 {
-	Hp = 2;
 	bBigMario = true;
 	
 	float oldHeight = height;
 
 	width = scaleMod;
-	height = scaleMod* 2.0f;
+	height = scaleMod * 2.0f;
 	Location.y += (height - oldHeight) / 2.0f;
-	
 }
 
 void UPlayer::Shrink()
@@ -271,6 +293,8 @@ void UPlayer::Shrink()
 	width = scaleMod;
 	height = scaleMod;
 	Location.y -= (oldHeight - height) / 2.0f;
+
+	CurrentFrame = bFacingLeft ? 2 : 0;
 }
 
 void UPlayer::UpdateAnimation(float deltaTime)
@@ -279,12 +303,11 @@ void UPlayer::UpdateAnimation(float deltaTime)
 	{
 		DamageTimer -= deltaTime;
 	}
+	int BaseFrame = GetBaseFrame();
 
 	AnimationTimer += deltaTime;
 	if (AnimationTimer >= FrameInterval)
 	{
-		int BaseFrame = bBigMario ? 6 : 0;
-
 		if (!bIsGrounded)
 		{
 			CurrentFrame = BaseFrame + (bFacingLeft ? 5 : 4);
@@ -309,4 +332,32 @@ void UPlayer::Respawn()
 {
 	UPlayer::SetState(UPlayer::PlayerState::ALIVE);
 	
+}
+
+int UPlayer::GetBaseFrame() const
+{
+	if (bFireMario)
+		return 12; // 불 마리오
+
+	if (!bFireMario && bBigMario)
+		return 6;  // 큰 마리오
+
+	return 0;      // 작은 마리오
+}
+
+void UPlayer::FireMario()
+{
+	if (!bFireMario)
+	{
+		bFireMario = true;
+		CurrentFrame = bFacingLeft ? 14 : 12;
+	}
+
+	Hp = 3;
+	if (!bBigMario)
+	{
+		Grow();
+	}
+
+	// 불 기능 추가
 }

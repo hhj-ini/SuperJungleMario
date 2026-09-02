@@ -1,10 +1,9 @@
 #include "UFlower.h"
 #include "ResourceManager.h"
 
-
 void UFlower::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num) {
-	if (mrState == FlowerState::ENABLE || mrState == FlowerState::ANIMATING)
-	{	// 버섯이 애니메이션 중이거나, 활성화 상태일 때만 렌더링
+	if (fState == FlowerState::ENABLE || fState == FlowerState::ANIMATING)
+	{	// 꽃이 애니메이션 중이거나, 활성화 상태일 때만 렌더링
 
 		/*renderer.UpdateConstantBuffer(Location, Radius);
 		renderer.RenderPrimitive(pBuffer, num);*/
@@ -40,7 +39,7 @@ bool UFlower::CollisionCheck(UPrimitive* other) {
 		switch (other->ObjectType)
 		{
 		case EObjectType::PLAYER: 
-			mrState = FlowerState::DESTROYED; // 플레이어와 충돌 시 꽃을 DESTROYED 상태로 변경
+			fState = FlowerState::DESTROYED; // 플레이어와 충돌 시 꽃을 DESTROYED 상태로 변경
 			break;
 
 		default:
@@ -53,18 +52,17 @@ bool UFlower::CollisionCheck(UPrimitive* other) {
 
 void UFlower::FlowFlower() {
 	Velocity.y = 0.01f; // 꽃이 위로 올라가는 속도 설정
-	mrState = FlowerState::ANIMATING; // 꽃 상태를 ANIMATING으로 변경
+	fState = FlowerState::ANIMATING; // 꽃 상태를 ANIMATING으로 변경
 }
 
 void UFlower::Move() {
-	if (mrState == FlowerState::ANIMATING) {
+	if (fState == FlowerState::ANIMATING) {
 		Location.y += 0.01f; // 꽃이 위로 올라감
 		if (Location.y >= UFlower::InitHeight+height) {
 			Velocity.y = 0.0f;
-			mrState = FlowerState::ENABLE; // 꽃이 다 올라오면 ENABLE 상태로 변경
+			fState = FlowerState::ENABLE; // 꽃이 다 올라오면 ENABLE 상태로 변경
 		}
 	}
-	return;
 }
 
 
