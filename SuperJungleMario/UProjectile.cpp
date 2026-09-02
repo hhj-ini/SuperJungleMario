@@ -110,14 +110,14 @@ bool UProjectile::CollisionCheck(UPrimitive * other)
                 if (overlapOnTheBox > 0.0f)	// 1. 박스 위를 걷고있는 경우
                 {
                     Location.y = other->Location.y + (other->height / 2.0f) + (height / 2.0f);
-                    if (Velocity.y > 0.3f)
+                    if (Velocity.y > 0.15f)
                     {
                         CurrState = EProjectileState::HIT;
                         DeactivateProjectile();
                     }
                     else
                     {
-                        Velocity.y = 0.01f;
+                        Velocity.y = 0.007f;
                     }
                     break;
                 }
@@ -267,7 +267,7 @@ bool UProjectile::ActivateProjectile(FVector PlayerLocation, bool bFacingLeft, f
     LifeTime = 0; // 초기화
 
 	Location.x = PlayerLocation.x + (bFacingLeft ? -1.0f : 1.0f) * (playerWidth / 2.0f + width / 2.0f);
-	Location.y = PlayerLocation.y + 0.05f;
+	Location.y = PlayerLocation.y + 0.07f;
 
     Velocity.x = bFacingLeft ? -0.025f : 0.025f;
 
@@ -316,6 +316,6 @@ void UProjectile::UpdateAnimation(float deltaTime)
 
 void UProjectile::UpdateVelocity(bool bGravity)
 {
-    Velocity.y -= 0.00015f;
+    Velocity.y = -0.003f;
     
 }

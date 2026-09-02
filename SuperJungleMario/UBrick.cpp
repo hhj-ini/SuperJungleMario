@@ -54,7 +54,7 @@ bool UBrick::CollisionCheck(UPrimitive* other)
 			return false;
 		}
 
-		if (BoxType == EBoxType::HARD) return false;
+		if (BoxType == EBoxType::HARD || BoxType == EBoxType::CHANGEDHARD) return false;
 		// 1. 플레이어가 블럭 아래에 있는지 확인
 		bool isUnder = (Location.y - other->Location.y) > 0.0f ? true : false;
 		if (!isUnder)	// 아래에 없으면
@@ -81,7 +81,6 @@ bool UBrick::CollisionCheck(UPrimitive* other)
 			//가상함수
 			//마리오가 아래에서 위로 블럭을 쳤을때 작동하는 기능 구현 
 			OnHitFromBelow();
-			AnimState = EAnimState::UP;
 			KillEnemy();
 
 			UPlayer* pp = dynamic_cast<UPlayer*>(other);
@@ -90,16 +89,12 @@ bool UBrick::CollisionCheck(UPrimitive* other)
 				//BoxType = EBoxType::HARD;
 				//bIsActive = false;
 				BrokenAnimInit();
-				
-				
+						
 				bIsBroken = true;
-				
-				SoundManager->PlaySoundResource(SoundBufferPtr);
+				SoundManager->PlaySoundResource(SoundBufferMap[L"brick"]);
+
 				// 50점 
 				UGameLogic::GetInstance().addScore(50, Location.x, Location.y);
-			
-			
-
 
 		}
 	}
@@ -196,7 +191,10 @@ void UBrick::Tick(float deltaTime)
 void UBrick::SetSoundResource(USoundManager* soundManager)
 {
 	SoundManager = soundManager;
-	SoundBufferPtr = ResourceManager::GetInstance().GetSoundResource(L"Resource\\Sound\\brick.wav", soundManager);
+	
+	std::wstring soundName = L"brick";	//설정한 이름으로 접근 가능
+	SoundBufferMap[soundName] = ResourceManager::GetInstance().GetSoundResource(L"Resource\\Sound\\brick.wav", soundManager);
+	SoundManager->ElaryLoadSoundResource(SoundBufferMap[soundName]);
 
 	int a = 0;
 }
@@ -241,7 +239,6 @@ void UBrick::BrokenAnimSet()
 void UBrick::OnHitFromBelow()
 {
 	AnimState = EAnimState::UP;
-	BoxType = EBoxType::HARD;
 }
 
 void UBrick::SetAnimState(EAnimState InState)

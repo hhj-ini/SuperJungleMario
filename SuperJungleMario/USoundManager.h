@@ -17,6 +17,7 @@ public:
 	bool InitializeDirectSound(HWND hwnd);
 	// DirectSound 장치 초기화
 
+	void ReleaseSoundBuffer(IDirectSoundBuffer* SoundBuffer);
 
 	IDirectSoundBuffer* SecondaryBuffer = nullptr;
 
@@ -24,6 +25,8 @@ public:
 
 	bool LoadAudioData(WAVEFORMATEX* waveFormat, unsigned char* audioData,
 		DWORD audioDataSize, IDirectSoundBuffer*& InSoundBuffer);
+
+	void ElaryLoadSoundResource(IDirectSoundBuffer* InSoundBuffer);
 
 	void PlaySoundResource(IDirectSoundBuffer* SoundBufferPtr);
 	void StopSound(IDirectSoundBuffer* SoundBufferPtr);
