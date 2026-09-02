@@ -99,7 +99,6 @@ bool UPlayer::CollisionCheck(UPrimitive* other)
 
 	// 충돌
 	if (overlapX > 0 && overlapY > 0) {
-		
 		switch (other->ObjectType)
 		{
 		case EObjectType::BOX: // 박스와 충돌 시 처리
@@ -139,7 +138,7 @@ bool UPlayer::CollisionCheck(UPrimitive* other)
 					break;
 				}
 
-				
+				bIsGrounded = false;
 			}
 			break;
 		}
