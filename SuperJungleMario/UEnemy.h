@@ -29,7 +29,7 @@ public:
     float GetHeight() const { return height; }
 
     virtual void UpdateAnimation(float deltaTime);
-
+    virtual void SetSoundResource(USoundManager* soundManager) override;
 private:
     EnemyState eState = EnemyState::ALIVE;
 

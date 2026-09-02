@@ -123,3 +123,8 @@ void UEnemy::UpdateAnimation(float deltaTime)
 		AnimationTimer = 0.0f;
 	}
 }
+
+void UEnemy::SetSoundResource(USoundManager* soundManager)
+{
+
+}

@@ -26,6 +26,8 @@ public:
 	bool LoadAudioData(WAVEFORMATEX* waveFormat, unsigned char* audioData,
 		DWORD audioDataSize, IDirectSoundBuffer*& InSoundBuffer);
 
+	void ElaryLoadSoundResource(IDirectSoundBuffer* InSoundBuffer);
+
 	void PlaySoundResource(IDirectSoundBuffer* SoundBufferPtr);
 	void StopSound(IDirectSoundBuffer* SoundBufferPtr);
 	void ShutdownDirectSound();	

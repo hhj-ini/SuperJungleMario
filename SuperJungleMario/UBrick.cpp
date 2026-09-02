@@ -91,7 +91,7 @@ bool UBrick::CollisionCheck(UPrimitive* other)
 				//bIsActive = false;
 				BrokenAnimInit();
 				bIsBroken = true;
-				SoundManager->PlaySoundResource(SoundBufferPtr);
+				SoundManager->PlaySoundResource(SoundBufferMap[L"brick"]);
 				// 50점 
 				UGameLogic::GetInstance().addScore(50, Location.x, Location.y);
 			}
@@ -190,7 +190,10 @@ void UBrick::Tick(float deltaTime)
 void UBrick::SetSoundResource(USoundManager* soundManager)
 {
 	SoundManager = soundManager;
-	SoundBufferPtr = ResourceManager::GetInstance().GetSoundResource(L"Resource\\Sound\\brick.wav", soundManager);
+	
+	std::wstring soundName = L"brick";	//설정한 이름으로 접근 가능
+	SoundBufferMap[soundName] = ResourceManager::GetInstance().GetSoundResource(L"Resource\\Sound\\brick.wav", soundManager);
+	SoundManager->ElaryLoadSoundResource(SoundBufferMap[soundName]);
 
 	int a = 0;
 }

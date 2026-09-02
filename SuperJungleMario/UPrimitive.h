@@ -1,5 +1,6 @@
 #pragma once
 #include "URenderer.h"
+#include <unordered_map>
 
 struct ID3D11ShaderResourceView;	// 포인터 위해서 전방선언
 class IDirectSoundBuffer;
@@ -71,5 +72,5 @@ class UPrimitive
 	USoundManager* SoundManager;
 
 	// 사운드 버퍼 포인터 저장
-	IDirectSoundBuffer* SoundBufferPtr;
+	std::unordered_map<std::wstring, IDirectSoundBuffer*> SoundBufferMap;
 };
