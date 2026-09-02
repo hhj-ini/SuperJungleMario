@@ -13,32 +13,32 @@ void MapReader(UPrimitive** AllMapObjects,size_t& objectCount) {
 				break;
 
 			case 'G':
-				AllMapObjects[objectCount++] = new UBox(MapOriginX + (float)j * mapScale, MapOriginY + (float)i * mapScale, 1.0f, 1.0f);
+				AllMapObjects[objectCount++] = new UBox(screenX, screenY, 1.0f, 1.0f);
 				//땅 생성
 				break;
 
 			case 'B':
-				AllMapObjects[objectCount++] = new UBox(MapOriginX + (float)j * mapScale, MapOriginY + (float)i * mapScale, 1.0f, 1.0f);
+				AllMapObjects[objectCount++] = new UBox(screenX, screenY, 1.0f, 1.0f);
 				//벽돌 생성
 				break;
 
 			case '?':
-				AllMapObjects[objectCount++] = new UBox(MapOriginX + (float)j * mapScale, MapOriginY + (float)i * mapScale, 1.0f, 1.0f);
+				AllMapObjects[objectCount++] = new UBox(screenX, screenY, 1.0f, 1.0f);
 				//물음표 블럭 생성
 				break;
 
 			case 'P':
-				AllMapObjects[objectCount++] = new UBox(MapOriginX + (float)j * mapScale, MapOriginY + (float)i * mapScale, 1.0f, 1.0f);
+				AllMapObjects[objectCount++] = new UBox(screenX, screenY, 1.0f, 1.0f);
 				//파이프 생성
 				break;
 
 			case 'S':
-				AllMapObjects[objectCount++] = new UBox(MapOriginX + (float)j * mapScale, MapOriginY + (float)i * mapScale, 1.0f, 1.0f);
+				AllMapObjects[objectCount++] = new UBox(screenX, screenY, 1.0f, 1.0f);
 				//계단 생성
 				break;
 
 			case 'F':
-				AllMapObjects[objectCount++] = new UFlower(MapOriginX + (float)j * mapScale, MapOriginY + (float)i * mapScale, 1.0f, 1.0f);
+				AllMapObjects[objectCount++] = new UFlower(screenX, screenY, 1.0f, 1.0f);
 				break;
 
 			case 'C':

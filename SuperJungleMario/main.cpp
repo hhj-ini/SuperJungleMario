@@ -171,7 +171,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	ID3D11Buffer* cubeBuffer = renderer.CreateTextureVertexBuffer(cube_vertices, sizeof(cube_vertices));
 
 
-	size_t ballPoolCnt = 500;	// 초기에 70개만큼 공 풀 확보
+	size_t ballPoolCnt = 1000;	// 초기에 70개만큼 공 풀 확보
 	size_t primitiveCount = 0;	// 현재 공 풀에 들어있는 공 갯수
 
 	UPrimitive** PrimitiveList = new UPrimitive*[ballPoolCnt];
@@ -241,17 +241,17 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	//renderer.LoadTexture(L"Resource\\Mushroom.png", MushroomTest, MushroomTestSRV);
 
 	//// Box 추가////
-	UPrimitive** Ground = nullptr;
-	Ground = new UPrimitive * [40];  // 10을 변수로 변경해야함. 지금은 임시테스트용
-	
-	// Ground 생성
-	for (int i = 0;i < 40; ++i)
-	{
-		Ground[i] = new UBox(-1.0f+i*scaleMod , -0.8f, 1.0f, 1.0f);
-	}
+	//UPrimitive** Ground = nullptr;
+	//Ground = new UPrimitive * [40];  // 10을 변수로 변경해야함. 지금은 임시테스트용
+	//
+	//// Ground 생성
+	//for (int i = 0;i < 40; ++i)
+	//{
+	//	Ground[i] = new UBox(-1.0f+i*scaleMod , -0.8f, 1.0f, 1.0f);
+	//}
 
 	//Map 생성
-	//MapReader(PrimitiveList, primitiveCount);
+	MapReader(PrimitiveList, primitiveCount);
 
 	// Main Loop(Quit Message가 들어오기 전까지 아래 Loop를 무한히 실행하게 됨.
 	while (bIsExit == false)
@@ -310,6 +310,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		for (size_t i = 0; i < primitiveCount; ++i)
 		{
 			PrimitiveList[i]->Tick();
+			if (UBall* b = dynamic_cast<UBall*>(PrimitiveList[i]))
+			{
+				b->Move();				
+				b->UpdateVelocity(bGravity);
+				b->UpdateAnimation(elapsedTime / 1000.0f);	// deltaTime 단위는 초 단위로 전달
+				//for (int k = 0; k < 40; ++k)   // player->Ground 충돌 체크
+				//{
+				//	b->CollisionCheck(Ground[k]);
+				//}
+			}	
 			for (size_t j = 0; j < primitiveCount; ++j) 
 			{
 				if (i == j) continue;
@@ -317,16 +327,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				PrimitiveList[i]->CollisionCheck(PrimitiveList[j]);
 			}
 
-			if (UBall* b = dynamic_cast<UBall*>(PrimitiveList[i]))
-			{
-				b->Move();				
-				b->UpdateVelocity(bGravity);
-				b->UpdateAnimation(elapsedTime / 1000.0f);	// deltaTime 단위는 초 단위로 전달
-				for (int k = 0; k < 40; ++k)   // player->Ground 충돌 체크
-				{
-					b->CollisionCheck(Ground[k]);
-				}
-			}	
 		}
 
 		for (size_t i = 0; i < primitiveCount; ++i)
@@ -364,10 +364,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 
 		// Ground 렌더링
-		for (int i = 0;i < 40; ++i)
-		{
-			Ground[i]->Render(renderer, cubeBuffer, numVerticescube);
-		}
+		//for (int i = 0;i < 40; ++i)
+		//{
+		//	Ground[i]->Render(renderer, cubeBuffer, numVerticescube);
+		//}
 
 		// UI 렌더링 
 		renderer.PrepareUIShader(UIBlackSRV);
