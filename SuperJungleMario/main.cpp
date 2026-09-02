@@ -124,13 +124,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	UINT numVerticescube = sizeof(cube_vertices) / sizeof(FVertex);	// 버텍스 갯수 변수화
 	float scaleMod = mapScale;	// 전체 스케일 조정
 	
-	//for (UINT i = 0; i < numVerticescube; ++i)
-	//{
-	//	cube_vertices[i].x *= scaleMod;
-	//	cube_vertices[i].y *= scaleMod;
-	//	cube_vertices[i].z *= scaleMod;
-	//}
-
 	// UI 버텍스 버퍼 생성
 	UINT numVerticesUI = sizeof(ui_vertices) / sizeof(FVertexUI);
 	ID3D11Buffer* UIBuffer = renderer.CreateUIVertexBuffer(ui_vertices, sizeof(ui_vertices));
@@ -177,7 +170,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	ID3D11Resource* UIFontResource = nullptr; ID3D11ShaderResourceView* UIFontSRV = nullptr; renderer.LoadTexture(L"Resource\\font.png", UIFontResource, UIFontSRV);
 	ID3D11Resource* UIBlackResource = nullptr; ID3D11ShaderResourceView* UIBlackSRV = nullptr; renderer.LoadTexture(L"Resource\\black.png", UIBlackResource, UIBlackSRV);
 	ID3D11Resource* UIMarioResource = nullptr; ID3D11ShaderResourceView* UIMarioSRV = nullptr; renderer.LoadTexture(L"Resource\\Mario\\Mario1.png", UIMarioResource, UIMarioSRV);
-	//ID3D11Resource* UICoinResource = nullptr; ID3D11ShaderResourceView* UICoinSRV = nullptr; renderer.LoadTexture(L"Resource\\Coin.png", UICoinResource, UICoinSRV);
+	ID3D11Resource* UICoinResource = nullptr; ID3D11ShaderResourceView* UICoinSRV = nullptr; renderer.LoadTexture(L"Resource\\Coin.png", UICoinResource, UICoinSRV);
 	ID3D11Resource* UITitleResource = nullptr; ID3D11ShaderResourceView* UITitleSRV = nullptr; renderer.LoadTexture(L"Resource\\title.png", UITitleResource, UITitleSRV);
 
 	//ID3D11Buffer* cubeBuffer = renderer.CreateVertexBuffer(cube_vertices, sizeof(cube_vertices));
@@ -213,21 +206,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	double StartTime = 0.0f;
 	double timer = 0.0f;
 
-	/////////// 여기서 테스트용 객체 추가하시면 됩니다 ////////////////
-	int mushroomIdx = UBall::TotalNumBalls;
-	//PrimitiveList[mushroomIdx] = new UMushroom;
-	//PrimitiveList[primitiveCount++] = new UMushroom();
-
-	// PrimitiveList[primitiveCount++] = new UFlower(0.0f, 0.0f, 1.0f, 1.0f);  // test용으로 flower 추가
-
-	// 접근할때
-	// PrimitiveList[mushroomIdx]->render(...); 이런식으로 하면 됩니다.
-	// for 문이랑 로직 중첩되지 않도록 주의해주시면 돼요
-	
-	int x1 = 94; // ui 테스트용 임시 초기 좌표
-	int y1 = 49;
-
-	//int playerIdx = UBall::TotalNumBalls;
 	UPlayer* player = new UPlayer;
 	PrimitiveList[primitiveCount++] = player;
 	player->SetSoundResource(&soundManager);
@@ -244,19 +222,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			f->SetOwner(player);
 		}
 	}
-
-	//UQuestionBox* question = new UQuestionBox;
-	//PrimitiveList[primitiveCount++] = question;
-	//PrimitiveList[primitiveCount++] = question->ItemPtr;
-
-	// 프로젝타일 테스트
-	// 
-	//UPrimitive* projectile = new UProjectile;
-	//PrimitiveList[primitiveCount++] = projectile;
-	//if (UProjectile* ms = dynamic_cast<UProjectile*>(projectile))
-	//{
-	//	ms->SetOwner(player);
-	//}
 
 	//Map 생성
 	int mapObjectStartIndex = primitiveCount;
@@ -353,7 +318,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			{
 				if (i == j) continue;
 				if (PrimitiveList[j]->bIsActive == false) continue;
-				// if (j == mushroomIdx || i == mushroomIdx) continue;	// 임시로 버섯 충돌 로직 영향 받지 않도록 함
 				PrimitiveList[i]->CollisionCheck(PrimitiveList[j]);
 			}
 		}
@@ -406,9 +370,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				//RemoveObject(PrimitiveList, primitiveCount, i);
 				continue;
 			}
-			
-		
-		
+
 			if (mushroom && mushroom->IsMushroomDestroyed())
 			{
 				//RemoveObject(PrimitiveList, primitiveCount, i);
@@ -473,11 +435,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			BlackBackground->Render(renderer, UIBuffer, numVerticesUI, 5.0f, 5.0f, DirectX::XMFLOAT2(0.0f, 0.0f));
 		}
 		UUi::UpdateScoreUI(UGameLogic::GetInstance().getScore());
-		UUi::UpdateCoinUI(UGameLogic::GetInstance().getLife());
+		UUi::UpdateCoinUI(UGameLogic::GetInstance().getCoin());
 		const float fontSize = 0.09f;
 		if (UGameLogic::GetInstance().IsRenderUI()) // Top UI part
 		{
-			renderer.PrepareUIShader(UIMarioSRV);
+			renderer.PrepareUIShader(UICoinSRV);
 			CoinUI->Render(renderer, UIBuffer, numVerticesUI, 0.08f, 0.08f, DirectX::XMFLOAT2(-0.24f, 0.84f));
 			renderer.PrepareUIShader(UIFontSRV);
 			for (size_t i = 0; i < UICnt; i++)
@@ -542,52 +504,18 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		ImGui_ImplWin32_NewFrame();
 		ImGui::NewFrame();
 
-		// 사용자가 직접 UI를 구성하는 공간
 		ImGui::Begin("Super Jungle Mario");
 		ImGui::Text("Hello Jungle Mario!");
 
 		// UI 테스트용
-		ImGui::Text("Game Time %.2f", GameTime);
-		//ImGui::Checkbox("UI Test", &UGameLogic::GetInstance().gameOver);
-		//ImGui::SliderInt("Score", &UGameLogic::GameLogic().score, 0, 1000000);
+		// ImGui::Text("Game Time %.2f", GameTime);
 
-		if (ImGui::Checkbox("Gravity", &bGravity));
-		
-
-		// 버섯 무빙 테스트용
-		if (ImGui::Button("Mushroom"))
-		{
-			if (UMushroom* ms = dynamic_cast<UMushroom*>(PrimitiveList[mushroomIdx]))
-			{
-				ms->SetState(UMushroom::MushroomState::ANIMATING);
-			}
-		}
-		
-		//// 프로젝타일 테스트용
-		//if (ImGui::Button("Projectile"))
-		//{
-		//	if (UProjectile* ms = dynamic_cast<UProjectile*>(projectile))
-		//	{
-		//		ms->SetState(UProjectile::EProjectileState::ROLLING);
-		//	}
-		//}
-
-		// Flower 테스트용
 		if (ImGui::Button("->"))
 		{
 			player->Location.x += 2.f;
+			player->Location.x += 1.f;
 		}
-
-		if (ImGui::Button("<-"))
-		{
-			player->Location.x -= 2.f;
-		}
-
-		if (ImGui::Button("^"))
-		{
-			player->Location.y += 0.5f;
-		}
-
+		
 		ImGui::End();
 
 		ImGui::Render();
@@ -640,7 +568,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	renderer.ReleaseResource(UIFontResource);renderer.ReleaseSRV(UIFontSRV);
 	renderer.ReleaseResource(UIBlackResource);renderer.ReleaseSRV(UIBlackSRV);
 	renderer.ReleaseResource(UIMarioResource);renderer.ReleaseSRV(UIMarioSRV);
-	//renderer.ReleaseResource(UICoinResource);renderer.ReleaseSRV(UICoinSRV);
+	renderer.ReleaseResource(UICoinResource);renderer.ReleaseSRV(UICoinSRV);
 	renderer.ReleaseResource(UITitleResource);renderer.ReleaseSRV(UITitleSRV);
 
 	ResourceManager::GetInstance().ReleaseResource(&renderer, &soundManager);
