@@ -7,7 +7,7 @@ UGameLogic& UGameLogic::GetInstance()
 }
 
 UGameLogic::UGameLogic()
-	: score(0), coin(0), life(3), ending(false)
+	: score(0), coin(0), life(3), ending(false), started(true)
 {
 }
 
@@ -17,7 +17,7 @@ int UGameLogic::getScore()
 }
 void UGameLogic::addScore(int addAmount)
 {
-	this->score = this->score + addAmount;
+	score = score + addAmount;
 }
 
 int UGameLogic::getCoin()
@@ -45,10 +45,17 @@ void UGameLogic::removeOneLife()
 bool UGameLogic::IsEnding()
 {
 	return ending;
-
 }
 void UGameLogic::setEnding()
 {
-
 	ending = true;
+}
+
+bool UGameLogic::IsStarted()
+{
+	return started;
+}
+void UGameLogic::setStarted()
+{
+	started = true;
 }

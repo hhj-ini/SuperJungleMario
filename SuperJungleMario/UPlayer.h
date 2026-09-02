@@ -31,7 +31,7 @@ public:
     void Move() override;
 
     void SetState(PlayerState InState);
-    void SetVelocityY(float y);
+    void SetVelocityY(float y) { Velocity.y = y; };
 	void TakeDamage();
 	void Grow();
 	void Shrink();

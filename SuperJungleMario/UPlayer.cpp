@@ -196,7 +196,6 @@ bool UPlayer::CollisionCheck(UPrimitive* other)
 	return false;
 }
 
-
 void UPlayer::SetState(UPlayer::PlayerState InState)
 {
 	switch (InState)
@@ -209,7 +208,6 @@ void UPlayer::SetState(UPlayer::PlayerState InState)
 		break;
 	}
 }
-
 
 void UPlayer::Move()
 {
@@ -238,11 +236,6 @@ void UPlayer::Move()
 		Location.x += Velocity.x * deltaTime;
 		Location.y += Velocity.y * deltaTime;
 	}
-}
-
-void UPlayer::SetVelocityY(float y)
-{
-	Velocity.y = y;
 }
 
 void UPlayer::TakeDamage()
