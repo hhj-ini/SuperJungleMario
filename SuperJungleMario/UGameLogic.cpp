@@ -19,7 +19,8 @@ UGameLogic::UGameLogic()
 	showBlack(false),
 	respawn(false),
 	needRestart(false),
-	restart(false)
+	restart(false),
+	renderUI(true)
 {
 }
 
@@ -141,13 +142,23 @@ void UGameLogic::resetAll()
 	ending = false;
 	started = false;
 	gameOver = false;
-	x = 0;
-	y = 0;
+	x = 0.0f;
+	y = 0.0f;
 	showScore = false;
 	showBlack = false;
 	respawn = false;
 	needRestart = false;
 	restart = false;
+	renderUI = true;
+}
+
+bool UGameLogic::IsRenderUI()
+{
+	return renderUI;
+}
+void UGameLogic::setRenderUI(bool input) 
+{
+	renderUI = input;
 }
 
 DirectX::XMFLOAT2 UGameLogic::getCoordinate()
