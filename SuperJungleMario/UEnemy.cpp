@@ -57,25 +57,79 @@ bool UEnemy::CollisionCheck(UPrimitive* other)
 
 
 	// 충돌
-	if (overlapX > 0 && overlapY > 0) {
-
+	if (overlapX > 0 && overlapY > 0)
+	{
 		switch (other->ObjectType)
 		{
 		case EObjectType::BOX: // 박스와 충돌 시 처리
-			if (overlapX > overlapY) { //y축방향으로 충돌시 y속도 0으로 처리
-				Location.y = other->Location.y + (other->height / 2.0f) + (height / 2.0f);
-				Velocity.y = 0;
-				break;
+		{
+			if (overlapX > overlapY) { //y축방향으로 충돌시 y속도 0으로 처리		
+				float onBoxDistance = std::fabs(Location.y - (other->Location.y + scaleMod));
+				float overlapOnTheBox = sumHalfHeight - onBoxDistance;
+
+				if (overlapOnTheBox > 0.0f)	// 1. 박스 위를 걷고있는 경우
+				{
+					Location.y = other->Location.y + (other->height / 2.0f) + (height / 2.0f);
+					Velocity.y = 0.0f;
+					break;
+				}
 			}
-			//else { // x축방향으로 충돌시 x속도 0으로 처리
-			//	Location.x = other->Location.x + (other->width / 2.0f) + (width / 2.0f);
-			//	Velocity.x = 0;
-			//}
-		default:
+			else { // x축방향으로 충돌시 x속도 0으로 처리
+				float rightBoxDistance = std::fabs(Location.x - (other->Location.x + scaleMod));
+				float overlapRightSideBox = sumHalfHeight - rightBoxDistance;
+
+				if (overlapRightSideBox > 0.0f)	// 오른쪽에서 충돌
+				{
+					Location.x = other->Location.x + (other->width / 2.0f) + (width / 2.0f);
+					Velocity.x *= -1.0f;
+					break;
+				}
+				else
+				{
+					Location.x = other->Location.x - ((other->width / 2.0f) + (width / 2.0f));
+					Velocity.x *= -1.0f;
+					break;
+				}
+			}
 			break;
 		}
+		case EObjectType::PIPE: // 파이프충돌처리
+		{
+			if (overlapX > overlapY) { //y축방향으로 충돌시 y속도 0으로 처리		
+				float onBoxDistance = std::fabs(Location.y - (other->Location.y + scaleMod));
+				float overlapOnTheBox = sumHalfHeight - onBoxDistance;
+
+				if (overlapOnTheBox > 0.0f)	// 1. 박스 위를 걷고있는 경우
+				{
+					Location.y = other->Location.y + (other->height / 2.0f) + (height / 2.0f);
+					Velocity.y = 0.0f;
+					break;
+				}
+			}
+			else { // x축방향으로 충돌시 x속도 0으로 처리
+				float rightBoxDistance = std::fabs(Location.x - (other->Location.x + scaleMod));
+				float overlapRightSideBox = sumHalfHeight - rightBoxDistance;
+
+				if (overlapRightSideBox > 0.0f)	// 오른쪽에서 충돌
+				{
+					Location.x = other->Location.x + (other->width / 2.0f) + (width / 2.0f);
+					Velocity.x *= -1.0f;
+					break;
+				}
+				else
+				{
+					Location.x = other->Location.x - ((other->width / 2.0f) + (width / 2.0f));
+					Velocity.x *= -1.0f;
+					break;
+				}
+			}
+			break;
+		}
+		default:
+			break;
+		return false;
+		}
 	}
-	return false;
 }
 
 void UEnemy::Move()
