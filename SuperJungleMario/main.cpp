@@ -244,7 +244,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		{
 			bGameStart = false;
 		}
-		if (UGameLogic::GameLogic().getLife() < 0) 
+		if (UGameLogic::GetInstance().getLife() < 0)
 		{
 			bGameEnd = true;
 		}
@@ -351,8 +351,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			// 첫화면 렌더. 검은 화면 렌더.
 			BlackBackground->Render(renderer, UIBuffer, numVerticesUI, 5.0f, 5.0f);
 		}
-		UUi::UpdateScoreUI(UGameLogic::GameLogic().score);
-		UUi::UpdateCoinUI(UGameLogic::GameLogic().coin);
+		UUi::UpdateScoreUI(UGameLogic::GetInstance().score);
+		UUi::UpdateCoinUI(UGameLogic::GetInstance().coin);
 		const float fontSize = 0.09f;
 		if (bUIRender)
 		{
@@ -490,6 +490,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	renderer.ReleaseSRV(UIFontSRV);
 	renderer.ReleaseResource(UIBlackResource);
 	renderer.ReleaseSRV(UIBlackSRV);
+	renderer.ReleaseResource(UIMarioResource);
+	renderer.ReleaseSRV(UIMarioSRV);
+	renderer.ReleaseResource(UICoinResource);
+	renderer.ReleaseSRV(UICoinSRV);
 
 	ResourceManager::GetInstance().ReleaseResource(&renderer);
 
