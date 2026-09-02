@@ -456,3 +456,33 @@ bool UPlayer::ShotFireRequest()
 	bShotFireRequest = false;
 	return bRequested;
 }
+
+void UPlayer::Reset()
+{
+	Location.x = 0.1f;
+	Location.y = -0.5f;
+	Location.z = 0.0f;
+
+	Velocity.x = 0.0f;
+	Velocity.y = 0.0f;
+
+	bBigMario = false;
+	bFireMario = false;
+	bIsGrounded = false;
+	bAttacking = false;
+
+	Hp = 1;
+	width = scaleMod;
+	height = scaleMod;
+	bFacingLeft = false;
+	ObjectType = EObjectType::PLAYER;
+
+	CurrentFrame = 0;
+	AnimationTimer = 0.0f;
+
+	DamageTimer = 0.0f;
+	FireTimer = 0.0f;
+	bShotFireRequest = false;
+
+	SetState(PlayerState::ALIVE);
+}

@@ -52,6 +52,7 @@ public:
 	void FireMario();
 	void RequestFire();
     bool ShotFireRequest();
+    void Reset();
 
 private:
     PlayerState pState = PlayerState::ALIVE;
