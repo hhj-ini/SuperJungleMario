@@ -5,8 +5,8 @@
 #include <math.h>
 #include "ResourceManager.h"
 #include <cmath>
-#include <iostream>
-#include "UBox.h"
+#include "UProjectile.h"
+
 
 UPlayer::UPlayer()
 {
@@ -20,12 +20,20 @@ UPlayer::UPlayer()
 	bBigMario = false;
 	bFireMario = false;
 	bIsGrounded = false;
+	bAttacking = false;
 
 	Hp = 1;
 	width = scaleMod;
 	height = scaleMod;
 	bFacingLeft = false;
 	ObjectType = EObjectType::PLAYER;
+
+	CurrentFrame = 0;
+	AnimationTimer = 0.0f;
+
+	DamageTimer = 0.0f;
+	FireTimer = 0.0f;
+	bShotFireRequest = false;
 }
 
 UPlayer::~UPlayer()
@@ -79,10 +87,13 @@ void UPlayer::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)
 		L"Resource\\Mario\\FireBigMario3.png",
 		L"Resource\\Mario\\FireBigMario4.png",
 		L"Resource\\Mario\\FireBigMario5.png",
-		L"Resource\\Mario\\FireBigMario6.png"
+		L"Resource\\Mario\\FireBigMario6.png",
+
+		L"Resource\\Mario\\FireAttackMario1.png",
+		L"Resource\\Mario\\FireAttackMario2.png"
 	};
 
-	for (int i = 0; i < 18; ++i)
+	for (int i = 0; i < 20; ++i)
 	{
 		if (!TextureSRVPtr[i])
 		{
@@ -242,6 +253,9 @@ bool UPlayer::CollisionCheck(UPrimitive* other)
 				FireMario();
 			}
 			break;
+		case EObjectType::PROJECTILE:
+			break;
+
 		}
 	}
 	return false;
@@ -273,13 +287,13 @@ void UPlayer::Move()
 
 		if (GetAsyncKeyState(VK_LEFT) & 0x8000)
 		{
-			Velocity.x -= 0.01f;
+			Velocity.x = -0.01f;
 			bFacingLeft = true;
 			// bIsGrounded = false;
 		}
 		else if (GetAsyncKeyState(VK_RIGHT) & 0x8000)
 		{
-			Velocity.x += 0.01f;
+			Velocity.x = 0.01f;
 			bFacingLeft = false;
 			// bIsGrounded = false;
 		}		
@@ -287,6 +301,11 @@ void UPlayer::Move()
 		PreviousLocation = Location;
 		Location.x += Velocity.x * deltaTime;
 		Location.y += Velocity.y * deltaTime;
+
+		if (GetAsyncKeyState('D') & 0x8000 && bFireMario)
+		{
+			RequestFire();
+		}
 	}
 }
 
@@ -346,26 +365,42 @@ void UPlayer::UpdateAnimation(float deltaTime)
 	{
 		DamageTimer -= deltaTime;
 	}
+	if (FireTimer > 0.0f)
+	{
+		FireTimer -= deltaTime;
+		if (FireTimer <= 0.0f)
+		{
+			bAttacking = false;
+		}
+	}
+
 	int BaseFrame = GetBaseFrame();
 
 	AnimationTimer += deltaTime;
 	if (AnimationTimer >= FrameInterval)
 	{
-		if (!bIsGrounded)
+		if (!bAttacking)
 		{
-			CurrentFrame = BaseFrame + (bFacingLeft ? 5 : 4);
-		}
-		else if (Velocity.x > 0.0f)
-		{
-			CurrentFrame = BaseFrame + (CurrentFrame + 1) % 2;
-		}
-		else if (Velocity.x < 0.0f)
-		{
-			CurrentFrame = BaseFrame + 2 + (CurrentFrame + 1) % 2;
+			if (!bIsGrounded)
+			{
+				CurrentFrame = BaseFrame + (bFacingLeft ? 5 : 4);
+			}
+			else if (Velocity.x > 0.0f)
+			{
+				CurrentFrame = BaseFrame + (CurrentFrame + 1) % 2;
+			}
+			else if (Velocity.x < 0.0f)
+			{
+				CurrentFrame = BaseFrame + 2 + (CurrentFrame + 1) % 2;
+			}
+			else
+			{
+				CurrentFrame = BaseFrame + (bFacingLeft ? 2 : 0);
+			}
 		}
 		else
 		{
-			CurrentFrame = BaseFrame + (bFacingLeft ? 2 : 0);
+			CurrentFrame = bFacingLeft ? 19 : 18;
 		}
 		AnimationTimer = 0.0f;
 	}
@@ -401,6 +436,27 @@ void UPlayer::FireMario()
 	{
 		Grow();
 	}
+}
 
-	// 불 기능 추가
+void UPlayer::RequestFire()
+{
+	if (FireTimer > 0.0f)
+	{
+		return;
+	}
+
+	bShotFireRequest = true;
+	bAttacking = true;
+	
+
+	CurrentFrame = bFacingLeft ? 19 : 18;
+
+	FireTimer = FireInterval;
+}
+
+bool UPlayer::ShotFireRequest()
+{
+	bool bRequested = bShotFireRequest;
+	bShotFireRequest = false;
+	return bRequested;
 }

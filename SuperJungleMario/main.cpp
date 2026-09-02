@@ -218,6 +218,19 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	UBall* player = new UPlayer;
 	PrimitiveList[primitiveCount++] = player;
 
+	UBall* ProjectileList[20] = {};
+	for (int i = 0; i < 20; ++i)
+	{
+		UBall* projectile = new UProjectile;
+		ProjectileList[i] = projectile;
+		PrimitiveList[primitiveCount++] = projectile;
+
+		if (UProjectile* f = dynamic_cast<UProjectile*>(ProjectileList[i]))
+		{
+			f->SetOwner(player);
+		}
+	}
+
 	UBall* GoombaList[1] = { nullptr };	// 임시로 goomba 애니메이션 업데이트
 	UBall* goomba = new UEnemy;
 	PrimitiveList[primitiveCount++] = goomba;
@@ -326,6 +339,23 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				PrimitiveList[i]->CollisionCheck(PrimitiveList[j]);
 			}
 
+		}
+
+		if (UPlayer* firePlayer = dynamic_cast<UPlayer*>(player))
+		{
+			if (firePlayer->ShotFireRequest())
+			{
+				for (int i = 0; i < 20; ++i)
+				{
+					if (UProjectile* f = dynamic_cast<UProjectile*>(ProjectileList[i]))
+					{
+						if (f->ActivateProjectile(firePlayer->Location, firePlayer->bFacingLeft, firePlayer->GetWidth()))
+						{
+							break;
+						}
+					}
+				}
+			}
 		}
 
 		for (size_t i = 0; i < primitiveCount; ++i)
