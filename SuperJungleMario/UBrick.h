@@ -18,7 +18,6 @@ public:
     virtual bool CollisionCheck(UPrimitive* other) override;
     virtual void Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num) override;
     virtual void OnHitFromBelow();
-
     virtual void Tick(float deltaTime) override;
     
     virtual void SetSoundResource(USoundManager* soundManager) override;
