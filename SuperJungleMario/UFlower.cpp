@@ -1,5 +1,9 @@
 #include "UFlower.h"
 #include "ResourceManager.h"
+UFlower::UFlower(float x, float y, float w, float h) : UBall(x, y, w, h)
+{
+
+}
 
 void UFlower::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num) {
 	if (fState == FlowerState::ENABLE || fState == FlowerState::ANIMATING)
@@ -21,7 +25,7 @@ void UFlower::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num) {
 		renderer.RenderPrimitive(pBuffer, num);
 	}
 }
-
+ 
 bool UFlower::CollisionCheck(UPrimitive* other) {
 	// 가로가 겹치는지 확인
 	float sumHalfWidth = (width / 2.0f) + (other->width / 2.0f);
@@ -41,7 +45,7 @@ bool UFlower::CollisionCheck(UPrimitive* other) {
 		case EObjectType::PLAYER: 
 			fState = FlowerState::DESTROYED; // 플레이어와 충돌 시 꽃을 DESTROYED 상태로 변경
 			// 꽃을 먹어도 점수가 1000점 올라감
-			UGameLogic::GetInstance().addScore(1000);
+			UGameLogic::GetInstance().addScore(1000, Location.x, Location.y);
 			break;
 
 		default:
@@ -52,7 +56,7 @@ bool UFlower::CollisionCheck(UPrimitive* other) {
 	return false;
 }
 
-void UFlower::FlowFlower() {
+void UFlower::SetAnimation() {
 	Velocity.y = 0.01f; // 꽃이 위로 올라가는 속도 설정
 	fState = FlowerState::ANIMATING; // 꽃 상태를 ANIMATING으로 변경
 }

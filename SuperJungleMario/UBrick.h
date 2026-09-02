@@ -18,7 +18,7 @@ public:
     virtual bool CollisionCheck(UPrimitive* other) override;
     virtual void Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num) override;
     virtual void Tick() override;
-
+    virtual void OnHitFromBelow();
     // Box 전용 함수
     virtual void SetAnimState(EAnimState InType);
 
@@ -28,5 +28,5 @@ public:
 
     FVector AnimOffset;
     EAnimState AnimState = EAnimState::STOP;
-};
+    };
 

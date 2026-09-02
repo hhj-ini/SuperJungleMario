@@ -9,7 +9,6 @@ UBrick::UBrick() : UBox()
 UBrick::UBrick(float x, float y, float w, float h)	
 	: UBox(x, y, w, h)
 {
-	UBrick();
 }
 
 bool UBrick::CollisionCheck(UPrimitive* other)
@@ -70,8 +69,11 @@ bool UBrick::CollisionCheck(UPrimitive* other)
 		if (overlapX > overlapDegree && overlapY > 0)
 		{	// 2. 플레이어가 블럭과 오버랩 된 경우 
 			// 블럭 애니메이션 시작
-			AnimState = EAnimState::UP;
-			BoxType = EBoxType::HARD;
+			
+			//가상함수
+			//마리오가 아래에서 위로 블럭을 쳤을때 작동하는 기능 구현 
+			OnHitFromBelow(); 
+			
 		}
 	}
 
@@ -121,7 +123,12 @@ void UBrick::Tick()
 	}
 
 }
+void UBrick::OnHitFromBelow()
+{
+	AnimState = EAnimState::UP;
+	BoxType = EBoxType::HARD;
 
+}
 void UBrick::SetAnimState(EAnimState InState)
 {
 	if (EAnimState::STOP != AnimState)
@@ -130,4 +137,5 @@ void UBrick::SetAnimState(EAnimState InState)
 	}
 	// 현재 애니메이션 상태가 멈춤 상태가 아닌 경우에는 설정하지 못하도록 함.
 	AnimState = InState;
+
 }
