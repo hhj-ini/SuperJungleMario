@@ -242,7 +242,6 @@ bool UPlayer::CollisionCheck(UPrimitive* other)
 				FireMario();
 			}
 			break;
-
 		}
 	}
 	return false;

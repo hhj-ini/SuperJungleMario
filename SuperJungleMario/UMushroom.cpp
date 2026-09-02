@@ -72,6 +72,8 @@ bool UMushroom::CollisionCheck(UPrimitive* other)
 			break;
 		case EObjectType::PLAYER:
 			mrState = MushroomState::DESTROYED;
+			// 버섯을 먹으면 점수가 1000점 올라감
+			UGameLogic::GetInstance().addScore(1000);
 			break;
 		case EObjectType::ENEMY:
 			// 적과 충돌 시 처리
