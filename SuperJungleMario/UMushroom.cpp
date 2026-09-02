@@ -29,7 +29,6 @@ void UMushroom::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)
 		}
 		renderer.PrepareShaderResource(TextureSRVPtr[0]);
 
-		//DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(Location.x, Location.y, Location.z);
 		DirectX::XMMATRIX world = DirectX::XMMatrixScaling(width, height, 1.0f) * DirectX::XMMatrixTranslation(Location.x, Location.y, Location.z);
 		renderer.UpdateConstantBuffer(world, renderer.ViewMatrix);
 
@@ -82,7 +81,6 @@ bool UMushroom::CollisionCheck(UPrimitive* other)
 			}
 			break;
 			
-
 		case EObjectType::PLAYER:
 			mrState = MushroomState::DESTROYED;
 			// 버섯을 먹으면 점수가 1000점 올라감
@@ -105,7 +103,6 @@ void UMushroom::Move()
 		return;
 	}
 	
-
 	if (mrState == MushroomState::ANIMATING) {
 		Location.y += 0.01f; // 꽃이 위로 올라감
 		if (Location.y >= UMushroom::StartAnimLocationY + height) {
@@ -130,8 +127,7 @@ void UMushroom::SetState(MushroomState InState)
 		break;
 
 	case MushroomState::ENABLE:
-		// 애니메이션 끝나면 
-		// SetState(MushroomState::ENABLE); 호출
+		// 애니메이션 끝나면 SetState(MushroomState::ENABLE); 호출
 		mrState = MushroomState::ENABLE;
 		Velocity.x = 0.006f;
 		Velocity.y = 0.0f;
@@ -146,6 +142,7 @@ void UMushroom::SetState(MushroomState InState)
 		break;
 	}
 }
+
 void UMushroom::SetAnimation() {
 	SetState(MushroomState::ANIMATING);
 }
