@@ -7,7 +7,7 @@
 #include "UBrick.h"
 #include "UQuestionBox.h"
 #include "UPipe.h"
-
+#include "UCoin.h"
 #include "UMushroom.h"
 
 
@@ -37,13 +37,19 @@ void MapReader(UPrimitive** AllMapObjects, size_t& objectCount, USoundManager* s
 				//벽돌 생성
 				break;
 
-			case '?':
-				pp = new UQuestionBox(screenX, screenY, 1.0f, 1.0f, UQuestionBox::EItemType::COIN);
-				AllMapObjects[objectCount++] = pp;
-				pp->SetSoundResource(soundManager);
+			case '?': {
+				//pp = new UQuestionBox(screenX, screenY, 1.0f, 1.0f, UQuestionBox::EItemType::COIN);
+				//AllMapObjects[objectCount++] = pp;
+				//pp->SetSoundResource(soundManager);
 				//물음표 블럭 생성
-				break;
 
+				UQuestionBox* questionBoxCoinPtr = new UQuestionBox(screenX, screenY, 1.0f, 1.0f, UQuestionBox::EItemType::COIN);
+				UCoin* coinPtr = new UCoin(screenX, screenY, 1.0f, 1.0f);
+				questionBoxCoinPtr->ItemPtr = coinPtr;
+				AllMapObjects[objectCount++] = coinPtr;
+				AllMapObjects[objectCount++] = questionBoxCoinPtr;
+				break;
+			}
 			case 'P':
 				pp = new UPipe(screenX, screenY, 1.0f, 1.0f);
 				AllMapObjects[objectCount++] = pp;
@@ -59,11 +65,11 @@ void MapReader(UPrimitive** AllMapObjects, size_t& objectCount, USoundManager* s
 				break;
 
 			case 'F': {
-				UFlower* flowerPtr = new UFlower(screenX, screenY, 1.0f, 1.0f);
 				UQuestionBox* questionBoxPtr = new UQuestionBox(screenX, screenY, 1.0f, 1.0f, UQuestionBox::EItemType::FLOWER);
+				UFlower* flowerPtr = new UFlower(screenX, screenY, 1.0f, 1.0f);
 				questionBoxPtr->ItemPtr = flowerPtr;
-				AllMapObjects[objectCount++] = questionBoxPtr;
 				AllMapObjects[objectCount++] = flowerPtr;
+				AllMapObjects[objectCount++] = questionBoxPtr;
 
 				questionBoxPtr->SetSoundResource(soundManager);
 				flowerPtr->SetSoundResource(soundManager);
@@ -79,11 +85,11 @@ void MapReader(UPrimitive** AllMapObjects, size_t& objectCount, USoundManager* s
 				break;
 
 			case 'M': {
-				UMushroom* mushroomPtr = new UMushroom(screenX, screenY, 1.0f, 1.0f);
 				UQuestionBox* questionBoxPtr = new UQuestionBox(screenX, screenY, 1.0f, 1.0f, UQuestionBox::EItemType::MUSHROOM);
+				UMushroom* mushroomPtr = new UMushroom(screenX, screenY, 1.0f, 1.0f);
 				questionBoxPtr->ItemPtr = mushroomPtr;
-				AllMapObjects[objectCount++] = questionBoxPtr;
 				AllMapObjects[objectCount++] = mushroomPtr;
+				AllMapObjects[objectCount++] = questionBoxPtr;
 				//버섯 생성
 				break;
 			}
