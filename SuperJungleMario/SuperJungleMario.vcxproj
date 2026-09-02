@@ -154,6 +154,7 @@
     <ClCompile Include="UBall.cpp" />
     <ClCompile Include="UBox.cpp" />
     <ClCompile Include="UBrick.cpp" />
+    <ClCompile Include="UCoin.cpp" />
     <ClCompile Include="UEnemy.cpp" />
     <ClCompile Include="UFlag.cpp" />
     <ClCompile Include="UFlower.cpp" />
@@ -187,6 +188,7 @@
     <ClInclude Include="UBox.h" />
     <ClInclude Include="UBrick.h" />
     <ClInclude Include="UCamera.h" />
+    <ClInclude Include="UCoin.h" />
     <ClInclude Include="UEnemy.h" />
     <ClInclude Include="UFlag.h" />
     <ClInclude Include="UFlower.h" />
