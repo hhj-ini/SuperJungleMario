@@ -10,10 +10,13 @@ public:
     bool bFacingLeft = false;
 	bool bBigMario = false;
 	bool bFireMario = false;
+	bool bAttacking = false;
+    bool bShotFireRequest = false;
 
     const FVector& GetPosition() const { return Location; }
 	const FVector& GetPreviousPosition() const { return PreviousLocation; }
     float GetHeight() const { return height; }
+	float GetWidth() const { return width; }
     FVector GetVelocity() const { return Velocity; }
     
 
@@ -47,6 +50,8 @@ public:
     void Respawn();
     int GetBaseFrame() const;
 	void FireMario();
+	void RequestFire();
+    bool ShotFireRequest();
 
 private:
     PlayerState pState = PlayerState::ALIVE;
@@ -59,4 +64,7 @@ private:
 
     float DamageTimer = 0.0f;
     const float DamageInvincibleTime = 1.0f;
+
+    float FireTimer = 0.0f;
+    const float FireInterval = 0.3f;
 };

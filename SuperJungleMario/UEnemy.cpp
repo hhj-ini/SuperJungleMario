@@ -88,6 +88,8 @@ bool UEnemy::CollisionCheck(UPrimitive* other)
 			break;
 		case EObjectType::MUSHROOM:
 			break;
+		case EObjectType::FLOWER:
+			break;
 		}
 	}
 	return false;
