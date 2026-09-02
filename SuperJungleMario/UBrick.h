@@ -19,7 +19,7 @@ public:
     virtual void Tick() override;
 
     // Box 전용 함수
-    virtual void SetBoxState(EBoxType InType);
+    virtual void SetAnimState(EAnimState InType);
 
 
     // 머리 위에 있는 적들의 리스트

@@ -2,7 +2,9 @@
 #include "ResourceManager.h"
 
 UBrick::UBrick() : UBox()
-{}
+{
+	BoxType = EBoxType::BRICK;
+}
 
 bool UBrick::CollisionCheck(UPrimitive* other)
 {
@@ -36,6 +38,10 @@ bool UBrick::CollisionCheck(UPrimitive* other)
 	}
 	else if (EObjectType::PLAYER == other->ObjectType)	// 상대가 플레이어(마리오)면
 	{
+		if (EAnimState::STOP != AnimState)
+		{	// 이미 애니메이션이 앞서 진행되고 있는 상황이면 충돌 확인 하지 않고 애니메이션 끝날때까지 플레이어랑 충돌 확인X
+			return false;
+		}
 		// 1. 플레이어가 블럭 아래에 있는지 확인
 		bool isUnder = (Location.y - other->Location.y) > 0.0f ? false : true;
 		if (!isUnder)	// 아래에 없으면
@@ -99,7 +105,7 @@ void UBrick::Tick()
 		if (AnimOffset.y < 0.0f)	// 절반 이상 올라왔으면
 		{
 			AnimOffset.y = 0.0f;
-			AnimState = EAnimState::DOWN;
+			AnimState = EAnimState::STOP;
 		}
 		break;
 	default:
@@ -108,5 +114,12 @@ void UBrick::Tick()
 
 }
 
-void UBrick::SetBoxState(EBoxType InType)
-{}
+void UBrick::SetAnimState(EAnimState InState)
+{
+	if (EAnimState::STOP != AnimState)
+	{
+		return;
+	}
+	// 현재 애니메이션 상태가 멈춤 상태가 아닌 경우에는 설정하지 못하도록 함.
+	AnimState = InState;
+}
