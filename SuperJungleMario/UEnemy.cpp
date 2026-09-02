@@ -154,6 +154,12 @@ void UEnemy::Move()
 	{
 		return;
 	}
+
+	/*if (!UGameLogic::GetInstance().IsStarted())
+	{
+		return;
+	}*/
+
 	this->UBall::Move();
 }
 

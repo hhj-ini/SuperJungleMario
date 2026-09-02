@@ -249,6 +249,8 @@ bool UPlayer::CollisionCheck(UPrimitive* other)
 				{
 					++Hp;
 					Grow();
+
+					mr->SetState(UMushroom::MushroomState::DESTROYED);
 				}
 			}
 			break;
@@ -289,6 +291,11 @@ void UPlayer::SetState(UPlayer::PlayerState InState)
 
 void UPlayer::Move()
 {
+	/*if (!UGameLogic::GetInstance().IsStarted())
+	{
+		return;
+	}*/
+
 	if (pState == PlayerState::ALIVE)
 	{
 		Velocity.x = 0.0f;
