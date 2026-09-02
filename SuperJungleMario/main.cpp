@@ -34,6 +34,8 @@
 #include "UQuestionBox.h"
 
 #include "Map.h"
+#include "UBackground.h"
+
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 // 각종 메시지를 처리할 함수
@@ -175,6 +177,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	size_t primitiveCount = 0;	// 현재 공 풀에 들어있는 공 갯수
 
 	UPrimitive** PrimitiveList = new UPrimitive*[ballPoolCnt];
+
+	const float backGroundScale = 0.0062;
+	UPrimitive* backGround = new UBackground(9.55f, -0.947f, 3376.0f * backGroundScale, 480.0f * backGroundScale);
+	PrimitiveList[primitiveCount++] = backGround;
+
 	PrimitiveList[primitiveCount++] = new UBall;
 	
 	bool bGravity = true;	

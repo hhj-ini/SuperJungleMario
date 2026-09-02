@@ -150,6 +150,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MapReader.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
+    <ClCompile Include="UBackground.cpp" />
     <ClCompile Include="UBall.cpp" />
     <ClCompile Include="UBox.cpp" />
     <ClCompile Include="UBrick.cpp" />
@@ -178,6 +179,7 @@
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="Sphere.h" />
     <ClInclude Include="SuperJungleMario.h" />
+    <ClInclude Include="UBackground.h" />
     <ClInclude Include="UBall.h" />
     <ClInclude Include="UBox.h" />
     <ClInclude Include="UBrick.h" />
