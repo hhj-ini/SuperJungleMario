@@ -157,6 +157,7 @@
     <ClCompile Include="UFlower.cpp" />
     <ClCompile Include="UGameLogic.cpp" />
     <ClCompile Include="UMushroom.cpp" />
+    <ClCompile Include="UPipe.cpp" />
     <ClCompile Include="UPlayer.cpp" />
     <ClCompile Include="UPrimitive.cpp" />
     <ClCompile Include="UProjectile.cpp" />
@@ -187,6 +188,7 @@
     <ClInclude Include="UGameLogic.h" />
     <ClInclude Include="UI.h" />
     <ClInclude Include="UMushroom.h" />
+    <ClInclude Include="UPipe.h" />
     <ClInclude Include="UPlayer.h" />
     <ClInclude Include="UPrimitive.h" />
     <ClInclude Include="UProjectile.h" />

@@ -3,6 +3,8 @@
 #include "UBox.h"
 #include "UEnemy.h"
 #include "UFlower.h"
+#include "UPipe.h"
+
 constexpr int   MapWidth = 212;
 constexpr int   MapHeight = 15;
 

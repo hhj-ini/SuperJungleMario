@@ -1,5 +1,6 @@
 #include "UBox.h"
 #include "ResourceManager.h"
+#include <cmath>
 
 UBox::UBox(float x, float y, float w, float h)
 {
