@@ -17,7 +17,7 @@ UPlayer::UPlayer()
 	Velocity.y = 0.0f;
 
 	bBigMario = false;
-	bIsGrounded = false;
+	bIsGrounded = true;
 
 	Hp = 1;
 	width = scaleMod;
@@ -50,31 +50,6 @@ void UPlayer::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)
 	);
 
 	XMMATRIX world = scale * translation;
-
-	/*if (!TextureSRVPtr[0])
-	{
-		TextureSRVPtr[0] = ResourceManager::GetInstance().GetSRV(L"Resource\\Mario\\Mario1.png", &renderer);
-	}
-	if (!TextureSRVPtr[1])
-	{
-		TextureSRVPtr[1] = ResourceManager::GetInstance().GetSRV(L"Resource\\Mario\\Mario2.png", &renderer);
-	}
-	if (!TextureSRVPtr[2])
-	{
-		TextureSRVPtr[2] = ResourceManager::GetInstance().GetSRV(L"Resource\\Mario\\Mario3.png", &renderer);
-	}
-	if (!TextureSRVPtr[3])
-	{
-		TextureSRVPtr[3] = ResourceManager::GetInstance().GetSRV(L"Resource\\Mario\\Mario4.png", &renderer);
-	}
-	if (!TextureSRVPtr[4])
-	{
-		TextureSRVPtr[4] = ResourceManager::GetInstance().GetSRV(L"Resource\\Mario\\Mario5.png", &renderer);
-	}
-	if (!TextureSRVPtr[5])
-	{
-		TextureSRVPtr[5] = ResourceManager::GetInstance().GetSRV(L"Resource\\Mario\\Mario6.png", &renderer);
-	}*/
 
 	const wchar_t* MarioTextures[] =
 	{
@@ -181,13 +156,15 @@ bool UPlayer::CollisionCheck(UPrimitive* other)
 		case EObjectType::ENEMY:
 			if (UEnemy* enemy = dynamic_cast<UEnemy*>(other))
 			{
-				if (Location.y > enemy->GetPosition().y + 0.03f)
+				// 플레이어가 적에게 공격받을 시 적도 사라지는 버전
+				float PlayerBottom = GetPosition().y - GetHeight() / 2.0f;
+				if (PlayerBottom >= enemy->GetPosition().y && GetVelocity().y < 0.0f)
 				{
 					enemy->OnDeath(this);
 				}
 				else
 				{
-					TakeDamage(1);
+					TakeDamage();
 				}
 			}
 			break;
@@ -203,7 +180,6 @@ bool UPlayer::CollisionCheck(UPrimitive* other)
 	return false;
 }
 
-
 void UPlayer::SetState(UPlayer::PlayerState InState)
 {
 	switch (InState)
@@ -216,7 +192,6 @@ void UPlayer::SetState(UPlayer::PlayerState InState)
 		break;
 	}
 }
-
 
 void UPlayer::Move()
 {
@@ -233,13 +208,11 @@ void UPlayer::Move()
 		{
 			Velocity.x -= 0.01f;
 			bFacingLeft = true;
-			bIsGrounded = false;
 		}
 		else if (GetAsyncKeyState(VK_RIGHT) & 0x8000)
 		{
 			Velocity.x += 0.01f;
 			bFacingLeft = false;
-			bIsGrounded = false;
 		}		
 		
 		Location.x += Velocity.x * deltaTime;
@@ -247,55 +220,57 @@ void UPlayer::Move()
 	}
 }
 
-void UPlayer::SetVelocityY(float y)
+void UPlayer::TakeDamage()
 {
-	Velocity.y = y;
-}
+	if (DamageTimer > 0.0f)
+	{
+		return;
+	}
 
-void UPlayer::TakeDamage(int damage)
-{
 	--Hp;
 
 	if (Hp >= 1)
 	{
 		Shrink();
+		DamageTimer = DamageInvincibleTime;
 	}
-	else if (Hp == 0)
+	else
 	{
+		Hp = 0;
 		SetState(PlayerState::DEAD);
 	}
 }
 
 void UPlayer::Grow()
 {
-	++Hp;
-
-	if (Hp == 2)
-	{
-		bBigMario = true;
-	}
-
+	Hp = 2;
+	bBigMario = true;
+	
 	float oldHeight = height;
 
-	width *= 1.0f;
-	height *= 2.0f;
+	width = scaleMod;
+	height = scaleMod* 2.0f;
 	Location.y += (height - oldHeight) / 2.0f;
 	
 }
 
 void UPlayer::Shrink()
 {
-	--Hp;
-
+	bBigMario = false;
 	float oldHeight = height;
 
-	width *= 0.7f;
-	height *= 0.5f;
-	Location.y += (oldHeight - height) / 2.0f;
+	width = scaleMod;
+	height = scaleMod;
+	Location.y -= (oldHeight - height) / 2.0f;
 }
 
 void UPlayer::UpdateAnimation(float deltaTime)
 {
+	if (DamageTimer > 0.0f)
+	{
+		DamageTimer -= deltaTime;
+	}
+
 	AnimationTimer += deltaTime;
 	if (AnimationTimer >= FrameInterval)
 	{

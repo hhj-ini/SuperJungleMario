@@ -113,6 +113,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	// 버텍스 버퍼 생성 
 	UINT numVerticescube = sizeof(cube_vertices) / sizeof(FVertex);	// 버텍스 갯수 변수화
 	float scaleMod = 0.1f;	// cube 크기 조정
+	
 	//for (UINT i = 0; i < numVerticescube; ++i)
 	//{
 	//	cube_vertices[i].x *= scaleMod;
@@ -241,7 +242,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	
 	for (int i = 0;i < 40; ++i)
 	{
-		Ground[i] = new UBox(-1.0f+i*0.1f , -0.8f, 1.0f, 1.0f);
+		Ground[i] = new UBox(-1.0f+i*scaleMod , -0.8f, 1.0f, 1.0f);
 	}
 
 

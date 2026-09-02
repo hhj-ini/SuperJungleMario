@@ -10,7 +10,9 @@ public:
 	bool bBigMario = false;
 
     const FVector& GetPosition() const { return Location; }
-    
+    float GetHeight() const { return height; }
+    FVector GetVelocity() const { return Velocity; }
+
     enum class PlayerState
     {
         ALIVE,
@@ -28,8 +30,8 @@ public:
     void Move() override;
 
     void SetState(PlayerState InState);
-    void SetVelocityY(float y);
-	void TakeDamage(int damage);
+    void SetVelocityY(float y) { Velocity.y = y; };
+	void TakeDamage();
 	void Grow();
 	void Shrink();
 
@@ -45,4 +47,7 @@ private:
     int CurrentFrame = 0;
     float AnimationTimer = 0.0f;
     const float FrameInterval = 0.15f;
+
+    float DamageTimer = 0.0f;
+    const float DamageInvincibleTime = 1.0f;
 };

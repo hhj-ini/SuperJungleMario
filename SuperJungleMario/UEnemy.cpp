@@ -7,7 +7,7 @@ UEnemy::UEnemy()
 	Velocity.x = 0.0f;
 	Velocity.y = 0.0f;
 
-	Location.x = 1.0f;
+	Location.x = 2.0f;
 	Location.y = 0.0f;
 	// 위치 설정 필요
 
@@ -73,13 +73,14 @@ bool UEnemy::CollisionCheck(UPrimitive* other)
 		case EObjectType::PLAYER:
 			if (UPlayer* player = dynamic_cast<UPlayer*>(other))
 			{
-				if (player->GetPosition().y > Location.y + 0.03f)
+				float PlayerBottom = player->GetPosition().y - player->GetHeight() / 2.0f;
+				if (PlayerBottom >= GetPosition().y && player->GetVelocity().y < 0.0f)
 				{
 					OnDeath(player);
 				}
 				else
 				{
-					player->TakeDamage(1);
+					player->TakeDamage();
 				}
 			}
 		case EObjectType::ENEMY:
