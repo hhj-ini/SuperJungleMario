@@ -44,6 +44,7 @@ public:
 	void Shrink();
 
     virtual void UpdateAnimation(float deltaTime);
+    virtual void SetSoundResource(USoundManager* soundManager) override;
 
     bool IsPlayerDead() const { return pState == PlayerState::DEAD; }
     bool CollisionCheck(UPrimitive* other) override ;
