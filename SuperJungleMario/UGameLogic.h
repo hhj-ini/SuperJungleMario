@@ -3,12 +3,13 @@
 
 class UGameLogic
 {
-private: // 나중에 privite으로 
+public: // 나중에 privite으로 
 	int score;
 	int coin;
 	int life;
 	bool ending;
 	bool started;
+	bool gameOver;
 	float x;
 	float y;
 	bool showScore;
@@ -35,6 +36,9 @@ public:
 
 	bool IsShowScore();
 	void setShowScore(bool input);
+
+	bool IsGameOver();
+	void setGameOver();
 
 	DirectX::XMFLOAT2 getCoordinate();
 };

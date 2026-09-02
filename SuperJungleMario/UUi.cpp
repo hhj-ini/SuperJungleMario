@@ -74,6 +74,33 @@ char charListEnd[] =
 	'R', 'E', 'S', 'T', 'A', 'R', 'T'
 };
 
+POINT charPositionsOver[] =
+{
+	{ 360, 201 }, { 395, 200 }, { 430, 204 }, { 465, 201 }, 
+	{ 525, 203 }, { 560, 205 }, { 595, 200 }, { 630, 202 },
+
+	{ 300, 257 }, { 335, 253 }, { 370, 255 }, { 405, 255 }, { 440, 253 }, { 465, 255 },
+	{ 515, 255 }, { 550, 254 }, { 585, 255 }, { 620, 255 }, { 655, 254 }, { 690, 255 },
+
+	{ 220, 801 }, { 255, 801 }, { 290, 800 }, { 325, 804 }, { 360, 804 },
+	{ 420, 800 },
+	{ 480, 805 }, { 515, 804 },
+	{ 570, 802 }, { 605, 800 }, { 640, 805 }, { 675, 805 }, { 710, 800 }, { 745, 804 }, { 780, 805 }
+};
+
+char charListOver[] =
+{
+	'G', 'A', 'M', 'E', 
+	'O', 'V', 'E', 'R',
+
+	'S', 'C', 'O', 'R', 'E', ':', '0', '0', '0', '0', '0', '0',
+
+	'P', 'R', 'E', 'S', 'S',
+	'A',
+	'T', 'O',
+	'R', 'E', 'S', 'T', 'A', 'R', 'T'
+};
+
 POINT charPositionsStart[] =
 {
 	{ 470, 494 }, { 505, 490 }, { 540, 490 }, { 575, 490 }, { 610, 490 },
@@ -147,7 +174,7 @@ void UUi::UpdateGameTime(int currentTime)
 {
 	if (currentTime < 0)
 	{
-		// game over 로직 차후 구현
+		UGameLogic::GetInstance().setGameOver();
 	}
 	else if (currentTime < 401)
 	{
@@ -175,32 +202,32 @@ void UUi::UpdateCoinUI(int coin)
 
 void UUi::UpdateLifeUI(int life)
 {
-	charListBlack[10] = '0' + life % 10;
+	charListBlack[9] = '0' + life % 10;
 }
 
 void UUi::UpdateFinalScoreUI(int score)
 {
-	charList[25] = '0' + score % 10;
-	charList[24] = '0' + (score / 10) % 10;
-	charList[23] = '0' + (score / 100) % 10;
-	charList[22] = '0' + (score / 1000) % 10;
-	charList[21] = '0' + (score / 10000) % 10;
-	charList[20] = '0' + (score / 100000) % 10;
+	charListEnd[25] = '0' + score % 10;
+	charListEnd[24] = '0' + (score / 10) % 10;
+	charListEnd[23] = '0' + (score / 100) % 10;
+	charListEnd[22] = '0' + (score / 1000) % 10;
+	charListEnd[21] = '0' + (score / 10000) % 10;
+	charListEnd[20] = '0' + (score / 100000) % 10;
 }
 
-void UUi::UpdateUV(int index)
+void UUi::UpdateOverScoreUI(int score)
 {
-	UUi::uv = Translate(charList[index]);
+	charListOver[19] = '0' + score % 10;
+	charListOver[18] = '0' + (score / 10) % 10;
+	charListOver[17] = '0' + (score / 100) % 10;
+	charListOver[16] = '0' + (score / 1000) % 10;
+	charListOver[15] = '0' + (score / 10000) % 10;
+	charListOver[14] = '0' + (score / 100000) % 10;
 }
 
-void UUi::UpdateUVBlack(int index)
+void UUi::UpdateUV(char* charList, int index)
 {
-	UUi::uv = Translate(charListBlack[index]);
-}
-
-void UUi::UpdateUVEnd(int index)
-{
-	UUi::uv = Translate(charListEnd[index]);
+	UUi::uv = UUi::Translate(charList[index]);
 }
 
 // char input을 u, v 좌표로 변환 

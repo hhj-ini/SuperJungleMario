@@ -77,6 +77,15 @@ void UGameLogic::setShowScore(bool input)
 	showScore = input;
 }
 
+bool UGameLogic::IsGameOver()
+{
+	return gameOver;
+}
+void UGameLogic::setGameOver()
+{
+	gameOver = true;
+}
+
 DirectX::XMFLOAT2 UGameLogic::getCoordinate()
 {
 	return DirectX::XMFLOAT2(x, y);

@@ -1,6 +1,7 @@
 #pragma once
 #include "SuperJungleMario.h"
 #include "URenderer.h"
+#include "UGameLogic.h"
 
 extern POINT charPositions[];
 
@@ -17,6 +18,10 @@ extern char charListEnd[];
 extern POINT charPositionsStart[];
 
 extern char charListStart[];
+
+extern POINT charPositionsOver[];
+
+extern char charListOver[];
 
 class UUi
 {
@@ -65,9 +70,7 @@ public:
 
 	static void UpdateFinalScoreUI(int score);
 
-	void UpdateUV(int index);
+	static void UpdateOverScoreUI(int score);
 
-	void UpdateUVBlack(int index);
-
-	void UpdateUVEnd(int index);
+	void UpdateUV(char* charList, int index);
 };
