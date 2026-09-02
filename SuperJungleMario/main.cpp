@@ -50,7 +50,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		PostQuitMessage(0);
 		break;
 	case WM_KEYDOWN:
-		if (!UGameLogic::GetInstance().IsNeedRestart() && !UGameLogic::GetInstance().IsRestart() && UGameLogic::GetInstance().IsAudioReady())
+		if (!UGameLogic::GetInstance().IsNeedRestart() && !UGameLogic::GetInstance().IsRestart() && UGameLogic::GetInstance().IsAudioReady() && !UGameLogic::GetInstance().IsStarted())
 		{
 			UGameLogic::GetInstance().setStarted();
 		}
@@ -112,6 +112,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	// 사운드매니저 생성
 	USoundManager soundManager;
 	soundManager.InitializeDirectSound(hWnd);
+
+	UGameLogic::GetInstance().setSoundManager(&soundManager);
 
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
