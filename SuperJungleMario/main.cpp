@@ -453,8 +453,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				bp->AnimState = UBrick::EAnimState::UP;
 			}
 		}
-
-		// Flower 테스트용
 		
 
 		ImGui::End();
