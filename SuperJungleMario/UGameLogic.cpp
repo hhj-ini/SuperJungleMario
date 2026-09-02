@@ -27,6 +27,11 @@ int UGameLogic::getCoin()
 void UGameLogic::addOneCoin()
 {
 	coin++;
+	if (coin >= 100)
+	{
+		addOneLife();
+		coin = 0;
+	}
 }
 
 int UGameLogic::getLife()
