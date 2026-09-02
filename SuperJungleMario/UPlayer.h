@@ -8,6 +8,7 @@ public:
     int Hp = 1;
     bool bFacingLeft = false;
 	bool bBigMario = false;
+	bool bFireMario = false;
 
     const FVector& GetPosition() const { return Location; }
     float GetHeight() const { return height; }
@@ -40,6 +41,8 @@ public:
     bool IsPlayerDead() const { return pState == PlayerState::DEAD; }
     bool CollisionCheck(UPrimitive* other) override ;
     void Respawn();
+    int GetBaseFrame() const;
+	void FireMario();
 
 private:
     PlayerState pState = PlayerState::ALIVE;

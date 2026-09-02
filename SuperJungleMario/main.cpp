@@ -193,7 +193,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	double GameTime = 0.0f;
 	QueryPerformanceFrequency(&frequencyGame);
 	QueryPerformanceCounter(&startGameTime);
-	double timer = 0.0f;
+	double StartTime = 0.0f;
 
 	/////////// 여기서 테스트용 객체 추가하시면 됩니다 ////////////////
 	int mushroomIdx = UBall::TotalNumBalls;
@@ -261,12 +261,17 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		// 게임 경과 시간 기록
 		QueryPerformanceCounter(&currentGameTime);
 		GameTime = static_cast<double>(currentGameTime.QuadPart - startGameTime.QuadPart) / static_cast<double>(frequencyGame.QuadPart);
-		if (UGameLogic::GetInstance().IsStarted()) // 시작 전이면 게임 경과 시간 멈추기
+		if (!UGameLogic::GetInstance().IsStarted()) // 시작 전이면 게임 경과 시간 멈추기
 		{
 			GameTime = 0.0f;
 		}
-		UUi::UpdateGameTime(403 - GameTime);
-		if (GameTime > 2) // 게임시간이 1초 지나면 첫화면 넘기기
+		else if (StartTime == 0.0f)// 아무 키나 눌러 게임이 시작됨
+		{
+			//StartTime = GameTime; // 주석 제거 주석 제거 주석 제거
+			//bBlackUI = true;
+		}
+		UUi::UpdateGameTime(403 - GameTime + StartTime);
+		if (GameTime > StartTime + 2) // 게임시간이 1초 지나면 첫화면 넘기기
 		{
 			bBlackUI = false;
 		}
@@ -427,19 +432,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		ImGui::NewFrame();
 
 		// 사용자가 직접 UI를 구성하는 공간
-		ImGui::Begin("Jungle Property Window");
-		ImGui::Text("Hello Jungle World!");
+		ImGui::Begin("Super Jungle Mario");
+		ImGui::Text("Hello Jungle Mario!");
 
 		// UI 테스트용
-		ImGui::Checkbox("Show UI", &bUIRender);
+		ImGui::Text("Game Time %.2f", GameTime);
 		ImGui::Checkbox("UI Test", &UGameLogic::GetInstance().ending);
 		//ImGui::SliderInt("Score", &UGameLogic::GameLogic().score, 0, 1000000);
-		//if (bUIRender)
-		//{
-		//	ImGui::Text("UI 1 position");
-		//	ImGui::SliderInt("x1", &x1, 0, 1024);
-		//	ImGui::SliderInt("y1", &y1, 0, 1024);
-		//}
 
 		if (ImGui::Checkbox("Gravity", &bGravity));
 		

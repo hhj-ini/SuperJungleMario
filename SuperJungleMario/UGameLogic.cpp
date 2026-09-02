@@ -17,7 +17,7 @@ int UGameLogic::getScore()
 }
 void UGameLogic::addScore(int addAmount)
 {
-	this->score = this->score + addAmount;
+	score = score + addAmount;
 }
 
 int UGameLogic::getCoin()
@@ -45,11 +45,9 @@ void UGameLogic::removeOneLife()
 bool UGameLogic::IsEnding()
 {
 	return ending;
-
 }
 void UGameLogic::setEnding()
 {
-
 	ending = true;
 }
 
