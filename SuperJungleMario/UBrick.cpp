@@ -126,7 +126,7 @@ void UBrick::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)
 	{
 		for (size_t i = 0; i < 4; ++i)
 		{
-			DirectX::XMMATRIX world = DirectX::XMMatrixScaling(width / 4.f, height/ 4.f, 1.0f) * DirectX::XMMatrixTranslation(Location.x, Location.y, Location.z);
+			DirectX::XMMATRIX world = DirectX::XMMatrixScaling(width / 3.f, height/ 3.f, 1.0f) * DirectX::XMMatrixTranslation(Location.x, Location.y, Location.z);
 
 			renderer.UpdateConstantBuffer(world, renderer.ViewMatrix, BrokenAnimOffset[i]);
 
@@ -216,12 +216,6 @@ void UBrick::KillEnemy()
 
 void UBrick::BrokenAnimInit()
 {
-    for (size_t i = 0; i < 4; ++i)
-	{
-		BrokenAnimOffset[i].x = Location.x;
-		BrokenAnimOffset[i].y = Location.y;
-	}
-
 	BrokenAnimVelocity[0].x = -2.25f;
 	BrokenAnimVelocity[1].x = +3.25f;
 	BrokenAnimVelocity[2].x = -3.0f;
