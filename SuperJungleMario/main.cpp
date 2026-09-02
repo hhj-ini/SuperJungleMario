@@ -33,6 +33,7 @@
 
 #include "UQuestionBox.h"
 
+#include "Map.h"
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -112,7 +113,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	// 버텍스 버퍼 생성 
 	UINT numVerticescube = sizeof(cube_vertices) / sizeof(FVertex);	// 버텍스 갯수 변수화
-	float scaleMod = 0.1f;	// cube 크기 조정
+	float scaleMod = mapScale;	// 전체 스케일 조정
 	
 	//for (UINT i = 0; i < numVerticescube; ++i)
 	//{
@@ -171,7 +172,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	ID3D11Buffer* cubeBuffer = renderer.CreateTextureVertexBuffer(cube_vertices, sizeof(cube_vertices));
 
 
-	size_t ballPoolCnt = 50;	// 초기에 50개만큼 공 풀 확보
+	size_t ballPoolCnt = 70;	// 초기에 70개만큼 공 풀 확보
 	size_t primitiveCount = 0;	// 현재 공 풀에 들어있는 공 갯수
 
 	UPrimitive** PrimitiveList = new UPrimitive*[ballPoolCnt];

@@ -1,11 +1,13 @@
 #pragma once
-
+#include "Uprimitive.h"
+#include "UBox.h"
+#include "UEnemy.h"
 constexpr int   MapWidth = 212;
 constexpr int   MapHeight = 15;
 
-constexpr float TileSize = 0.1f;
-constexpr float MapOriginX = -1.0f;   // col 0 의 중심 x
-constexpr float MapOriginY = -0.8f;   // 맨 아랫줄(row 14) 의 중심 y
+constexpr float mapScale = 0.1f;
+constexpr float MapOriginX = -1.0f+mapScale;   // 가장 왼쪽의 중심y좌표
+constexpr float MapOriginY = -1.0f+mapScale;   // 가장 아래쪽의 중심y좌표
 /*
 * 추가사항은 수정해주세요
 * 
