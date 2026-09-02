@@ -7,7 +7,7 @@
 #include "UBrick.h"
 #include "UQuestionBox.h"
 #include "UPipe.h"
-
+#include "UMushroom.h"
 void MapReader(UPrimitive** AllMapObjects, size_t& objectCount) {
 
 	for (int i = 0;i < MapHeight;++i) {
@@ -62,7 +62,15 @@ void MapReader(UPrimitive** AllMapObjects, size_t& objectCount) {
 				//AllMapObjects[objectCount++] = new UEnemy(MapOriginX + (float)j * mapScale, MapOriginY + (float)i * mapScale, 1.0f, 1.0f);
 				//굼바 스폰 생성
 				break;
-
+			case 'M': {
+				UMushroom* mushroomPtr = new UMushroom(screenX, screenY, 1.0f, 1.0f);
+				UQuestionBox* questionBoxPtr = new UQuestionBox(screenX, screenY, 1.0f, 1.0f, UQuestionBox::EItemType::MUSHROOM);
+				questionBoxPtr->ItemPtr = mushroomPtr;
+				AllMapObjects[objectCount++] = questionBoxPtr;
+				AllMapObjects[objectCount++] = mushroomPtr;
+				//버섯 생성
+				break;
+			}
 			default:
 				break;
 			}

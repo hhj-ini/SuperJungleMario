@@ -9,7 +9,7 @@ UFlower::UFlower(float x, float y, float w, float h) : UBall(x, y, w, h)
 		width = w * scaleMod;
 		height = h * scaleMod;
 		bisMove = false;
-	InitHeight= y;
+		InitHeight= y;
 	
 }
 

@@ -7,7 +7,6 @@ class UMushroom :
     public UBall
 {
 public:
-    UMushroom();
     enum class MushroomState
     {
         WAITING,
@@ -16,9 +15,10 @@ public:
 		DESTROYED
     };
 
+	UMushroom(float x, float y, float w, float h);
     virtual void Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num) override;
     virtual bool CollisionCheck(UPrimitive* other);
-
+	virtual void UpdateVelocity(bool bGravity) ;
     virtual void Move() override;
     bool IsMushroomDestroyed() const { return mrState == MushroomState::DESTROYED; }
 

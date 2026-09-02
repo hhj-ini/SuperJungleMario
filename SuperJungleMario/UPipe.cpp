@@ -1,15 +1,9 @@
 #include "UPipe.h"
 #include "ResourceManager.h"
-UPipe::UPipe(float x, float y, float w, float h)
+UPipe::UPipe(float x, float y, float w, float h) : UBox(x, y, w, h)
 {
-	Location.x = x;
-	Location.y = y;
-	width = w * scaleMod;
-	height = h * scaleMod;
-
-	Radius = 0.0001f;
+	
 	bisMove = false;
-	ObjectType = EObjectType::PIPE;
 }
 
 void UPipe::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)

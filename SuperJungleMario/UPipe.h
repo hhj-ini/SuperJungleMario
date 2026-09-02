@@ -1,8 +1,8 @@
 #pragma once
 #include "UPrimitive.h"
+#include "UBox.h"
 
-
-class UPipe : public UPrimitive
+class UPipe : public UBox
 {
 public:
 
