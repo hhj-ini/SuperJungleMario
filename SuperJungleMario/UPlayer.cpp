@@ -24,6 +24,7 @@ UPlayer::UPlayer()
 	bFireMario = false;
 	bIsGrounded = false;
 	bAttacking = false;
+	bisMove = false;
 
 	Hp = 1;
 	width = scaleMod;
@@ -300,7 +301,7 @@ void UPlayer::Move()
 		return;
 	}*/
 
-	if (pState == PlayerState::ALIVE)
+	if (pState == PlayerState::ALIVE && bisMove)
 	{
 		Velocity.x = 0.0f;
 		if (bIsGrounded && (GetAsyncKeyState(VK_SPACE) & 0x8000))
