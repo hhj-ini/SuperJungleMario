@@ -18,6 +18,12 @@ public:
 		y = 0.0f;
 	}
 
+	void Reset()
+	{
+		x = 0.0f;
+		y = 0.0f;
+	}
+
 	DirectX::XMMATRIX GetViewMatrix() const
 	{
 		
