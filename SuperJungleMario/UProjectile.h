@@ -41,5 +41,8 @@ private:
     int CurrentFrame = 0;
     float AnimationTimer = 0.0f;
     const float FrameInterval = 0.15f;
+
+    float CollisionTimer = 0.0f;
+    const float CollisionInterval = 0.15f;
 };
 

@@ -70,25 +70,7 @@ bool UEnemy::CollisionCheck(UPrimitive* other)
 			//	Location.x = other->Location.x + (other->width / 2.0f) + (width / 2.0f);
 			//	Velocity.x = 0;
 			//}
-		case EObjectType::PLAYER:
-			/*if (UPlayer* player = dynamic_cast<UPlayer*>(other))
-			{
-				float enemyTop = Location.y + height / 2.0f;
-				float prePlayerBottom = player->GetPreviousPosition().y - player->GetHeight() / 2.0f;
-
-				if (prePlayerBottom >= enemyTop && player->GetVelocity().y < 0.0f)
-				{
-					OnDeath(player);
-				}
-				else
-				{
-					player->TakeDamage();
-				}
-			}*/
-			break;
-		case EObjectType::MUSHROOM:
-			break;
-		case EObjectType::FLOWER:
+		default:
 			break;
 		}
 	}
@@ -124,7 +106,7 @@ void UEnemy::OnDeath(UPlayer* player)
 	if (eState == EnemyState::ALIVE)
 	{
 		SetState(EnemyState::DEAD);
-		player->SetVelocityY(0.03f); 
+		
 		bIsActive = false;
 		// 몬스터가 죽으면 점수 올라감
 		UGameLogic::GetInstance().addScore(100);
