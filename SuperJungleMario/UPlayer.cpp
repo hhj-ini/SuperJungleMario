@@ -119,6 +119,10 @@ void UPlayer::UpdateVelocity(bool bGravity)
 
 bool UPlayer::CollisionCheck(UPrimitive* other)
 {
+	if (other->bIsActive == false)
+	{
+		return false;
+	}
 	// 기본 충돌 체크 로직 구현
 
 	// 가로가 겹치는지 확인

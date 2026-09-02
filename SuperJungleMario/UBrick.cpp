@@ -54,6 +54,11 @@ bool UBrick::CollisionCheck(UPrimitive* other)
 			return false;
 		}
 
+		if (BoxType == EBoxType::BRICK && bIsBroken)
+		{
+			return false;
+		}
+
 		if (BoxType == EBoxType::HARD || BoxType == EBoxType::CHANGEDHARD) return false;
 		// 1. 플레이어가 블럭 아래에 있는지 확인
 		bool isUnder = (Location.y - other->Location.y) > 0.0f ? true : false;
@@ -95,9 +100,6 @@ bool UBrick::CollisionCheck(UPrimitive* other)
 // 50점 
 				UGameLogic::GetInstance().addScore(50, Location.x, Location.y);
 			}
-			
-
-
 
 		}
 	}
@@ -182,7 +184,7 @@ void UBrick::Tick(float deltaTime)
 			}
 		}
 
-		if (yMax < 0.0f)
+		if (yMax < -0.5f)
 		{
 			bIsActive = false;
 		}
@@ -214,7 +216,7 @@ void UBrick::KillEnemy()
 
 void UBrick::BrokenAnimInit()
 {
-     	for (size_t i = 0; i < 4; ++i)
+    for (size_t i = 0; i < 4; ++i)
 	{
 		BrokenAnimOffset[i].x = Location.x;
 		BrokenAnimOffset[i].y = Location.y;
