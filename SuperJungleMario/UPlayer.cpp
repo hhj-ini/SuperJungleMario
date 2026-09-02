@@ -317,13 +317,13 @@ void UPlayer::Move()
 
 		if (GetAsyncKeyState(VK_LEFT) & 0x8000)
 		{
-			Velocity.x = -0.02f;
+			Velocity.x = -0.015f;
 			bFacingLeft = true;
 			// bIsGrounded = false;
 		}
 		else if (GetAsyncKeyState(VK_RIGHT) & 0x8000)
 		{
-			Velocity.x = 0.02f;
+			Velocity.x = 0.015f;
 			bFacingLeft = false;
 			// bIsGrounded = false;
 		}		
