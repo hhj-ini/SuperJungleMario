@@ -236,3 +236,8 @@ void UPlayer::UpdateAnimation(float deltaTime)
 	}
 }
 
+void UPlayer::Respawn()
+{
+	UPlayer::SetState(UPlayer::PlayerState::ALIVE);
+	
+}

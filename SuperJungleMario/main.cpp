@@ -123,6 +123,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	{
 		GameStartUIList[i] = new UUi(ui_vertices, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT4(1, 1, 1, 1), UUi::Translate(charListStart[i]), 1.0f);
 	}
+	// UI GameEnd 리스트 생성
+	size_t GameEndUICnt = 48;
+	UUi** GameEndUIList = new UUi * [GameEndUICnt];
+	for (int i = 0; i < GameEndUICnt; i++)
+	{
+		GameEndUIList[i] = new UUi(ui_vertices, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT4(1, 1, 1, 1), UUi::Translate(charListEnd[i]), 1.0f);
+	}
 	// UI 리스트 생성
 	size_t uiCnt = 29;
 	UUi** UIList = new UUi*[uiCnt];
@@ -157,9 +164,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	double elapsedTime = 0.0;	
 	// 게임 진행 시간 타이머 초기화
 	LARGE_INTEGER frequencyGame,startGameTime, currentGameTime;
-	double GameTime = 0.0;
+	double GameTime = 0.0f;
 	QueryPerformanceFrequency(&frequencyGame);
 	QueryPerformanceCounter(&startGameTime);
+	double timer = 0.0f;
 
 	// UI 렌더링 여부
 	bool bUIRender = true;
@@ -244,10 +252,18 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		{
 			bGameStart = false;
 		}
-		if (UGameLogic::GetInstance().getLife() < 0)
-		{
-			bGameEnd = true;
-		}
+		//if (static_cast<UPlayer*>(PrimitiveList[2]).IsPlayerDead())
+		//
+		//	bDeath = true;
+		//	timer = GameTime;
+		//	UGameLogic::GetInstance().removeOneLife();
+		//	// 마리오 다시 살리고, 원점으로 돌리는 로직 추가
+		//	dynamic_cast<UPlayer*>(player)->SetState(UPlayer::PlayerState::ALIVE);
+		//}
+		//if (bGameEnd && GameTime - timer > 1.5f) // 1.5초 후에 다시 게임 시작
+		//{
+		//	bDeath = false;
+		//}
 
 		MSG msg;
 
@@ -346,13 +362,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		// UI 렌더링 
 		renderer.PrepareUIShader(UIBlackSRV);
-		if (bGameStart || bDeath)
+		if (bGameStart || bDeath || UGameLogic::GetInstance().IsEnding())
 		{
 			// 첫화면 렌더. 검은 화면 렌더.
 			BlackBackground->Render(renderer, UIBuffer, numVerticesUI, 5.0f, 5.0f);
 		}
-		UUi::UpdateScoreUI(UGameLogic::GetInstance().score);
-		UUi::UpdateCoinUI(UGameLogic::GetInstance().coin);
+		UUi::UpdateScoreUI(UGameLogic::GetInstance().getScore());
+		UUi::UpdateCoinUI(UGameLogic::GetInstance().getCoin());
 		const float fontSize = 0.09f;
 		if (bUIRender)
 		{
@@ -384,6 +400,19 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				GameStartUIList[i]->Render(renderer, UIBuffer, numVerticesUI, fontSize, fontSize);
 			}
 		}
+		if (UGameLogic::GetInstance().IsEnding())
+		{
+			bUIRender = false;
+			renderer.PrepareUIShader(UIFontSRV);
+			for (int i = 0; i < GameEndUICnt; i++)
+			{
+				GameEndUIList[i]->setNDCoord(renderer.GetNDCoordinate(charPositionsEnd[i], 1024, 1024));
+			}
+			for (size_t i = 0; i < GameEndUICnt; i++)
+			{
+				GameEndUIList[i]->Render(renderer, UIBuffer, numVerticesUI, fontSize, fontSize);
+			}
+		}
 
 		// ImGui 렌더링 준비, 컨트롤 설정, 렌더링 요청
 		ImGui_ImplDX11_NewFrame();
@@ -396,7 +425,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		// UI 테스트용
 		ImGui::Checkbox("Show UI", &bUIRender);
-		//ImGui::Checkbox("Show Start UI", &bGameStart);
+		ImGui::Checkbox("UI Test", &UGameLogic::GetInstance().ending);
 		//ImGui::SliderInt("Score", &UGameLogic::GameLogic().score, 0, 1000000);
 		//if (bUIRender)
 		//{

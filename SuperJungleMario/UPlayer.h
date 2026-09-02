@@ -35,6 +35,7 @@ public:
 
     bool IsPlayerDead() const { return pState == PlayerState::DEAD; }
     bool CollisionCheck(UPrimitive* other) override ;
+    void Respawn();
 
 private:
     PlayerState pState = PlayerState::ALIVE;
