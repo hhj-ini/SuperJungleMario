@@ -79,6 +79,3 @@ void UCoin::Move() {
 		}
 	}
 }
-
-
-

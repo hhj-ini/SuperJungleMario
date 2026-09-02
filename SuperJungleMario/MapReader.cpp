@@ -48,6 +48,8 @@ void MapReader(UPrimitive** AllMapObjects, size_t& objectCount, USoundManager* s
 				questionBoxCoinPtr->ItemPtr = coinPtr;
 				AllMapObjects[objectCount++] = coinPtr;
 				AllMapObjects[objectCount++] = questionBoxCoinPtr;
+				questionBoxCoinPtr->SetSoundResource(soundManager);
+				coinPtr->SetSoundResource(soundManager);
 				break;
 			}
 			case 'P':
