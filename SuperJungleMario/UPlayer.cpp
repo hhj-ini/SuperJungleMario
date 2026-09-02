@@ -6,6 +6,7 @@
 #include "ResourceManager.h"
 #include <cmath>
 #include "UProjectile.h"
+#include "UBox.h"
 
 
 UPlayer::UPlayer()
