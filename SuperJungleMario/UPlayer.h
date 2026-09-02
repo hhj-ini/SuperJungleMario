@@ -67,5 +67,5 @@ private:
     const float DamageInvincibleTime = 1.0f;
 
     float FireTimer = 0.0f;
-    const float FireInterval = 0.3f;
+    const float FireInterval = 0.6f;
 };
