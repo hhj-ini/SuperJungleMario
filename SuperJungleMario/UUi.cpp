@@ -78,8 +78,9 @@ UUi::UUi(FVertexUI* UIVertex, DirectX::XMFLOAT2 NDCoord, DirectX::XMFLOAT4 rgba,
 {
 }
 
-void UUi::Render(URenderer& renderer, ID3D11Buffer* vertexBuffer, UINT numVertices, float UIWidth, float UIHeight)
+void UUi::Render(URenderer& renderer, ID3D11Buffer* vertexBuffer, UINT numVertices, float UIWidth, float UIHeight, DirectX::XMFLOAT2 NDCoord)
 {
+	UUi::setNDCoord(NDCoord);
 	renderer.UpdateUI(UUi::NDCoord, vertexBuffer, UIWidth, UIHeight, UUi::uv, UUi::rgba);
 	renderer.RenderUI(vertexBuffer, numVertices);
 }

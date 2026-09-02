@@ -36,7 +36,7 @@ public:
 
 	void setNDCoord(DirectX::XMFLOAT2 NDCoord);
 
-	void Render(URenderer& renderer, ID3D11Buffer* vertexBuffer, UINT numVertices, float UIWidth, float UIHeight);
+	void Render(URenderer& renderer, ID3D11Buffer* vertexBuffer, UINT numVertices, float UIWidth, float UIHeight, DirectX::XMFLOAT2 NDCoord);
 
 	static DirectX::XMFLOAT4 Translate(char input);
 
