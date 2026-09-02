@@ -26,6 +26,7 @@ UBox::UBox(float x, float y, float w, float h, EBoxType bt)
 	Radius = 0.0001f;
 	++TotalNumBox;
 	bisMove = false;
+	ObjectType = EObjectType::BOX;
 }
 
 
