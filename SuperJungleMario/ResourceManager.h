@@ -24,7 +24,7 @@ public:
 
 	static ResourceManager& GetInstance();
 
-	void ReleaseResource(URenderer* renderer);
+	void ReleaseResource(URenderer* renderer, USoundManager* soundManager);
 
 private:
 	std::unordered_map<std::wstring, ID3D11ShaderResourceView*> SRVMap;

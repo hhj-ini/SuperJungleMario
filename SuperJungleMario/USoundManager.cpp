@@ -45,6 +45,15 @@ bool USoundManager::InitializeDirectSound(HWND hwnd)
     return true;
 }
 
+void USoundManager::ReleaseSoundBuffer(IDirectSoundBuffer* SoundBuffer)
+{
+    if (SoundBuffer)
+    {
+        SoundBuffer->Release();
+        SoundBuffer = nullptr;
+    }
+}
+
 bool USoundManager::LoadWavFile(const std::wstring& InPath, IDirectSoundBuffer*& SoundBufferPtr)
 {
     if (!std::filesystem::exists(InPath))

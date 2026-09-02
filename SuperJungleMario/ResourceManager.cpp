@@ -37,10 +37,15 @@ ResourceManager& ResourceManager::GetInstance()
     return instance;
 }
 
-void ResourceManager::ReleaseResource(URenderer* renderer)
+void ResourceManager::ReleaseResource(URenderer* renderer, USoundManager* soundManager)
 {
     for (auto& elem : SRVMap)
     {
         renderer->ReleaseSRV(elem.second);
+    }
+
+    for (auto& elem : SoundResourceMap)
+    {
+        soundManager->ReleaseSoundBuffer(elem.second);
     }
 }

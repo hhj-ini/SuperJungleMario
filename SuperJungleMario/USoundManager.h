@@ -17,6 +17,7 @@ public:
 	bool InitializeDirectSound(HWND hwnd);
 	// DirectSound 장치 초기화
 
+	void ReleaseSoundBuffer(IDirectSoundBuffer* SoundBuffer);
 
 	IDirectSoundBuffer* SecondaryBuffer = nullptr;
 
