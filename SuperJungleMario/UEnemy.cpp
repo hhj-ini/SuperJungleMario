@@ -8,12 +8,13 @@ UEnemy::UEnemy()
 	Velocity.x = 0.0f;
 	Velocity.y = 0.0f;
 
-	Location.x = 2.0f;
-	Location.y = 0.0f;
+	Location.x = 1.0f;
+	Location.y = -0.5f;
 	// 위치 설정 필요
 
 	width = scaleMod;
 	height = scaleMod;
+	bisMove = true;
 
 	SetState(EnemyState::ALIVE);
 
@@ -147,7 +148,7 @@ void UEnemy::SetState(UEnemy::EnemyState InState)
 	{
 	case EnemyState::ALIVE:
 		eState = EnemyState::ALIVE;
-		Velocity.x = -0.01f;
+		Velocity.x = 0.01f;
 		break;
 
 	case EnemyState::DEAD:

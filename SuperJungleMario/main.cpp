@@ -391,7 +391,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 					UGameLogic::GetInstance().setShowBlack(true); // 리스폰
 					player->SetState(UPlayer::PlayerState::ALIVE);
 					player->Location.x = 0.1f;
-					player->Location.y = -0.5f;
+					player->Location.y = -0.7f;
 
 					camera.Reset(); 
 				}
@@ -403,7 +403,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 					UGameLogic::GetInstance().setShowBlack(true); // 리스폰
 					player->SetState(UPlayer::PlayerState::ALIVE);
 					player->Location.x = 0.1f;
-					player->Location.y = -0.5f;
+					player->Location.y = -0.7f;
 
 					camera.Reset();
 				}
