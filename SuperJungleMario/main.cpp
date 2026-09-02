@@ -456,6 +456,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				GameEndUIList[i]->Render(renderer, UIBuffer, numVerticesUI, fontSize, fontSize, renderer.GetNDCoordinate(charPositionsEnd[i], 1024, 1024));
 			}
 		}
+		if (UGameLogic::GetInstance().IsShowScore()) // floating score rendering
+		{
+			renderer.PrepareUIShader(UIFontSRV);
+		}
 
 		// ImGui 렌더링 준비, 컨트롤 설정, 렌더링 요청
 		ImGui_ImplDX11_NewFrame();
@@ -468,7 +472,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		// UI 테스트용
 		ImGui::Text("Game Time %.2f", GameTime);
-		ImGui::Checkbox("UI Test", &UGameLogic::GetInstance().ending);
+		//ImGui::Checkbox("UI Test", &UGameLogic::GetInstance().ending);
 		//ImGui::SliderInt("Score", &UGameLogic::GameLogic().score, 0, 1000000);
 
 		if (ImGui::Checkbox("Gravity", &bGravity));

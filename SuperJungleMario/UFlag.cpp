@@ -46,7 +46,7 @@ bool UFlag::CollisionCheck(UPrimitive * other)
 			Velocity.x = 0;
 			Velocity.y = 0;
 			//스테이지 클리어
-			UGameLogic::GetInstance().addScore(3000);
+			UGameLogic::GetInstance().addScore(3000, Location.x, Location.y);
 			UGameLogic::GetInstance().setEnding();
 			break;
 		}
