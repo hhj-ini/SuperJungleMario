@@ -54,6 +54,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		break;
 	case WM_KEYDOWN:
 		UGameLogic::GetInstance().setStarted();
+		if (wParam == 'A' && UGameLogic::GetInstance().IsNeedRestart())
+		{
+			UGameLogic::GetInstance().setRestart(true);
+		}
 		break;
 	default:
 		return DefWindowProc(hWnd, message, wParam, lParam);
@@ -293,7 +297,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			{
 				timer = GameTime;
 			}
-			else if (GameTime - timer > 1.0f) // 3초 지나면 블랙 ui 제거
+			else if (GameTime - timer > 0.3f) // 3초 지나면 블랙 ui 제거
 			{
 				UGameLogic::GetInstance().setShowBlack(false);
 				timer = 0.0f;

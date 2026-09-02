@@ -7,17 +7,19 @@ UGameLogic& UGameLogic::GetInstance()
 }
 
 UGameLogic::UGameLogic()
-	: score(0), 
-	coin(0), 
-	life(3), 
-	ending(false), 
-	started(true),  // 이거 false로 이거 false로이거 false로이거 false로
+	: score(0),
+	coin(0),
+	life(3),
+	ending(false),
+	started(false),  // 이거 false로 이거 false로이거 false로이거 false로
 	gameOver(false),
-	x(0.0f), 
-	y(0.0f), 
-	showScore(false), 
+	x(0.0f),
+	y(0.0f),
+	showScore(false),
 	showBlack(false),
-	respawn(false)
+	respawn(false),
+	needRestart(false),
+	restart(false)
 {
 }
 
@@ -73,6 +75,7 @@ bool UGameLogic::IsEnding()
 void UGameLogic::setEnding()
 {
 	ending = true;
+	setNeedRestart();
 }
 
 bool UGameLogic::IsStarted()
@@ -100,6 +103,7 @@ bool UGameLogic::IsGameOver()
 void UGameLogic::setGameOver()
 {
 	gameOver = true;
+	setNeedRestart();
 }
 
 bool UGameLogic::IsShowBlack()
@@ -109,6 +113,24 @@ bool UGameLogic::IsShowBlack()
 void UGameLogic::setShowBlack(bool input)
 {
 	showBlack = input;
+}
+
+bool UGameLogic::IsNeedRestart()
+{
+	return needRestart;
+}
+void UGameLogic::setNeedRestart()
+{
+	needRestart = true;
+}
+
+bool UGameLogic::IsRestart()
+{
+	return restart;
+}
+void UGameLogic::setRestart(bool input)
+{
+	restart = input;
 }
 
 DirectX::XMFLOAT2 UGameLogic::getCoordinate()

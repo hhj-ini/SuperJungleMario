@@ -15,6 +15,8 @@ public: // 나중에 privite으로
 	bool showScore;
 	bool showBlack;
 	bool respawn;
+	bool needRestart;
+	bool restart;
 	UGameLogic();
 
 public:
@@ -44,6 +46,12 @@ public:
 
 	bool IsShowBlack();
 	void setShowBlack(bool input);
+
+	bool IsNeedRestart();
+	void setNeedRestart();
+
+	bool IsRestart();
+	void setRestart(bool input);
 
 	DirectX::XMFLOAT2 getCoordinate();
 };
