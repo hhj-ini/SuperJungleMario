@@ -86,8 +86,6 @@ bool UProjectile::CollisionCheck(UPrimitive * other)
             {
 				enemy->OnDeath(dynamic_cast<UPlayer*>(Owner));
                 CurrState = EProjectileState::HIT;
-                CurrentFrame = 4;
-                ExplosionTimer = 0.0f;
                 DeactivateProjectile();
 			}
 			break;
@@ -102,8 +100,6 @@ bool UProjectile::CollisionCheck(UPrimitive * other)
             if (LifeTime > 2)
             {
                 CurrState = EProjectileState::HIT;
-                CurrentFrame = 4;
-                ExplosionTimer = 0.0f;
                 DeactivateProjectile();
             }
 
@@ -114,13 +110,14 @@ bool UProjectile::CollisionCheck(UPrimitive * other)
                 if (overlapOnTheBox > 0.0f)	// 1. 박스 위를 걷고있는 경우
                 {
                     Location.y = other->Location.y + (other->height / 2.0f) + (height / 2.0f);
-                    if (Velocity.y > 0.05f)
+                    if (Velocity.y > 0.3f)
                     {
-						Velocity.y *= 1.0f;
+                        CurrState = EProjectileState::HIT;
+                        DeactivateProjectile();
                     }
                     else
                     {
-                        Velocity.y *= -1.0f;
+                        Velocity.y = 0.01f;
                     }
                     break;
                 }
@@ -163,8 +160,6 @@ bool UProjectile::CollisionCheck(UPrimitive * other)
             if (LifeTime > 2)
             {
                 CurrState = EProjectileState::HIT;
-                CurrentFrame = 4;
-                ExplosionTimer = 0.0f;
                 DeactivateProjectile();
             }
 
@@ -175,7 +170,15 @@ bool UProjectile::CollisionCheck(UPrimitive * other)
                 if (overlapOnTheBox > 0.0f)	// 1. 박스 위를 걷고있는 경우
                 {
                     Location.y = other->Location.y + (other->height / 2.0f) + (height / 2.0f);
-                    Velocity.y *= 1.0f;
+                    if (Velocity.y > 0.3f)
+                    {
+                        CurrState = EProjectileState::HIT;
+                        DeactivateProjectile();
+                    }
+                    else
+                    {
+                        Velocity.y = 0.01f;
+                    }
                     break;
                 }
                 else 	// 2. 박스 아래에서 충돌된 경우

@@ -218,7 +218,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	//PrimitiveList[mushroomIdx] = new UMushroom;
 	//PrimitiveList[primitiveCount++] = new UMushroom();
 
-	PrimitiveList[primitiveCount++] = new UFlower(0.0f, 0.0f, 1.0f, 1.0f);  // test용으로 flower 추가
+	// PrimitiveList[primitiveCount++] = new UFlower(0.0f, 0.0f, 1.0f, 1.0f);  // test용으로 flower 추가
 
 	// 접근할때
 	// PrimitiveList[mushroomIdx]->render(...); 이런식으로 하면 됩니다.
@@ -248,9 +248,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	UBall* goomba = new UEnemy;
 	PrimitiveList[primitiveCount++] = goomba;
 	GoombaList[0] = goomba;
-
-	UPrimitive* brick = new UBrick(0.1f, -0.4f, 1.0f, 1.0f);
-	PrimitiveList[primitiveCount++] = brick;
 
 	//UQuestionBox* question = new UQuestionBox;
 	//PrimitiveList[primitiveCount++] = question;
@@ -383,7 +380,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				//RemoveObject(PrimitiveList, primitiveCount, i);
 				continue;
 			}
-
+			
 			if (player && player->IsPlayerDead())
 			{
 				//RemoveObject(PrimitiveList, primitiveCount, i); 
@@ -391,8 +388,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				{
 					UGameLogic::GetInstance().setShowBlack(true); // 리스폰
 					player->SetState(UPlayer::PlayerState::ALIVE);
-					player->Location.x = 0;
-					player->Location.y = 0;
+					player->Location.x = 0.1f;
+					player->Location.y = -0.5f;
+
+					camera.Reset(); 
 				}
 			}
 			if (player && player->Location.y < -1.0f) // 마리오가 떨어졌으면
@@ -401,8 +400,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				{
 					UGameLogic::GetInstance().setShowBlack(true); // 리스폰
 					player->SetState(UPlayer::PlayerState::ALIVE);
-					player->Location.x = 0;
-					player->Location.y = 0;
+					player->Location.x = 0.1f;
+					player->Location.y = -0.5f;
+
+					camera.Reset();
 				}
 			}
 			if (mushroom && mushroom->IsMushroomDestroyed())
@@ -534,17 +535,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				ms->SetState(UProjectile::EProjectileState::ROLLING);
 			}
 		}
-
-		// 브릭 애니메이션 테스트용
-		if (ImGui::Button("Brick"))
-		{
-			if (UBrick* bp = dynamic_cast<UBrick*>(brick))
-			{
-				bp->AnimState = UBrick::EAnimState::UP;
-			}
-		}
-		
-
 
 		// Flower 테스트용
 		if (ImGui::Button("->"))

@@ -12,8 +12,8 @@
 
 UPlayer::UPlayer()
 {
-	Location.x = 0.0f;
-	Location.y = 0.0f;
+	Location.x = 0.1f;
+	Location.y = -0.5f;
 	Location.z = 0.0f;
 
 	Velocity.x = 0.0f;
@@ -283,13 +283,13 @@ void UPlayer::Move()
 
 		if (GetAsyncKeyState(VK_LEFT) & 0x8000)
 		{
-			Velocity.x = -0.01f;
+			Velocity.x = -0.02f;
 			bFacingLeft = true;
 			// bIsGrounded = false;
 		}
 		else if (GetAsyncKeyState(VK_RIGHT) & 0x8000)
 		{
-			Velocity.x = 0.01f;
+			Velocity.x = 0.02f;
 			bFacingLeft = false;
 			// bIsGrounded = false;
 		}		
