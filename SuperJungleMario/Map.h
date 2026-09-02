@@ -3,6 +3,8 @@
 #include "UBox.h"
 #include "UEnemy.h"
 #include "UFlower.h"
+#include "UPipe.h"
+
 constexpr int   MapWidth = 212;
 constexpr int   MapHeight = 15;
 
@@ -19,7 +21,7 @@ B	벽돌
 ?	물음표 블럭
 P	파이프 ->일단B
 S	계단(단단한 블럭) -> 일단B
-F	깃대
+L   깃대
 C	성
 E	굼바 스폰
 

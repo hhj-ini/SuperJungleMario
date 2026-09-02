@@ -16,6 +16,7 @@ class UPrimitive
 			MUSHROOM,
 			COIN,
 			FLOWER,
+			PIPE,
 		};
 
 		UPrimitive();
@@ -54,6 +55,6 @@ class UPrimitive
 	
 	
 	// 텍스쳐 포인터 저장
-	ID3D11ShaderResourceView* TextureSRVPtr[18] = {};
+	ID3D11ShaderResourceView* TextureSRVPtr[12] = {};
 	EObjectType ObjectType;
 };

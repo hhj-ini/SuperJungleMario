@@ -238,10 +238,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		ms->SetOwner(player);
 	}
 
-	// Flower 테스트
-	UPrimitive* flower = new UFlower(0.3f, -0.3f, 1.0f, 1.0f);
-	PrimitiveList[primitiveCount++] = flower;
-
 	// 텍스쳐 파일 로드 테스트 코드
 	//ID3D11Resource* MushroomTest = nullptr;
 	//ID3D11ShaderResourceView* MushroomTestSRV = nullptr;
@@ -464,15 +460,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				bp->AnimState = UBrick::EAnimState::UP;
 			}
 		}
-
-		// Flower 테스트용
-		if (ImGui::Button("Flower"))
-		{
-			if (UFlower* fl = dynamic_cast<UFlower*>(flower))
-			{
-				fl->FlowFlower(); 
-			}
-		}
+		
 
 		ImGui::End();
 

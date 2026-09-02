@@ -28,7 +28,7 @@ void MapReader(UPrimitive** AllMapObjects,size_t& objectCount) {
 				break;
 
 			case 'P':
-				AllMapObjects[objectCount++] = new UBox(screenX, screenY, 1.0f, 1.0f);
+				AllMapObjects[objectCount++] = new UPipe(screenX, screenY, 1.0f, 1.0f);
 				//파이프 생성
 				break;
 
@@ -39,6 +39,7 @@ void MapReader(UPrimitive** AllMapObjects,size_t& objectCount) {
 
 			case 'F':
 				AllMapObjects[objectCount++] = new UFlower(screenX, screenY, 1.0f, 1.0f);
+				//꽃 생성
 				break;
 
 			case 'C':
