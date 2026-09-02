@@ -18,7 +18,6 @@ UPlayer::UPlayer()
 	Velocity.y = 0.0f;
 
 	bBigMario = false;
-	bBigMario = false;
 	bIsGrounded = false;
 
 	Hp = 1;
@@ -30,6 +29,11 @@ UPlayer::UPlayer()
 
 UPlayer::~UPlayer()
 {
+}
+
+void UPlayer::Tick()
+{
+	
 }
 
 void UPlayer::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)
@@ -96,10 +100,6 @@ void UPlayer::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)
 void UPlayer::UpdateVelocity(bool bGravity)
 {
 	UBall::UpdateVelocity(bGravity);
-	if (bIsGrounded)
-	{
-		Velocity.y = 0.0f;
-	}
 }
 
 bool UPlayer::CollisionCheck(UPrimitive* other)
@@ -136,7 +136,7 @@ bool UPlayer::CollisionCheck(UPrimitive* other)
 				}
 				else 	// 2. 박스 아래에서 충돌된 경우
 				{
-					Location.y = other->Location.y - ((other->height / 2.0f) + (height / 2.0f));
+					Location.y = other->Location.y - ((other->height / 2.0f) + (height / 2.0f)) + 0.01f;	// 의도적으로 overlap되도록 함
 					Velocity.y *= -0.5f;
 					break;
 				}

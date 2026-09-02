@@ -240,18 +240,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	//ID3D11ShaderResourceView* MushroomTestSRV = nullptr;
 	//renderer.LoadTexture(L"Resource\\Mushroom.png", MushroomTest, MushroomTestSRV);
 
-	//// Box 추가////
-	//UPrimitive** Ground = nullptr;
-	//Ground = new UPrimitive * [40];  // 10을 변수로 변경해야함. 지금은 임시테스트용
-	//
-	//// Ground 생성
-	//for (int i = 0;i < 40; ++i)
-	//{
-	//	Ground[i] = new UBox(-1.0f+i*scaleMod , -0.8f, 1.0f, 1.0f);
-	//}
-
 	//Map 생성
 	MapReader(PrimitiveList, primitiveCount);
+
 
 	// Main Loop(Quit Message가 들어오기 전까지 아래 Loop를 무한히 실행하게 됨.
 	while (bIsExit == false)
@@ -317,15 +308,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			PrimitiveList[i]->Tick();
 			if (UBall* b = dynamic_cast<UBall*>(PrimitiveList[i]))
 			{
-				b->Move();				
+				b->Move();
 				b->UpdateVelocity(bGravity);
 				b->UpdateAnimation(elapsedTime / 1000.0f);	// deltaTime 단위는 초 단위로 전달
-				//for (int k = 0; k < 40; ++k)   // player->Ground 충돌 체크
-				//{
-				//	b->CollisionCheck(Ground[k]);
-				//}
-			}	
-			for (size_t j = 0; j < primitiveCount; ++j) 
+			}
+
+			for (size_t j = 0; j < primitiveCount; ++j)
 			{
 				if (i == j) continue;
 				// if (j == mushroomIdx || i == mushroomIdx) continue;	// 임시로 버섯 충돌 로직 영향 받지 않도록 함
