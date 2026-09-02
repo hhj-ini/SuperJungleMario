@@ -269,6 +269,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		{
 			bBlackUI = false;
 		}
+		if (403 - GameTime + StartTime < 0) // 게임시간이 000초가 되면 게임오버 
+		{
+			UGameLogic::GetInstance().setEnding();
+		}
 		//if (static_cast<UPlayer*>(PrimitiveList[2]).IsPlayerDead())
 		//
 		//	bDeath = true;
