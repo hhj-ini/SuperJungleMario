@@ -170,9 +170,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		GameOverUIList[i] = new UUi(ui_vertices, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT4(1, 1, 1, 1), UUi::TranslateUV(charListOver[i]));
 	}
 	// Floating score UI part
-	std::vector<UUi*> FloatingScoreUIList;
-	std::vector<double> FloatingScoreTimeList;
-	std::vector<int> FloatingScoreScoreList;
+	std::vector<FFloatingScore> FloatingScoreUIList;
 
 	// ui 텍스쳐 파일 로드
 	ID3D11Resource* UIFontResource = nullptr; ID3D11ShaderResourceView* UIFontSRV = nullptr; renderer.LoadTexture(L"Resource\\font.png", UIFontResource, UIFontSRV);
@@ -278,10 +276,18 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			{
 				timer = GameTime;
 			}
-			else if (GameTime - timer > 0.3f) // 3초 지나면 블랙 ui 제거
+			else if (GameTime - timer > 3.0f) // 3초 지나면 블랙 ui 제거
 			{
 				UGameLogic::GetInstance().setShowBlack(false);
 				timer = 0.0f;
+			}
+		}
+		for (int i = 0; i < FloatingScoreUIList.size(); i++)
+		{
+			if (GameTime - FloatingScoreUIList[i].createdTime > 5.0f)
+			{
+				delete FloatingScoreUIList[i].floatingUUi;
+				FloatingScoreUIList.erase(FloatingScoreUIList.begin() + i);
 			}
 		}
 
@@ -505,9 +511,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		{
 			// 객체를 생성해야함
 			UUi* newFloatingScore = new UUi(ui_vertices);
-			FloatingScoreUIList.push_back(newFloatingScore);
-			FloatingScoreTimeList.push_back(GameTime);
-			FloatingScoreScoreList.push_back(UGameLogic::GetInstance().getLastScore());
+			FloatingScoreUIList.push_back({newFloatingScore, GameTime, UGameLogic::GetInstance().getLastScore()});
 			renderer.PrepareUIShader(UIFloatingSRV);
 			//NDC 업데이트해야 
 			float ndcX = UGameLogic::GetInstance().getCoordinate().x - camera.x;
@@ -515,8 +519,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			//FloatingScoreUI->UpdateUV(charFloatingList, 0);
 			for (size_t i = 0; i < FloatingScoreUIList.size(); i++)
 			{
-				FloatingScoreUIList[i]->UpdateFloatingUV(UGameLogic::GetInstance().getLastScore());
-				FloatingScoreUIList[i]->Render(renderer, UIBuffer, numVerticesUI, fontSize / 0.5f, fontSize / 0.5f, DirectX::XMFLOAT2(ndcX, ndcY));
+				FloatingScoreUIList[i].floatingUUi->UpdateFloatingUV(UGameLogic::GetInstance().getLastScore());
+				FloatingScoreUIList[i].floatingUUi->Render(renderer, UIBuffer, numVerticesUI, fontSize / 0.5f, fontSize / 0.5f, DirectX::XMFLOAT2(ndcX, ndcY));
 			}
 			UGameLogic::GetInstance().setIsFloatingScore(false);
 			UGameLogic::GetInstance().setLastScore(0); // 이러면 한 프레임만 되긴 하는데 일단 이렇게 
