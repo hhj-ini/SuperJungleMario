@@ -12,8 +12,8 @@
 
 UPlayer::UPlayer()
 {
-	Location.x = 0.0f;
-	Location.y = 0.0f;
+	Location.x = 0.1f;
+	Location.y = -0.5f;
 	Location.z = 0.0f;
 
 	Velocity.x = 0.0f;
