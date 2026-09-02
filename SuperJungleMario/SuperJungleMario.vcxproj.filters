@@ -62,6 +62,12 @@
       <Filter>Game</Filter>
     </ClCompile>
     <ClCompile Include="UQuestionBox.cpp" />
+    <ClCompile Include="MapReader.cpp" />
+    <ClCompile Include="UBackground.cpp" />
+    <ClCompile Include="UFlag.cpp" />
+    <ClCompile Include="UFlower.cpp" />
+    <ClCompile Include="UPipe.cpp" />
+    <ClCompile Include="USoundManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Cube.h" />
@@ -127,6 +133,11 @@
       <Filter>Game</Filter>
     </ClInclude>
     <ClInclude Include="UQuestionBox.h" />
+    <ClInclude Include="Map.h" />
+    <ClInclude Include="UBackground.h" />
+    <ClInclude Include="UFlag.h" />
+    <ClInclude Include="UPipe.h" />
+    <ClInclude Include="USoundManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

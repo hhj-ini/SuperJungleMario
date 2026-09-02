@@ -2,6 +2,7 @@
 #include "URenderer.h"
 
 struct ID3D11ShaderResourceView;	// 포인터 위해서 전방선언
+class IDirectSoundBuffer;
 
 class UPrimitive
 {
@@ -37,6 +38,9 @@ class UPrimitive
 	virtual void SetAnimation() {};
 
 	virtual void Tick(float deltaTime) {};
+	
+	// 객체 생성과 리소스 초기화 분리 위한 함수
+	virtual void Init() {};
 
 
 	// 모든 Primitive 는 텍스처 포인터를 가짐
@@ -62,4 +66,8 @@ class UPrimitive
 	// 텍스쳐 포인터 저장
 	ID3D11ShaderResourceView* TextureSRVPtr[20] = {};
 	EObjectType ObjectType;
+
+	
+	// 사운드 버퍼 포인터 저장
+	IDirectSoundBuffer* SoundBufferPtr;
 };
