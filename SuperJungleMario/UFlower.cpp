@@ -3,12 +3,12 @@
 UFlower::UFlower(float x, float y, float w, float h) : UBall(x, y, w, h)
 {
 	
-		ObjectType = EObjectType::FLOWER;
-		Location.x = x;
-		Location.y = y;
-		width = w * scaleMod;
-		height = h * scaleMod;
-		bisMove = false;
+	ObjectType = EObjectType::FLOWER;
+	Location.x = x;
+	Location.y = y;
+	width = w * scaleMod;
+	height = h * scaleMod;
+	bisMove = false;
 	InitHeight= y;
 	
 }

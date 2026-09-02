@@ -344,7 +344,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				// if (j == mushroomIdx || i == mushroomIdx) continue;	// 임시로 버섯 충돌 로직 영향 받지 않도록 함
 				PrimitiveList[i]->CollisionCheck(PrimitiveList[j]);
 			}
+		}
 
+		float cameraLeft = camera.x - 1.0f;
+		if (player->Location.x < cameraLeft + player->width / 2.0f)
+		{
+			player->Location.x = cameraLeft + player->width / 2.0f;
 		}
 
 		if (UPlayer* firePlayer = dynamic_cast<UPlayer*>(player))

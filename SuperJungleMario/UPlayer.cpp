@@ -7,6 +7,7 @@
 #include <cmath>
 #include "UProjectile.h"
 #include "UBox.h"
+#include "UCamera.h"
 
 
 UPlayer::UPlayer()
