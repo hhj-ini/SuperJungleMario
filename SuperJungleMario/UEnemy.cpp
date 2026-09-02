@@ -200,6 +200,4 @@ void UEnemy::SetSoundResource(USoundManager* soundManager)
 
 	std::wstring soundName = L"GoombaDead";	//설정한 이름으로 접근 가능
 	SoundBufferMap[soundName] = ResourceManager::GetInstance().GetSoundResource(L"Resource\\Sound\\GoombaDead.wav", soundManager);
-	SoundManager->ElaryLoadSoundResource(SoundBufferMap[soundName]);
-
 }

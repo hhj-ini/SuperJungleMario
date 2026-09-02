@@ -17,14 +17,22 @@ ID3D11ShaderResourceView* ResourceManager::GetSRV(const std::wstring& InPath, UR
     return SRVMap[InPath];
 }
 
-IDirectSoundBuffer* ResourceManager::GetSoundResource(const std::wstring& InPath, USoundManager* renderer)
+void ResourceManager::SoundUpload(USoundManager* soundManager)
+{
+    for (auto& elem : SoundResourceMap)
+    {
+        soundManager->ElaryLoadSoundResource(elem.second);
+    }
+}
+
+IDirectSoundBuffer* ResourceManager::GetSoundResource(const std::wstring& InPath, USoundManager* soundManager)
 {
     IDirectSoundBuffer* sbp = nullptr;
 
     auto it = SoundResourceMap.find(InPath);
     if (it == SoundResourceMap.end()) // 맵에 존재하지 않은 경우
     {
-        renderer->LoadWavFile(InPath, sbp);
+        soundManager->LoadWavFile(InPath, sbp);
         SoundResourceMap[InPath] = sbp;
     }
 

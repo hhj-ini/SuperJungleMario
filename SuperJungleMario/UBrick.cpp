@@ -197,9 +197,6 @@ void UBrick::SetSoundResource(USoundManager* soundManager)
 	
 	std::wstring soundName = L"brick";	//설정한 이름으로 접근 가능
 	SoundBufferMap[soundName] = ResourceManager::GetInstance().GetSoundResource(L"Resource\\Sound\\brick.wav", soundManager);
-	SoundManager->ElaryLoadSoundResource(SoundBufferMap[soundName]);
-
-	int a = 0;
 }
 
 
