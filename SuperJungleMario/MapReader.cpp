@@ -7,42 +7,54 @@
 #include "UBrick.h"
 #include "UQuestionBox.h"
 #include "UPipe.h"
-#include "UMushroom.h"
-void MapReader(UPrimitive** AllMapObjects, size_t& objectCount) {
 
+#include "UMushroom.h"
+
+
+void MapReader(UPrimitive** AllMapObjects, size_t& objectCount, USoundManager* soundManager) {
 	for (int i = 0;i < MapHeight;++i) {
 		for (int j = 0;j < MapWidth;j++) {
 
 			float screenX = MapOriginX + (float)j * mapScale;
 			float screenY = MapOriginY + (float)(MapHeight - 1 - i) * mapScale;
-
+			UPrimitive* pp = nullptr;
 			switch (MapData[i][j]) {
 
 			case '.':
 				break;
 
 			case 'G':
-				AllMapObjects[objectCount++] = new UBox(screenX, screenY, 1.0f, 1.0f);
+				pp = new UBox(screenX, screenY, 1.0f, 1.0f);
+				AllMapObjects[objectCount++] = pp;
+				pp->SetSoundResource(soundManager);
 				//땅 생성
 				break;
 
 			case 'B':
-				AllMapObjects[objectCount++] = new UBrick(screenX, screenY, 1.0f, 1.0f);
+				pp = new UBrick(screenX, screenY, 1.0f, 1.0f);
+				AllMapObjects[objectCount++] = pp;
+				pp->SetSoundResource(soundManager);
 				//벽돌 생성
 				break;
 
 			case '?':
-				AllMapObjects[objectCount++] = new UQuestionBox(screenX, screenY, 1.0f, 1.0f, UQuestionBox::EItemType::COIN);
+				pp = new UQuestionBox(screenX, screenY, 1.0f, 1.0f, UQuestionBox::EItemType::COIN);
+				AllMapObjects[objectCount++] = pp;
+				pp->SetSoundResource(soundManager);
 				//물음표 블럭 생성
 				break;
 
 			case 'P':
-				AllMapObjects[objectCount++] = new UPipe(screenX, screenY, 1.0f, 1.0f);
+				pp = new UPipe(screenX, screenY, 1.0f, 1.0f);
+				AllMapObjects[objectCount++] = pp;
+				pp->SetSoundResource(soundManager);
 				//파이프 생성
 				break;
 
 			case 'S':
-				AllMapObjects[objectCount++] = new UBox(screenX, screenY, 1.0f, 1.0f, UBox::EBoxType::HARD);
+				pp = new UBox(screenX, screenY, 1.0f, 1.0f, UBox::EBoxType::HARD);
+				AllMapObjects[objectCount++] = pp;
+				pp->SetSoundResource(soundManager);
 				//계단 생성
 				break;
 
@@ -52,6 +64,9 @@ void MapReader(UPrimitive** AllMapObjects, size_t& objectCount) {
 				questionBoxPtr->ItemPtr = flowerPtr;
 				AllMapObjects[objectCount++] = questionBoxPtr;
 				AllMapObjects[objectCount++] = flowerPtr;
+
+				questionBoxPtr->SetSoundResource(soundManager);
+				flowerPtr->SetSoundResource(soundManager);
 				//꽃 생성
 				break;
 			}
@@ -79,5 +94,7 @@ void MapReader(UPrimitive** AllMapObjects, size_t& objectCount) {
 
 	float screenX = MapOriginX + 198.f * mapScale;
 	float screenY = MapOriginY + (float)(MapHeight - 1 - 7.5) * mapScale;
- 	AllMapObjects[objectCount++] = new UFlag(screenX, screenY, 2.0f, 8.0f);
+	UPrimitive* pp = new UFlag(screenX, screenY, 2.0f, 8.0f);
+	AllMapObjects[objectCount++] = pp;
+	pp->SetSoundResource(soundManager);
 }
