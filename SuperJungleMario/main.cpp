@@ -445,6 +445,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				UIList[i]->Render(renderer, UIBuffer, numVerticesUI, fontSize, fontSize, renderer.GetNDCoordinate(charPositions[i], 1024, 1024));
 			}
 		}
+		UUi::UpdateLifeUI(UGameLogic::GetInstance().getLife());
 		if (UGameLogic::GetInstance().IsShowBlack()) // Black UI part
 		{
 			renderer.PrepareUIShader(UIMarioSRV);
