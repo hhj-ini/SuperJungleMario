@@ -75,8 +75,9 @@ void MapReader(UPrimitive** AllMapObjects, size_t& objectCount, USoundManager* s
 
 			case 'E': 
 				//AllMapObjects[objectCount++] = new UEnemy(MapOriginX + (float)j * mapScale, MapOriginY + (float)i * mapScale, 1.0f, 1.0f);
-				//굼바 스폰 생성
+				AllMapObjects[objectCount++] = new UEnemy(screenX, screenY, 1.0f, 1.0f);				//굼바 스폰 생성
 				break;
+
 			case 'M': {
 				UMushroom* mushroomPtr = new UMushroom(screenX, screenY, 1.0f, 1.0f);
 				UQuestionBox* questionBoxPtr = new UQuestionBox(screenX, screenY, 1.0f, 1.0f, UQuestionBox::EItemType::MUSHROOM);

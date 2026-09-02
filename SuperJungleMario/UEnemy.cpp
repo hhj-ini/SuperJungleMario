@@ -3,21 +3,35 @@
 #include "ResourceManager.h"
 #include "UGameLogic.h"
 
-UEnemy::UEnemy()
+//UEnemy::UEnemy()
+//{
+//	Velocity.x = 0.0f;
+//	Velocity.y = 0.0f;
+//
+//	Location.x = 1.0f;
+//	Location.y = -0.5f;
+//	// 위치 설정 필요
+//
+//	width = scaleMod;
+//	height = scaleMod;
+//	bisMove = true;
+//
+//	SetState(EnemyState::ALIVE);
+//
+//	ObjectType = EObjectType::ENEMY;
+//}
+
+UEnemy::UEnemy(float x, float y, float w, float h)
 {
 	Velocity.x = 0.0f;
 	Velocity.y = 0.0f;
+	Location.x = x;
+	Location.y = y;
+	width = w * scaleMod;
+	height = h * scaleMod;
 
-	Location.x = 1.0f;
-	Location.y = -0.5f;
-	// 위치 설정 필요
-
-	width = scaleMod;
-	height = scaleMod;
 	bisMove = true;
-
 	SetState(EnemyState::ALIVE);
-
 	ObjectType = EObjectType::ENEMY;
 }
 
