@@ -5,17 +5,17 @@
 
 UBall::UBall()
 {
-	Location.x = ((float)(rand() % 180 - 90)) * 0.01f;
-	Location.y = ((float)(rand() % 180 - 90)) * 0.01f;
+	//Location.x = ((float)(rand() % 180 - 90)) * 0.01f;
+	//Location.y = ((float)(rand() % 180 - 90)) * 0.01f;
 
-	Velocity.x = 0.0001f;
-	Velocity.y = 0.0001f;
+	//Velocity.x = 0.0001f;
+	//Velocity.y = 0.0001f;
 
-	//Mass = Radius * Radius * 3.14f;
-	Index = TotalNumBalls++;
+	////Mass = Radius * Radius * 3.14f;
+	//Index = TotalNumBalls++;
 
-	width = Radius * scaleMod;
-	height = Radius * scaleMod;
+	//width = Radius * scaleMod;
+	//height = Radius * scaleMod;
 	
 }
 UBall::UBall(float x, float y, float w, float h) :UPrimitive(x, y, w, h)

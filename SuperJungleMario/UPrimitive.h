@@ -28,7 +28,6 @@ class UPrimitive
 			width = w * scaleMod;
 			height = h * scaleMod;
 
-			Radius = 0.0001f;
 			bisMove = false;
 		}
 

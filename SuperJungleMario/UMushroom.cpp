@@ -1,7 +1,7 @@
 #include "UMushroom.h"
 #include "ResourceManager.h"
 
-UMushroom::UMushroom(float x, float y, float w, float h) : UBall(x, y, w, h)
+UMushroom::UMushroom(float x, float y, float w, float h) 
 {
 
 	ObjectType = EObjectType::MUSHROOM;
@@ -57,21 +57,29 @@ bool UMushroom::CollisionCheck(UPrimitive* other)
 			// 활성화 상태 이외에는 충돌 처리하지 않음
 			return false;
 		}
-
+		
 		switch (other->ObjectType)
 		{
 		case (EObjectType::BOX): // 박스와 충돌 시 처리
-			if (overlapX > overlapY) { //y축방향으로 충돌시 y속도 0으로 처리
-				Location.y = other->Location.y + (other->height / 2.0f) + (height / 2.0f);
-				
-				Velocity.y = 0;
-			}
-			if (overlapX < overlapY) { // x축방향으로 충돌시 x속도 0으로 처리
-				Location.x = other->Location.x + (other->width / 2.0f) + (width / 2.0f);
-				if (Velocity.x > 0.0f) { Velocity.x = -std::fabs(Velocity.x); }
-				else { Velocity.x = std::fabs(Velocity.x); }
+			if (overlapX >= overlapY || (overlapY < (other->height / 8.0f))) { // 세로 겹침이 더 적음 -> y축으로 밀어냄
+				if (Location.y > other->Location.y) { // 박스 위에 있음
+					Location.y = other->Location.y + (other->height / 2.0f) + (height / 2.0f);
 				}
-				Velocity.x *= -1.0f;
+				else { // 박스 아래에 있음
+					Location.y = other->Location.y - (other->height / 2.0f) - (height / 2.0f);
+				}
+				Velocity.y = 0.0f;
+			}
+			else { // 가로 겹침이 더 적음 -> x축으로 밀어내고 방향 전환
+				if (Location.x > other->Location.x) { // 박스 오른쪽에 있음 -> 오른쪽으로 진행
+					Location.x = other->Location.x + (other->width / 2.0f) + (width / 2.0f);
+					Velocity.x = std::fabs(Velocity.x);
+				}
+				else { // 박스 왼쪽에 있음 -> 왼쪽으로 진행
+					Location.x = other->Location.x - (other->width / 2.0f) - (width / 2.0f);
+					Velocity.x = -std::fabs(Velocity.x);
+				}
+			}
 			break;
 			
 
@@ -125,7 +133,7 @@ void UMushroom::SetState(MushroomState InState)
 		// 애니메이션 끝나면 
 		// SetState(MushroomState::ENABLE); 호출
 		mrState = MushroomState::ENABLE;
-		Velocity.x = 0.005f;
+		Velocity.x = 0.006f;
 		Velocity.y = 0.0f;
 		break;
 
