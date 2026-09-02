@@ -78,3 +78,10 @@ public:
 
 	static DirectX::XMFLOAT4 TranslateFloatingUV(int score);
 };
+
+struct FFloatingScore
+{
+	UUi* floatingUUi;
+	double createdTime;
+	int displayScore;
+};
