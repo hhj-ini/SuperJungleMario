@@ -28,6 +28,7 @@
 
 #include "UBrick.h"
 #include "UProjectile.h"
+#include "UQuestionBox.h"
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -191,6 +192,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	UPrimitive* brick = new UBrick;
 	PrimitiveList[primitiveCount++] = brick;
+
+	UQuestionBox* question = new UQuestionBox;
+	PrimitiveList[primitiveCount++] = question;
+	PrimitiveList[primitiveCount++] = question->ItemPtr;
 
 	// 프로젝타일 테스트
 	UPrimitive* projectile = new UProjectile;
