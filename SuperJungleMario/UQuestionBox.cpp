@@ -15,6 +15,18 @@ UQuestionBox::UQuestionBox(float x, float y, float w, float h, EItemType itemTyp
 	// 테스트용 좌표 설정
 }
 
+UQuestionBox::UQuestionBox(float x, float y, float w, float h)
+{
+	ObjectType = EObjectType::BOX;
+	ItemPtr = new UMushroom;	// flower 위해서 수정 필요
+	BoxType = EBoxType::QUESTION;
+
+	Location.x = x;
+	Location.y = y;
+	width = w * scaleMod;
+	height = h * scaleMod;
+}
+
 void UQuestionBox::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)
 {
 	if (!TextureSRVPtr[0])

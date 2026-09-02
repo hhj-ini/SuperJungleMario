@@ -15,12 +15,38 @@ UBox::UBox(float x, float y, float w, float h)
 	ObjectType = EObjectType::BOX;
 }
 
+UBox::UBox(float x, float y, float w, float h, EBoxType bt)
+	: BoxType(bt)
+{
+	Location.x = x;
+	Location.y = y;
+	width = w * scaleMod;
+	height = h * scaleMod;
+
+	Radius = 0.0001f;
+	++TotalNumBox;
+	bisMove = false;
+	ObjectType = EObjectType::BOX;
+}
+
 
 void UBox::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)
 {
 		if (!TextureSRVPtr[0])
 		{
-			TextureSRVPtr[0] = ResourceManager::GetInstance().GetSRV(L"Resource\\Ground.png", &renderer);
+			ID3D11ShaderResourceView* ptr = nullptr;
+			switch (BoxType)
+			{
+			case EBoxType::GROUND:
+				ptr = ResourceManager::GetInstance().GetSRV(L"Resource\\Ground.png", &renderer);
+				break;
+			case EBoxType::HARD:
+				ptr = ResourceManager::GetInstance().GetSRV(L"Resource\\HardBlock.png", &renderer);
+				break;
+			default:
+				break;
+			}
+			TextureSRVPtr[0] = ptr;
 		}
 		renderer.PrepareShaderResource(TextureSRVPtr[0]);
 

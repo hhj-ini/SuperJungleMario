@@ -1,5 +1,14 @@
 #include "Map.h"
-void MapReader(UPrimitive** AllMapObjects,size_t& objectCount) {
+#include "UFlag.h"
+#include "Uprimitive.h"
+#include "UBox.h"
+#include "UEnemy.h"
+#include "UFlower.h"
+#include "UBrick.h"
+#include "UQuestionBox.h"
+#include "UPipe.h"
+
+void MapReader(UPrimitive** AllMapObjects, size_t& objectCount) {
 
 	for (int i = 0;i < MapHeight;++i) {
 		for (int j = 0;j < MapWidth;j++) {
@@ -18,12 +27,12 @@ void MapReader(UPrimitive** AllMapObjects,size_t& objectCount) {
 				break;
 
 			case 'B':
-				AllMapObjects[objectCount++] = new UBox(screenX, screenY, 1.0f, 1.0f);
+				AllMapObjects[objectCount++] = new UBrick(screenX, screenY, 1.0f, 1.0f);
 				//벽돌 생성
 				break;
 
 			case '?':
-				AllMapObjects[objectCount++] = new UBox(screenX, screenY, 1.0f, 1.0f);
+				AllMapObjects[objectCount++] = new UQuestionBox(screenX, screenY, 1.0f, 1.0f);
 				//물음표 블럭 생성
 				break;
 
@@ -33,7 +42,7 @@ void MapReader(UPrimitive** AllMapObjects,size_t& objectCount) {
 				break;
 
 			case 'S':
-				AllMapObjects[objectCount++] = new UBox(screenX, screenY, 1.0f, 1.0f);
+				AllMapObjects[objectCount++] = new UBox(screenX, screenY, 1.0f, 1.0f, UBox::EBoxType::HARD);
 				//계단 생성
 				break;
 
@@ -55,4 +64,8 @@ void MapReader(UPrimitive** AllMapObjects,size_t& objectCount) {
 			}
 		}
 	}
+
+	float screenX = MapOriginX + 198.f * mapScale;
+	float screenY = MapOriginY + (float)(MapHeight - 1 - 7.5) * mapScale;
+	AllMapObjects[objectCount++] = new UFlag(screenX, screenY, 2.0f, 8.0f);
 }
