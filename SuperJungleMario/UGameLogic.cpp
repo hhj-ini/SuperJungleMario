@@ -7,7 +7,7 @@ UGameLogic& UGameLogic::GetInstance()
 }
 
 UGameLogic::UGameLogic()
-	: score(0), coin(0), life(3), ending(false)
+	: score(0), coin(0), life(3), ending(false), started(true)
 {
 }
 
@@ -51,4 +51,13 @@ void UGameLogic::setEnding()
 {
 
 	ending = true;
+}
+
+bool UGameLogic::IsStarted()
+{
+	return started;
+}
+void UGameLogic::setStarted()
+{
+	started = true;
 }

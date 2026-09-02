@@ -51,11 +51,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		PostQuitMessage(0);
 		break;
 	case WM_KEYDOWN:
+		UGameLogic::GetInstance().setStarted();
 		break;
 	default:
 		return DefWindowProc(hWnd, message, wParam, lParam);
 	}
-
 }
 
 void RemoveObject(UPrimitive** list, size_t& primitiveCount, size_t removeIndex)
@@ -124,37 +124,48 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	// UI 버텍스 버퍼 생성
 	UINT numVerticesUI = sizeof(ui_vertices) / sizeof(FVertexUI);
 	ID3D11Buffer* UIBuffer = renderer.CreateUIVertexBuffer(ui_vertices, sizeof(ui_vertices));
-	// UI GameStart 리스트 생성
-	size_t GameStartUICnt = 11;
-	UUi** GameStartUIList = new UUi * [GameStartUICnt];
-	for (int i = 0; i < GameStartUICnt; i++)
+	// Top UI part
+	size_t UICnt = 29;
+	UUi** UIList = new UUi * [UICnt];
+	for (int i = 0; i < UICnt; i++)
 	{
-		GameStartUIList[i] = new UUi(ui_vertices, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT4(1, 1, 1, 1), UUi::Translate(charListStart[i]), 1.0f);
+		UIList[i] = new UUi(ui_vertices, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT4(1, 1, 1, 1), UUi::Translate(charList[i]), 1.0f);
 	}
-	// UI GameEnd 리스트 생성
+	UUi* CoinUI = new UUi(ui_vertices, DirectX::XMFLOAT2(-0.24f, 0.84f), DirectX::XMFLOAT4(1, 1, 1, 1), DirectX::XMFLOAT4(1, 1, 0, 0), 1.0f);
+	// Black UI part
+	size_t BlackUICnt = 11;
+	UUi** BlackUIList = new UUi * [BlackUICnt];
+	for (int i = 0; i < BlackUICnt; i++)
+	{
+		BlackUIList[i] = new UUi(ui_vertices, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT4(1, 1, 1, 1), UUi::Translate(charListBlack[i]), 1.0f);
+	}
+	UUi* BlackBackground = new UUi(ui_vertices, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT4(1, 1, 1, 1), DirectX::XMFLOAT4(1, 1, 0, 0), 1.0f);
+	UUi* MarioUI = new UUi(ui_vertices, DirectX::XMFLOAT2(-0.2f, 0.025f), DirectX::XMFLOAT4(1, 1, 1, 1), DirectX::XMFLOAT4(1, 1, 0, 0), 1.0f);
+	// Start UI part
+	size_t StartUICnt = 43;
+	UUi** StartUIList = new UUi * [StartUICnt];
+	for (int i = 0; i < StartUICnt; i++)
+	{
+		StartUIList[i] = new UUi(ui_vertices, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT4(1, 1, 1, 1), UUi::Translate(charListStart[i]), 1.0f);
+	}
+	UUi* TitleUI = new UUi(ui_vertices, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT4(1, 1, 1, 1), DirectX::XMFLOAT4(1, 1, 0, 0), 1.0f);
+	// Ending UI part
 	size_t GameEndUICnt = 48;
 	UUi** GameEndUIList = new UUi * [GameEndUICnt];
 	for (int i = 0; i < GameEndUICnt; i++)
 	{
 		GameEndUIList[i] = new UUi(ui_vertices, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT4(1, 1, 1, 1), UUi::Translate(charListEnd[i]), 1.0f);
 	}
-	// UI 리스트, 객체 생성
-	size_t uiCnt = 29;
-	UUi** UIList = new UUi*[uiCnt];
-	for (int i = 0; i < uiCnt; i++)
-	{
-		UIList[i] = new UUi(ui_vertices, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT4(1, 1, 1, 1), UUi::Translate(charList[i]), 1.0f);
-	}
-	UUi* BlackBackground = new UUi(ui_vertices, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT4(1, 1, 1, 1), DirectX::XMFLOAT4(1, 1, 0, 0), 1.0f);
-	UUi* MarioUI = new UUi(ui_vertices, DirectX::XMFLOAT2(-0.2f, 0.025f), DirectX::XMFLOAT4(1, 1, 1, 1), DirectX::XMFLOAT4(1, 1, 0, 0), 1.0f);
-	UUi* CoinUI = new UUi(ui_vertices, DirectX::XMFLOAT2(-0.24f, 0.84f), DirectX::XMFLOAT4(1, 1, 1, 1), DirectX::XMFLOAT4(1, 1, 0, 0), 1.0f);
-	UUi* TitleUI = new UUi(ui_vertices, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT4(1, 1, 1, 1), DirectX::XMFLOAT4(1, 1, 0, 0), 1.0f);
 	// ui 텍스쳐 파일 로드
 	ID3D11Resource* UIFontResource = nullptr; ID3D11ShaderResourceView* UIFontSRV = nullptr; renderer.LoadTexture(L"Resource\\font.png", UIFontResource, UIFontSRV);
 	ID3D11Resource* UIBlackResource = nullptr; ID3D11ShaderResourceView* UIBlackSRV = nullptr; renderer.LoadTexture(L"Resource\\black.png", UIBlackResource, UIBlackSRV);
 	ID3D11Resource* UIMarioResource = nullptr; ID3D11ShaderResourceView* UIMarioSRV = nullptr; renderer.LoadTexture(L"Resource\\Mario\\Mario1.png", UIMarioResource, UIMarioSRV);
 	ID3D11Resource* UICoinResource = nullptr; ID3D11ShaderResourceView* UICoinSRV = nullptr; renderer.LoadTexture(L"Resource\\Coin.png", UICoinResource, UICoinSRV);
 	ID3D11Resource* UITitleResource = nullptr; ID3D11ShaderResourceView* UITitleSRV = nullptr; renderer.LoadTexture(L"Resource\\title.png", UITitleResource, UITitleSRV);
+	// UI 렌더링 여부
+	bool bUIRender = true;
+	bool bBlackUI = false; // 일단 false로 
+	bool bGameEnd = false;
 
 	//ID3D11Buffer* cubeBuffer = renderer.CreateVertexBuffer(cube_vertices, sizeof(cube_vertices));
 	ID3D11Buffer* cubeBuffer = renderer.CreateTextureVertexBuffer(cube_vertices, sizeof(cube_vertices));
@@ -183,13 +194,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	QueryPerformanceFrequency(&frequencyGame);
 	QueryPerformanceCounter(&startGameTime);
 	double timer = 0.0f;
-
-	// UI 렌더링 여부
-	bool bUIRender = true;
-	bool bGameStart = false; // 일단 false로 
-	bool bGameEnd = false;
-	bool bDeath = false;
-	bool bInital = false; 
 
 	/////////// 여기서 테스트용 객체 추가하시면 됩니다 ////////////////
 	int mushroomIdx = UBall::TotalNumBalls;
@@ -254,14 +258,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		// 게임 경과 시간 기록
 		QueryPerformanceCounter(&currentGameTime);
 		GameTime = static_cast<double>(currentGameTime.QuadPart - startGameTime.QuadPart) / static_cast<double>(frequencyGame.QuadPart);
-		if (bInital) // 시작 전이면 게임 경과 시간 멈추기
+		if (UGameLogic::GetInstance().IsStarted()) // 시작 전이면 게임 경과 시간 멈추기
 		{
 			GameTime = 0.0f;
 		}
 		UUi::UpdateGameTime(403 - GameTime);
 		if (GameTime > 2) // 게임시간이 1초 지나면 첫화면 넘기기
 		{
-			bGameStart = false;
+			bBlackUI = false;
 		}
 		//if (static_cast<UPlayer*>(PrimitiveList[2]).IsPlayerDead())
 		//
@@ -364,7 +368,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		// UI 렌더링 
 		renderer.PrepareUIShader(UIBlackSRV);
-		if (bGameStart || bDeath || UGameLogic::GetInstance().IsEnding())
+		if (bBlackUI || UGameLogic::GetInstance().IsEnding())
 		{
 			// 첫화면 렌더. 검은 화면 렌더.
 			BlackBackground->Render(renderer, UIBuffer, numVerticesUI, 5.0f, 5.0f, DirectX::XMFLOAT2(0.0f, 0.0f));
@@ -372,29 +376,39 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		UUi::UpdateScoreUI(UGameLogic::GetInstance().getScore());
 		UUi::UpdateCoinUI(UGameLogic::GetInstance().getCoin());
 		const float fontSize = 0.09f;
-		if (bUIRender)
+		if (bUIRender) // Top UI part
 		{
 			renderer.PrepareUIShader(UICoinSRV);
 			CoinUI->Render(renderer, UIBuffer, numVerticesUI, 0.1f, 0.1f, DirectX::XMFLOAT2(-0.24f, 0.84f));
 			renderer.PrepareUIShader(UIFontSRV);
-			for (size_t i = 0; i < uiCnt; i++)
+			for (size_t i = 0; i < UICnt; i++)
 			{
 				UIList[i]->UpdateUV(i);
 				UIList[i]->Render(renderer, UIBuffer, numVerticesUI, fontSize, fontSize, renderer.GetNDCoordinate(charPositions[i], 1024, 1024));
 			}
 		}
-		if (bGameStart || bDeath)
+		if (bBlackUI) // Black UI part
 		{
 			renderer.PrepareUIShader(UIMarioSRV);
 			MarioUI->Render(renderer, UIBuffer, numVerticesUI, 0.1f, 0.1f, DirectX::XMFLOAT2(-0.2f, 0.025f));
 			renderer.PrepareUIShader(UIFontSRV);
-			for (size_t i = 0; i < GameStartUICnt; i++)
+			for (size_t i = 0; i < BlackUICnt; i++)
 			{
-				GameStartUIList[i]->UpdateUVStart(i);
-				GameStartUIList[i]->Render(renderer, UIBuffer, numVerticesUI, fontSize, fontSize, renderer.GetNDCoordinate(charPositionsStart[i], 1024, 1024));
+				BlackUIList[i]->UpdateUVBlack(i);
+				BlackUIList[i]->Render(renderer, UIBuffer, numVerticesUI, fontSize, fontSize, renderer.GetNDCoordinate(charPositionsBlack[i], 1024, 1024));
 			}
 		}
-		if (UGameLogic::GetInstance().IsEnding())
+		if (!UGameLogic::GetInstance().IsStarted()) // Start UI part
+		{
+			renderer.PrepareUIShader(UITitleSRV);
+			TitleUI->Render(renderer, UIBuffer, numVerticesUI, 1.4f, 0.6f, DirectX::XMFLOAT2(0.0f, 0.4f));
+			renderer.PrepareUIShader(UIFontSRV);
+			for (size_t i = 0; i < StartUICnt; i++)
+			{
+				StartUIList[i]->Render(renderer, UIBuffer, numVerticesUI, fontSize, fontSize, renderer.GetNDCoordinate(charPositionsStart[i], 1024, 1024));
+			}
+		}
+		if (UGameLogic::GetInstance().IsEnding()) // Ending UI part
 		{
 			bUIRender = false;
 			renderer.PrepareUIShader(UIFontSRV);
@@ -402,11 +416,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			{
 				GameEndUIList[i]->Render(renderer, UIBuffer, numVerticesUI, fontSize, fontSize, renderer.GetNDCoordinate(charPositionsEnd[i], 1024, 1024));
 			}
-		}
-		if (bInital)
-		{
-			renderer.PrepareUIShader(UITitleSRV);
-			TitleUI->Render(renderer, UIBuffer, numVerticesUI, 1.4f, 0.6f, DirectX::XMFLOAT2(0.0f, 0.4f));
 		}
 
 		// ImGui 렌더링 준비, 컨트롤 설정, 렌더링 요청

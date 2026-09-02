@@ -6,13 +6,17 @@ extern POINT charPositions[];
 
 extern char charList[];
 
-extern POINT charPositionsStart[];
+extern POINT charPositionsBlack[];
 
-extern char charListStart[];
+extern char charListBlack[];
 
 extern POINT charPositionsEnd[];
 
 extern char charListEnd[];
+
+extern POINT charPositionsStart[];
+
+extern char charListStart[];
 
 class UUi
 {
@@ -52,5 +56,5 @@ public:
 
 	void UpdateUV(int index);
 
-	void UpdateUVStart(int index);
+	void UpdateUVBlack(int index);
 };
