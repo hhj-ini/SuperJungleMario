@@ -85,12 +85,16 @@ bool UBrick::CollisionCheck(UPrimitive* other)
 			KillEnemy();
 
 			UPlayer* pp = dynamic_cast<UPlayer*>(other);
+
 			if (pp && pp->bBigMario)
 			{
 				//BoxType = EBoxType::HARD;
 				//bIsActive = false;
 				BrokenAnimInit();
+				
+				
 				bIsBroken = true;
+				
 				SoundManager->PlaySoundResource(SoundBufferPtr);
 				// 50점 
 				UGameLogic::GetInstance().addScore(50, Location.x, Location.y);

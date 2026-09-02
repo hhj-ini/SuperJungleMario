@@ -2,6 +2,7 @@
 #include "UMushroom.h"
 #include "ResourceManager.h"
 #include "UFlower.h"
+
 UQuestionBox::UQuestionBox(float x, float y, float w, float h, EItemType itemType)
 {
 	Location.x = x;
@@ -49,6 +50,6 @@ void UQuestionBox::OnHitFromBelow()
 	{
 		//event 발생
 		return;
-	}
-	ItemPtr->SetAnimation();	// 아이템 애니메이션 시작
-}
+      	}
+	ItemPtr->SetAnimation();                          	// 아이템 애니메이션 시작
+    }               
