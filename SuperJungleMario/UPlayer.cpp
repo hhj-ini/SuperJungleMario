@@ -6,7 +6,7 @@
 #include "ResourceManager.h"
 #include <cmath>
 #include <iostream>
-
+#include "UBox.h"
 
 UPlayer::UPlayer()
 {
@@ -18,6 +18,7 @@ UPlayer::UPlayer()
 	Velocity.y = 0.0f;
 
 	bBigMario = false;
+	bFireMario = false;
 	bIsGrounded = false;
 
 	Hp = 1;
@@ -136,7 +137,16 @@ bool UPlayer::CollisionCheck(UPrimitive* other)
 				}
 				else 	// 2. 박스 아래에서 충돌된 경우
 				{
-					Location.y = other->Location.y - ((other->height / 2.0f) + (height / 2.0f)) + 0.01f;	// 의도적으로 overlap되도록 함
+					UBox* bp = dynamic_cast<UBox*>(other);
+					
+					Location.y = other->Location.y - ((other->height / 2.0f) + (height / 2.0f));	
+					if (bp && (UBox::EBoxType::BRICK == bp->BoxType || UBox::EBoxType::QUESTION == bp->BoxType))
+					{
+						// 의도적으로 overlap되도록 함
+						float overlapAcceptDegree = 0.01f;
+						Location.y += overlapAcceptDegree;
+					}
+					
 					Velocity.y *= -0.5f;
 					break;
 				}
@@ -207,8 +217,9 @@ bool UPlayer::CollisionCheck(UPrimitive* other)
 			if (UEnemy* enemy = dynamic_cast<UEnemy*>(other))
 			{
 				// 플레이어가 적에게 공격받을 시 적도 사라지는 버전
-				float PlayerBottom = GetPosition().y - GetHeight() / 2.0f;
-				if (PlayerBottom >= enemy->GetPosition().y && GetVelocity().y < 0.0f)
+				float enemyTop = enemy->GetPosition().y + enemy->GetHeight() / 2.0f;
+				float prePlayerBottom = GetPreviousPosition().y - GetHeight() / 2.0f;
+				if (prePlayerBottom >= enemyTop && GetVelocity().y < 0.0f)
 				{
 					enemy->OnDeath(this);
 				}
@@ -274,6 +285,7 @@ void UPlayer::Move()
 			// bIsGrounded = false;
 		}		
 		
+		PreviousLocation = Location;
 		Location.x += Velocity.x * deltaTime;
 		Location.y += Velocity.y * deltaTime;
 	}
@@ -327,8 +339,6 @@ void UPlayer::Shrink()
 	width = scaleMod;
 	height = scaleMod;
 	Location.y -= (oldHeight - height) / 2.0f;
-
-	CurrentFrame = bFacingLeft ? 2 : 0;
 }
 
 void UPlayer::UpdateAnimation(float deltaTime)

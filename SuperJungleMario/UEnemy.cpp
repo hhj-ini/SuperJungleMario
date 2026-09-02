@@ -71,10 +71,12 @@ bool UEnemy::CollisionCheck(UPrimitive* other)
 			//	Velocity.x = 0;
 			//}
 		case EObjectType::PLAYER:
-			if (UPlayer* player = dynamic_cast<UPlayer*>(other))
+			/*if (UPlayer* player = dynamic_cast<UPlayer*>(other))
 			{
-				float PlayerBottom = player->GetPosition().y - player->GetHeight() / 2.0f;
-				if (PlayerBottom >= GetPosition().y && player->GetVelocity().y < 0.0f)
+				float enemyTop = Location.y + height / 2.0f;
+				float prePlayerBottom = player->GetPreviousPosition().y - player->GetHeight() / 2.0f;
+
+				if (prePlayerBottom >= enemyTop && player->GetVelocity().y < 0.0f)
 				{
 					OnDeath(player);
 				}
@@ -82,9 +84,9 @@ bool UEnemy::CollisionCheck(UPrimitive* other)
 				{
 					player->TakeDamage();
 				}
-			}
-		case EObjectType::ENEMY:
-			// 적과 충돌 시 처리
+			}*/
+			break;
+		case EObjectType::MUSHROOM:
 			break;
 		}
 	}
