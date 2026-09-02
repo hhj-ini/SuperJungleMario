@@ -1,5 +1,6 @@
 #include "UBrick.h"
 #include "ResourceManager.h"
+#include "UEnemy.h"
 
 UBrick::UBrick() : UBox()
 {
@@ -9,7 +10,7 @@ UBrick::UBrick() : UBox()
 UBrick::UBrick(float x, float y, float w, float h)	
 	: UBox(x, y, w, h)
 {
-	UBrick();
+	BoxType = EBoxType::BRICK;
 }
 
 bool UBrick::CollisionCheck(UPrimitive* other)
@@ -72,6 +73,7 @@ bool UBrick::CollisionCheck(UPrimitive* other)
 			// 블럭 애니메이션 시작
 			AnimState = EAnimState::UP;
 			BoxType = EBoxType::HARD;
+			KillEnemy();
 		}
 	}
 
@@ -120,6 +122,18 @@ void UBrick::Tick()
 		break;
 	}
 
+}
+
+void UBrick::KillEnemy()
+{
+	for (auto elem : EnemyList)
+	{
+		UEnemy* ep = dynamic_cast<UEnemy*>(elem);
+		if (ep)
+		{
+			ep->OnDeath(nullptr);
+		}
+	}
 }
 
 void UBrick::SetAnimState(EAnimState InState)

@@ -19,6 +19,8 @@ public:
     virtual void Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num) override;
     virtual void Tick() override;
 
+    void KillEnemy();
+
     // Box 전용 함수
     virtual void SetAnimState(EAnimState InType);
 

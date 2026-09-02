@@ -1,6 +1,7 @@
 #include "UEnemy.h"
 #include "UPlayer.h"
 #include "ResourceManager.h"
+#include "UGameLogic.h"
 
 UEnemy::UEnemy()
 {
@@ -122,8 +123,13 @@ void UEnemy::OnDeath(UPlayer* player)
 	if (eState == EnemyState::ALIVE)
 	{
 		SetState(EnemyState::DEAD);
-		player->SetVelocityY(0.03f); 
+		if (player)
+		{
+			player->SetVelocityY(0.03f);
+		}
 		bIsActive = false;
+
+		UGameLogic::GetInstance().addScore(100);
 	}
 }
 
