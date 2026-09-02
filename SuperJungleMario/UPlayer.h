@@ -11,8 +11,10 @@ public:
 	bool bFireMario = false;
 
     const FVector& GetPosition() const { return Location; }
+	const FVector& GetPreviousPosition() const { return PreviousLocation; }
     float GetHeight() const { return height; }
     FVector GetVelocity() const { return Velocity; }
+    
 
     enum class PlayerState
     {
@@ -46,6 +48,8 @@ public:
 
 private:
     PlayerState pState = PlayerState::ALIVE;
+
+    FVector PreviousLocation;
 
     int CurrentFrame = 0;
     float AnimationTimer = 0.0f;
