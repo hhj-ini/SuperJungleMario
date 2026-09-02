@@ -23,6 +23,7 @@ public:
     bool IsMushroomDestroyed() const { return mrState == MushroomState::DESTROYED; }
 
     void SetEnable();
+    MushroomState GetState() { return mrState; }
 
     void SetAnimation();
 

@@ -8,6 +8,7 @@
 #include "UProjectile.h"
 #include "UBox.h"
 #include "UCamera.h"
+#include "UFlower.h"
 
 
 UPlayer::UPlayer()
@@ -237,19 +238,35 @@ bool UPlayer::CollisionCheck(UPrimitive* other)
 				}
 			}
 			break; 
+
 		case EObjectType::MUSHROOM:
-			if (Hp == 1)
+		{
+			UMushroom* mr = dynamic_cast<UMushroom*>(other);
+
+			if (mr && mr->GetState() == UMushroom::MushroomState::ENABLE)
 			{
-				++Hp;
-				Grow();
+				if (Hp == 1)
+				{
+					++Hp;
+					Grow();
+				}
 			}
 			break;
+		}
+
 		case EObjectType::FLOWER:
-			if (!bFireMario)
+		{
+			UFlower* flower = dynamic_cast<UFlower*>(other);
+
+			if (flower && flower->GetState() == UFlower::FlowerState::ENABLE)
 			{
-				FireMario();
+				if (!bFireMario)
+				{
+					FireMario();
+				}
 			}
 			break;
+		}
 		default:
 			break;
 		}

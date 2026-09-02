@@ -245,10 +245,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 	}
 
-	UBall* GoombaList[1] = { nullptr };	// 임시로 goomba 애니메이션 업데이트
-	UBall* goomba = new UEnemy;
-	PrimitiveList[primitiveCount++] = goomba;
-	GoombaList[0] = goomba;
+	/*UBall* goomba = new UEnemy;
+	PrimitiveList[primitiveCount++] = goomba;*/
 
 	//UQuestionBox* question = new UQuestionBox;
 	//PrimitiveList[primitiveCount++] = question;
@@ -269,7 +267,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	//Map 생성
 	MapReader(PrimitiveList, primitiveCount, &soundManager);
-
 
 	// Main Loop(Quit Message가 들어오기 전까지 아래 Loop를 무한히 실행하게 됨.
 	while (bIsExit == false)
