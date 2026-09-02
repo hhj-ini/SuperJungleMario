@@ -19,6 +19,7 @@ public:
 
 	ID3D11ShaderResourceView* GetSRV(const std::wstring& InPath, URenderer* renderer);
 	//ID3D11Resource* GetResource(std::wstring*)
+	void SoundUpload(USoundManager* soundManager);
 
 	IDirectSoundBuffer* GetSoundResource(const std::wstring& InPath, USoundManager* soundManager);
 

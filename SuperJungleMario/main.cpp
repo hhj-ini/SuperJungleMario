@@ -267,6 +267,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	//Map 생성
 	MapReader(PrimitiveList, primitiveCount, &soundManager);
+	ResourceManager::GetInstance().SoundUpload(&soundManager);	// 렌더링 하기 전에 사운드 업로드
 
 	// Main Loop(Quit Message가 들어오기 전까지 아래 Loop를 무한히 실행하게 됨.
 	while (bIsExit == false)
