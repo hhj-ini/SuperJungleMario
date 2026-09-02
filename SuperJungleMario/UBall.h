@@ -23,7 +23,7 @@ public:
 	virtual ~UBall();
 
 	virtual void Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num);
-
+	virtual void SetSoundResource(USoundManager* soundManager) override {};
 	//virtual bool CollisionCheck(UPrimitive* other);
 
 	virtual void Move();

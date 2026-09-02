@@ -231,6 +231,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	//int playerIdx = UBall::TotalNumBalls;
 	UBall* player = new UPlayer;
 	PrimitiveList[primitiveCount++] = player;
+	player->SetSoundResource(&soundManager);
 
 	UBall* ProjectileList[20] = {};
 	for (int i = 0; i < 20; ++i)

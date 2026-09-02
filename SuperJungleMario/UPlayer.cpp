@@ -9,7 +9,7 @@
 #include "UBox.h"
 #include "UCamera.h"
 #include "UFlower.h"
-
+#include "USoundManager.h"
 
 UPlayer::UPlayer()
 {
@@ -300,6 +300,8 @@ void UPlayer::Move()
 		{
 			Velocity.y = 0.05f;
 			bIsGrounded = false;
+
+			SoundManager->PlaySoundResource(SoundBufferMap[L"jump"]);
 		}
 
 		if (GetAsyncKeyState(VK_LEFT) & 0x8000)
@@ -421,6 +423,14 @@ void UPlayer::UpdateAnimation(float deltaTime)
 		}
 		AnimationTimer = 0.0f;
 	}
+}
+
+void UPlayer::SetSoundResource(USoundManager* soundManager)
+{
+	SoundManager = soundManager;
+
+	std::wstring soundName = L"jump";	//설정한 이름으로 접근 가능
+	SoundBufferMap[soundName] = ResourceManager::GetInstance().GetSoundResource(L"Resource\\Sound\\jump.wav", soundManager);
 }
 
 void UPlayer::Respawn()
