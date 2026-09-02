@@ -1,5 +1,7 @@
 #pragma once
 #include "UPrimitive.h"
+#include "UGameLogic.h"
+
 class UFlag :
     public UPrimitive
 {
