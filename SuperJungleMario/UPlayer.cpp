@@ -474,7 +474,7 @@ bool UPlayer::ShotFireRequest()
 	return bRequested;
 }
 
-void UPlayer::Reset()
+void UPlayer::Reset() // 플레이어 리스폰용
 {
 	Location.x = 0.1f;
 	Location.y = -0.5f;
