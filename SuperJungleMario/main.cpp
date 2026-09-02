@@ -517,7 +517,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			renderer.PrepareUIShader(UIFloatingSRV);
 			//NDC 업데이트해야 
 			float ndcX = UGameLogic::GetInstance().getCoordinate().x - camera.x;
-			float ndcY = UGameLogic::GetInstance().getCoordinate().y - camera.y;
+			float ndcY = UGameLogic::GetInstance().getCoordinate().y - camera.y + 0.2f;
 			//FloatingScoreUI->UpdateUV(charFloatingList, 0);
 			for (size_t i = 0; i < FloatingScoreUIList.size(); i++)
 			{
