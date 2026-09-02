@@ -1,6 +1,8 @@
 #include "UProjectile.h"
 #include "ResourceManager.h"
 #include "UPlayer.h"
+#include "UEnemy.h"
+#include "UBox.h"
 
 UProjectile::UProjectile()
 {
@@ -69,16 +71,6 @@ bool UProjectile::CollisionCheck(UPrimitive * other)
         return false;
     }
 
-    // 부딪힌 상대가 적(enemy)이라면 상대에게 데미지 입히기
-    //if (true/* 부딪힌 상대가 적*/)
-    //{
-    //    SetState(EProjectileState::HIT);
-    //}
-
-    //if (true/* 부딪힌 상대가 벽, 땅*/)
-    //{
-    //    SetState(EProjectileState::WAITING);
-    //}
     // 가로가 겹치는지 확인
     float sumHalfWidth = (width / 2.0f) + (other->width / 2.0f);
     float xdistance = std::fabs(Location.x - other->Location.x);
@@ -95,20 +87,109 @@ bool UProjectile::CollisionCheck(UPrimitive * other)
 
         switch (other->ObjectType)
         {
+		case EObjectType::ENEMY:
+            if (UEnemy* enemy = dynamic_cast<UEnemy*>(other))
+            {
+				enemy->OnDeath(dynamic_cast<UPlayer*>(Owner));
+                DeactivateProjectile();
+			}
+			break;
         case EObjectType::BOX: // 박스와 충돌 시 처리
-            if (overlapX > overlapY) { //y축방향으로 충돌시 y속도 0으로 처리
-                Location.y = other->Location.y + (other->height / 2.0f) + (height / 2.0f);
-                Velocity.y = 0;
+        {
+			if (CollisionTimer < CollisionInterval)
+			{
+				break;
+			}
+
+            ++LifeTime;
+            if (LifeTime > 2)
+            {
+                DeactivateProjectile();
+            }
+
+            if (overlapX > overlapY) { 	
+                float onBoxDistance = std::fabs(Location.y - (other->Location.y + scaleMod));
+                float overlapOnTheBox = sumHalfHeight - onBoxDistance;
+
+                if (overlapOnTheBox > 0.0f)	// 1. 박스 위를 걷고있는 경우
+                {
+                    Location.y = other->Location.y + (other->height / 2.0f) + (height / 2.0f);
+                    Velocity.y *= 1.0f;
+                    break;
+                }
+                else 	// 2. 박스 아래에서 충돌된 경우
+                {
+                    UBox* bp = dynamic_cast<UBox*>(other);
+
+                    Location.y = other->Location.y - ((other->height / 2.0f) + (height / 2.0f));
+                    Velocity.y *= -1.0f;
+                    break;
+                }
+            }
+            else { 
+                float rightBoxDistance = std::fabs(Location.x - (other->Location.x + scaleMod));
+                float overlapRightSideBox = sumHalfHeight - rightBoxDistance;
+
+                if (overlapRightSideBox > 0.0f)	// 오른쪽에서 충돌
+                {
+                    Location.x = other->Location.x + (other->width / 2.0f) + (width / 2.0f);
+                    Velocity.x *= -1.0f;
+                    break;
+                }
+                else
+                {
+                    Location.x = other->Location.x - ((other->width / 2.0f) + (width / 2.0f));
+                    Velocity.x *= -1.0f;
+                    break;
+                }
+            }
+            break;
+        }
+        case EObjectType::PIPE: // 파이프충돌처리
+        {
+            if (CollisionTimer < CollisionInterval)
+            {
                 break;
             }
-            //else { // x축방향으로 충돌시 x속도 0으로 처리
-            //	Location.x = other->Location.x + (other->width / 2.0f) + (width / 2.0f);
-            //	Velocity.x = 0;
-            //}
-        case EObjectType::PLAYER:
+
+            if (overlapX > overlapY) { //y축방향으로 충돌시 y속도 0으로 처리		
+                float onBoxDistance = std::fabs(Location.y - (other->Location.y + scaleMod));
+                float overlapOnTheBox = sumHalfHeight - onBoxDistance;
+
+                if (overlapOnTheBox > 0.0f)	// 1. 박스 위를 걷고있는 경우
+                {
+                    Location.y = other->Location.y + (other->height / 2.0f) + (height / 2.0f);
+                    Velocity.y *= 1.0f;
+                    break;
+                }
+                else 	// 2. 박스 아래에서 충돌된 경우
+                {
+                    Location.y = other->Location.y - ((other->height / 2.0f) + (height / 2.0f)) + 0.01f;	// 의도적으로 overlap되도록 함
+                    Velocity.y *= -1.0f;
+                    break;
+                }
+            }
+            else { // x축방향으로 충돌시 x속도 0으로 처리
+                float rightBoxDistance = std::fabs(Location.x - (other->Location.x + scaleMod));
+                float overlapRightSideBox = sumHalfHeight - rightBoxDistance;
+
+                if (overlapRightSideBox > 0.0f)	// 오른쪽에서 충돌
+                {
+                    Location.x = other->Location.x + (other->width / 2.0f) + (width / 2.0f);
+                    Velocity.x *= -1.0f;
+                    break;
+                }
+                else
+                {
+                    Location.x = other->Location.x - ((other->width / 2.0f) + (width / 2.0f));
+                    Velocity.x *= -1.0f;
+                    break;
+                }
+            }
             break;
-        case EObjectType::MUSHROOM:
-            break;
+        }
+		default:
+			break;
         }
     }
     return false;
@@ -175,7 +256,7 @@ bool UProjectile::ActivateProjectile(FVector PlayerLocation, bool bFacingLeft, f
 		Location.x = PlayerLocation.x + (bFacingLeft ? -1.0f : 1.0f) * (playerWidth / 2.0f + width / 2.0f);
 		Location.y = PlayerLocation.y;
 
-        Velocity.x = bFacingLeft ? -0.01f : 0.01f;
+        Velocity.x = bFacingLeft ? -0.015f : 0.015f;
 
     return true;
 }
@@ -192,6 +273,7 @@ void UProjectile::DeactivateProjectile()
 void UProjectile::UpdateAnimation(float deltaTime)
 {
     AnimationTimer += deltaTime;
+    CollisionTimer += deltaTime;
     if (AnimationTimer >= FrameInterval)
     {
         CurrentFrame = (CurrentFrame + 1) % 4;

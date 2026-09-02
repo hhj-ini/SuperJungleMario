@@ -180,7 +180,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	ID3D11Buffer* cubeBuffer = renderer.CreateTextureVertexBuffer(cube_vertices, sizeof(cube_vertices));
 
 
-	size_t ballPoolCnt = 1000;	// 초기에 70개만큼 공 풀 확보
+	size_t ballPoolCnt = 800;	// 초기에 70개만큼 공 풀 확보
 	size_t primitiveCount = 0;	// 현재 공 풀에 들어있는 공 갯수
 
 	UPrimitive** PrimitiveList = new UPrimitive*[ballPoolCnt];
@@ -213,6 +213,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	int mushroomIdx = UBall::TotalNumBalls;
 	//PrimitiveList[mushroomIdx] = new UMushroom;
 	PrimitiveList[primitiveCount++] = new UMushroom;
+
+	PrimitiveList[primitiveCount++] = new UFlower(0.0f, 0.0f, 1.0f, 1.0f);  // test용으로 flower 추가
 
 	// 접근할때
 	// PrimitiveList[mushroomIdx]->render(...); 이런식으로 하면 됩니다.
@@ -329,7 +331,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		for (size_t i = 0; i < primitiveCount; ++i)
 		{
 			if (PrimitiveList[i]->bIsActive == false) continue;
-			PrimitiveList[i]->Tick();
+			PrimitiveList[i]->Tick(deltaTime);
 
 			if (UBall* b = dynamic_cast<UBall*>(PrimitiveList[i]))
 			{
@@ -345,7 +347,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				// if (j == mushroomIdx || i == mushroomIdx) continue;	// 임시로 버섯 충돌 로직 영향 받지 않도록 함
 				PrimitiveList[i]->CollisionCheck(PrimitiveList[j]);
 			}
+		}
 
+		float cameraLeft = camera.x - 1.0f;
+		if (player->Location.x < cameraLeft + player->width / 2.0f)
+		{
+			player->Location.x = cameraLeft + player->width / 2.0f;
 		}
 
 		if (UPlayer* firePlayer = dynamic_cast<UPlayer*>(player))
