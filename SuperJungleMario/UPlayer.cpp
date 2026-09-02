@@ -95,10 +95,7 @@ bool UPlayer::CollisionCheck(UPrimitive* other)
 		{
 		case EObjectType::BOX: // 박스와 충돌 시 처리
 		{
-			
-
-			if (overlapX > overlapY) { //y축방향으로 충돌시 y속도 0으로 처리
-				
+			if (overlapX > overlapY) { //y축방향으로 충돌시 y속도 0으로 처리		
 				float onBoxDistance = std::fabs(Location.y - (other->Location.y + scaleMod));
 				float overlapOnTheBox = sumHalfHeight - onBoxDistance;
 
@@ -115,12 +112,25 @@ bool UPlayer::CollisionCheck(UPrimitive* other)
 					Velocity.y *= -0.5f;
 					break;
 				}
-
-
 			}
 			else { // x축방향으로 충돌시 x속도 0으로 처리
-				Location.x = other->Location.x + (other->width / 2.0f) + (width / 2.0f);
-				Velocity.x = 0;
+				float rightBoxDistance = std::fabs(Location.x - (other->Location.x + scaleMod));
+				float overlapRightSideBox = sumHalfHeight - rightBoxDistance;
+
+				if (overlapRightSideBox > 0.0f)	// 오른쪽에서 충돌
+				{
+					Location.x = other->Location.x + (other->width / 2.0f) + (width / 2.0f);
+					Velocity.x = 0;
+					break;
+				}
+				else
+				{
+					Location.x = other->Location.x - ((other->width / 2.0f) + (width / 2.0f));
+					Velocity.x = 0;
+					break;
+				}
+
+				
 			}
 			break;
 		}
