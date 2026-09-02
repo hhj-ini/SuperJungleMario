@@ -16,7 +16,7 @@ UPlayer::UPlayer()
 	Velocity.x = 0.0f;
 	Velocity.y = 0.0f;
 
-	bIsGrounded = true;
+	bIsGrounded = false;
 	Hp = 1;
 	width = scaleMod;
 	height = scaleMod;
@@ -73,6 +73,15 @@ void UPlayer::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)
 
 }
 
+void UPlayer::UpdateVelocity(bool bGravity)
+{
+	UBall::UpdateVelocity(bGravity);
+	if (bIsGrounded)
+	{
+		Velocity.y = 0.0f;
+	}
+}
+
 bool UPlayer::CollisionCheck(UPrimitive* other)
 {
 	// 기본 충돌 체크 로직 구현
@@ -103,7 +112,7 @@ bool UPlayer::CollisionCheck(UPrimitive* other)
 				{
 					bIsGrounded = true;
 					Location.y = other->Location.y + (other->height / 2.0f) + (height / 2.0f);
-					Velocity.y = 0;
+					Velocity.y = 0.0f;
 					break;
 				}
 				else 	// 2. 박스 아래에서 충돌된 경우
@@ -120,13 +129,13 @@ bool UPlayer::CollisionCheck(UPrimitive* other)
 				if (overlapRightSideBox > 0.0f)	// 오른쪽에서 충돌
 				{
 					Location.x = other->Location.x + (other->width / 2.0f) + (width / 2.0f);
-					Velocity.x = 0;
+					Velocity.x = 0.0f;
 					break;
 				}
 				else
 				{
 					Location.x = other->Location.x - ((other->width / 2.0f) + (width / 2.0f));
-					Velocity.x = 0;
+					Velocity.x = 0.0f;
 					break;
 				}
 
