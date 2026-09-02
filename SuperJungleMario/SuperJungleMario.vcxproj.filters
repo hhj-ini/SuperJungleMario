@@ -61,6 +61,7 @@
     <ClCompile Include="UUi.cpp">
       <Filter>Game</Filter>
     </ClCompile>
+    <ClCompile Include="UQuestionBox.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Cube.h" />
@@ -125,6 +126,7 @@
     <ClInclude Include="UUi.h">
       <Filter>Game</Filter>
     </ClInclude>
+    <ClInclude Include="UQuestionBox.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

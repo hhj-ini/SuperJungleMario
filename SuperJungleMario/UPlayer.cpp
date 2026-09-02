@@ -16,8 +16,9 @@ UPlayer::UPlayer()
 	Velocity.x = 0.0f;
 	Velocity.y = 0.0f;
 
-	bIsGrounded = true;
 	bBigMario = false;
+	bIsGrounded = false;
+
 	Hp = 1;
 	width = scaleMod;
 	height = scaleMod;
@@ -49,31 +50,6 @@ void UPlayer::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)
 	);
 
 	XMMATRIX world = scale * translation;
-
-	/*if (!TextureSRVPtr[0])
-	{
-		TextureSRVPtr[0] = ResourceManager::GetInstance().GetSRV(L"Resource\\Mario\\Mario1.png", &renderer);
-	}
-	if (!TextureSRVPtr[1])
-	{
-		TextureSRVPtr[1] = ResourceManager::GetInstance().GetSRV(L"Resource\\Mario\\Mario2.png", &renderer);
-	}
-	if (!TextureSRVPtr[2])
-	{
-		TextureSRVPtr[2] = ResourceManager::GetInstance().GetSRV(L"Resource\\Mario\\Mario3.png", &renderer);
-	}
-	if (!TextureSRVPtr[3])
-	{
-		TextureSRVPtr[3] = ResourceManager::GetInstance().GetSRV(L"Resource\\Mario\\Mario4.png", &renderer);
-	}
-	if (!TextureSRVPtr[4])
-	{
-		TextureSRVPtr[4] = ResourceManager::GetInstance().GetSRV(L"Resource\\Mario\\Mario5.png", &renderer);
-	}
-	if (!TextureSRVPtr[5])
-	{
-		TextureSRVPtr[5] = ResourceManager::GetInstance().GetSRV(L"Resource\\Mario\\Mario6.png", &renderer);
-	}*/
 
 	const wchar_t* MarioTextures[] =
 	{
@@ -108,6 +84,15 @@ void UPlayer::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)
 
 }
 
+void UPlayer::UpdateVelocity(bool bGravity)
+{
+	UBall::UpdateVelocity(bGravity);
+	if (bIsGrounded)
+	{
+		Velocity.y = 0.0f;
+	}
+}
+
 bool UPlayer::CollisionCheck(UPrimitive* other)
 {
 	// 기본 충돌 체크 로직 구현
@@ -125,30 +110,61 @@ bool UPlayer::CollisionCheck(UPrimitive* other)
 
 	// 충돌
 	if (overlapX > 0 && overlapY > 0) {
-		
 		switch (other->ObjectType)
 		{
 		case EObjectType::BOX: // 박스와 충돌 시 처리
-			if (overlapX > overlapY) { //y축방향으로 충돌시 y속도 0으로 처리
-				bIsGrounded = true;
-				Location.y = other->Location.y + (other->height / 2.0f) + (height / 2.0f);
-				Velocity.y = 0;
+		{
+			if (overlapX > overlapY) { //y축방향으로 충돌시 y속도 0으로 처리		
+				float onBoxDistance = std::fabs(Location.y - (other->Location.y + scaleMod));
+				float overlapOnTheBox = sumHalfHeight - onBoxDistance;
+
+				if (overlapOnTheBox > 0.0f)	// 1. 박스 위를 걷고있는 경우
+				{
+					bIsGrounded = true;
+					Location.y = other->Location.y + (other->height / 2.0f) + (height / 2.0f);
+					Velocity.y = 0.0f;
+					break;
+				}
+				else 	// 2. 박스 아래에서 충돌된 경우
+				{
+					Location.y = other->Location.y - ((other->height / 2.0f) + (height / 2.0f));
+					Velocity.y *= -0.5f;
+					break;
+				}
 			}
 			else { // x축방향으로 충돌시 x속도 0으로 처리
-				Location.x = other->Location.x + (other->width / 2.0f) + (width / 2.0f);
-				Velocity.x = 0;
+				float rightBoxDistance = std::fabs(Location.x - (other->Location.x + scaleMod));
+				float overlapRightSideBox = sumHalfHeight - rightBoxDistance;
+
+				if (overlapRightSideBox > 0.0f)	// 오른쪽에서 충돌
+				{
+					Location.x = other->Location.x + (other->width / 2.0f) + (width / 2.0f);
+					Velocity.x = 0.0f;
+					break;
+				}
+				else
+				{
+					Location.x = other->Location.x - ((other->width / 2.0f) + (width / 2.0f));
+					Velocity.x = 0.0f;
+					break;
+				}
+
+				bIsGrounded = false;
 			}
 			break;
+		}
 		case EObjectType::ENEMY:
 			if (UEnemy* enemy = dynamic_cast<UEnemy*>(other))
 			{
-				if (Location.y > enemy->GetPosition().y + 0.03f)
+				// 플레이어가 적에게 공격받을 시 적도 사라지는 버전
+				float PlayerBottom = GetPosition().y - GetHeight() / 2.0f;
+				if (PlayerBottom >= enemy->GetPosition().y && GetVelocity().y < 0.0f)
 				{
 					enemy->OnDeath(this);
 				}
 				else
 				{
-					TakeDamage(1);
+					TakeDamage();
 				}
 			}
 			break;
@@ -184,24 +200,25 @@ void UPlayer::Move()
 	if (pState == PlayerState::ALIVE)
 	{
 		Velocity.x = 0.0f;
-
-		if (GetAsyncKeyState(VK_LEFT) & 0x8000)
-		{
-			Velocity.x -= 0.01f;
-			bFacingLeft = true;
-		}
-		else if (GetAsyncKeyState(VK_RIGHT) & 0x8000)
-		{
-			Velocity.x += 0.01f;
-			bFacingLeft = false;
-		}
-
 		if (bIsGrounded && (GetAsyncKeyState(VK_SPACE) & 0x8000))
 		{
 			Velocity.y = 0.05f;
 			bIsGrounded = false;
 		}
 
+		if (GetAsyncKeyState(VK_LEFT) & 0x8000)
+		{
+			Velocity.x -= 0.01f;
+			bFacingLeft = true;
+			bIsGrounded = false;
+		}
+		else if (GetAsyncKeyState(VK_RIGHT) & 0x8000)
+		{
+			Velocity.x += 0.01f;
+			bFacingLeft = false;
+			bIsGrounded = false;
+		}		
+		
 		Location.x += Velocity.x * deltaTime;
 		Location.y += Velocity.y * deltaTime;
 	}
@@ -212,50 +229,57 @@ void UPlayer::SetVelocityY(float y)
 	Velocity.y = y;
 }
 
-void UPlayer::TakeDamage(int damage)
+void UPlayer::TakeDamage()
 {
+	if (DamageTimer > 0.0f)
+	{
+		return;
+	}
+
 	--Hp;
 
 	if (Hp >= 1)
 	{
 		Shrink();
+		DamageTimer = DamageInvincibleTime;
 	}
-	else if (Hp == 0)
+	else
 	{
+		Hp = 0;
 		SetState(PlayerState::DEAD);
 	}
 }
 
 void UPlayer::Grow()
 {
-	++Hp;
-
-	if (Hp == 2)
-	{
-		bBigMario = true;
-	}
-
+	Hp = 2;
+	bBigMario = true;
+	
 	float oldHeight = height;
 
-	width *= 1.0f;
-	height *= 2.0f;
+	width = scaleMod;
+	height = scaleMod* 2.0f;
 	Location.y += (height - oldHeight) / 2.0f;
 	
 }
 
 void UPlayer::Shrink()
 {
-	--Hp;
-
+	bBigMario = false;
 	float oldHeight = height;
 
-	width *= 0.7f;
-	height *= 0.5f;
-	Location.y += (oldHeight - height) / 2.0f;
+	width = scaleMod;
+	height = scaleMod;
+	Location.y -= (oldHeight - height) / 2.0f;
 }
 
 void UPlayer::UpdateAnimation(float deltaTime)
 {
+	if (DamageTimer > 0.0f)
+	{
+		DamageTimer -= deltaTime;
+	}
+
 	AnimationTimer += deltaTime;
 	if (AnimationTimer >= FrameInterval)
 	{
@@ -281,3 +305,8 @@ void UPlayer::UpdateAnimation(float deltaTime)
 	}
 }
 
+void UPlayer::Respawn()
+{
+	UPlayer::SetState(UPlayer::PlayerState::ALIVE);
+	
+}

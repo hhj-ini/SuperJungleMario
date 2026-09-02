@@ -159,6 +159,7 @@
     <ClCompile Include="UPlayer.cpp" />
     <ClCompile Include="UPrimitive.cpp" />
     <ClCompile Include="UProjectile.cpp" />
+    <ClCompile Include="UQuestionBox.cpp" />
     <ClCompile Include="URenderer.cpp" />
     <ClCompile Include="UUi.cpp" />
   </ItemGroup>
@@ -188,6 +189,7 @@
     <ClInclude Include="UPlayer.h" />
     <ClInclude Include="UPrimitive.h" />
     <ClInclude Include="UProjectile.h" />
+    <ClInclude Include="UQuestionBox.h" />
     <ClInclude Include="URenderer.h" />
     <ClInclude Include="UUi.h" />
   </ItemGroup>
