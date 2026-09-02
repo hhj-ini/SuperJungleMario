@@ -187,24 +187,25 @@ void UPlayer::Move()
 	if (pState == PlayerState::ALIVE)
 	{
 		Velocity.x = 0.0f;
-
-		if (GetAsyncKeyState(VK_LEFT) & 0x8000)
-		{
-			Velocity.x -= 0.01f;
-			bFacingLeft = true;
-		}
-		else if (GetAsyncKeyState(VK_RIGHT) & 0x8000)
-		{
-			Velocity.x += 0.01f;
-			bFacingLeft = false;
-		}
-
 		if (bIsGrounded && (GetAsyncKeyState(VK_SPACE) & 0x8000))
 		{
 			Velocity.y = 0.05f;
 			bIsGrounded = false;
 		}
 
+		if (GetAsyncKeyState(VK_LEFT) & 0x8000)
+		{
+			Velocity.x -= 0.01f;
+			bFacingLeft = true;
+			bIsGrounded = false;
+		}
+		else if (GetAsyncKeyState(VK_RIGHT) & 0x8000)
+		{
+			Velocity.x += 0.01f;
+			bFacingLeft = false;
+			bIsGrounded = false;
+		}		
+		
 		Location.x += Velocity.x * deltaTime;
 		Location.y += Velocity.y * deltaTime;
 	}

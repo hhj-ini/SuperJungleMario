@@ -295,16 +295,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				b->UpdateAnimation(elapsedTime / 1000.0f);	// deltaTime 단위는 초 단위로 전달
 				for (int k = 0; k < 40; ++k)   // player->Ground 충돌 체크
 				{
-					if (b->CollisionCheck(Ground[k]))
-					{
-						if (UPlayer* p = dynamic_cast<UPlayer*>(b))
-						{
-							if (p->Location.y > Ground[k]->Location.y)   
-							{
-								p->bIsGrounded = true;
-							}
-						}
-					}
+					b->CollisionCheck(Ground[k]);
 				}
 			}	
 		}
