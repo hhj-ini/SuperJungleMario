@@ -62,7 +62,7 @@ bool UMushroom::CollisionCheck(UPrimitive* other)
 		case EObjectType::BOX: // 박스와 충돌 시 처리
 			if (overlapX > overlapY) { //y축방향으로 충돌시 y속도 0으로 처리
 				Location.y = other->Location.y + (other->height / 2.0f) + (height / 2.0f);
-				Velocity.x = -0.05f;
+				Velocity.x = -0.01f;
 				Velocity.y = 0;
 			}
 			//else { // x축방향으로 충돌시 x속도 0으로 처리

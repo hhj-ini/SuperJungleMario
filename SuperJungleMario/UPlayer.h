@@ -7,6 +7,7 @@ public:
     bool bIsGrounded = true;
     int Hp = 1;
     bool bFacingLeft = false;
+	bool bBigMario = false;
 
     const FVector& GetPosition() const { return Location; }
     

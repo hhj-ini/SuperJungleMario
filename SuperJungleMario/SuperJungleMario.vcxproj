@@ -153,6 +153,7 @@
     <ClCompile Include="UBox.cpp" />
     <ClCompile Include="UBrick.cpp" />
     <ClCompile Include="UEnemy.cpp" />
+    <ClCompile Include="UFlower.cpp" />
     <ClCompile Include="UGameLogic.cpp" />
     <ClCompile Include="UMushroom.cpp" />
     <ClCompile Include="UPlayer.cpp" />
@@ -179,6 +180,7 @@
     <ClInclude Include="UBrick.h" />
     <ClInclude Include="UCamera.h" />
     <ClInclude Include="UEnemy.h" />
+    <ClInclude Include="UFlower.h" />
     <ClInclude Include="UGameLogic.h" />
     <ClInclude Include="UI.h" />
     <ClInclude Include="UMushroom.h" />
