@@ -32,7 +32,7 @@ void MapReader(UPrimitive** AllMapObjects, size_t& objectCount) {
 				break;
 
 			case '?':
-				//AllMapObjects[objectCount++] = new UQuestionBox(screenX, screenY, 1.0f, 1.0f);
+				AllMapObjects[objectCount++] = new UQuestionBox(screenX, screenY, 1.0f, 1.0f, UQuestionBox::EItemType::COIN);
 				//물음표 블럭 생성
 				break;
 
@@ -47,7 +47,7 @@ void MapReader(UPrimitive** AllMapObjects, size_t& objectCount) {
 				break;
 
 			case 'F':
-				AllMapObjects[objectCount++] = new UFlower(screenX, screenY, 1.0f, 1.0f);
+				AllMapObjects[objectCount++] = new UQuestionBox(screenX, screenY, 1.0f, 1.0f, UQuestionBox::EItemType::FLOWER);
 				//꽃 생성
 				break;
 

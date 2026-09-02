@@ -12,7 +12,6 @@ UQuestionBox::UQuestionBox(float x, float y, float w, float h, EItemType itemTyp
 	ObjectType = EObjectType::BOX;
 	BoxType = EBoxType::QUESTION;
 	myItemType = itemType;
-	// 테스트용 좌표 설정
 }
 
 //UQuestionBox::UQuestionBox(float x, float y, float w, float h)
