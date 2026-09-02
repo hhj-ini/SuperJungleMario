@@ -152,7 +152,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	}
 	UUi* TitleUI = new UUi(ui_vertices, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT4(1, 1, 1, 1), DirectX::XMFLOAT4(1, 1, 0, 0), 1.0f);
 	// Ending UI part
-	size_t GameEndUICnt = 48;
+	size_t GameEndUICnt = 60;
 	UUi** GameEndUIList = new UUi * [GameEndUICnt];
 	for (int i = 0; i < GameEndUICnt; i++)
 	{
@@ -413,10 +413,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 		if (UGameLogic::GetInstance().IsEnding()) // Ending UI part
 		{
+			UUi::UpdateFinalScoreUI(UGameLogic::GetInstance().getScore());
 			bUIRender = false;
 			renderer.PrepareUIShader(UIFontSRV);
 			for (size_t i = 0; i < GameEndUICnt; i++)
 			{
+				GameEndUIList[i]->UpdateUVEnd(i);
 				GameEndUIList[i]->Render(renderer, UIBuffer, numVerticesUI, fontSize, fontSize, renderer.GetNDCoordinate(charPositionsEnd[i], 1024, 1024));
 			}
 		}
