@@ -1,14 +1,7 @@
 // UIShader.hlsl
 
-cbuffer constants : register(b0)
-{
-    //float2 HoldPos;
-    //float2 CurrPos;
-};
-
-Texture2D uiTexture : register(t1);
-SamplerState uiSampler : register(s1);
-
+Texture2D uiTexture : register(t0);
+SamplerState uiSampler : register(s0);
 
 struct VS_INPUT
 {
@@ -45,11 +38,8 @@ float4 mainPS(PS_INPUT input) : SV_TARGET
     // uiTexture에서 .Sample로 uiSampler 방식으로 input.uv의 rgba 값을 추출
     float4 rgba = uiTexture.Sample(uiSampler, input.uv);
     
-    // 흰색이 아니면 버림
-    if (rgba.r < 0.85f || rgba.g < 0.85f || rgba.b < 0.85f)
-    {
-        discard;
-    }
+    // 투명한 부분 제거
+    clip(rgba.a - 0.3);
     
     // input.color와 추출한 값을 곱함. 이걸로 ui 색변경 가능
     return rgba * input.color;

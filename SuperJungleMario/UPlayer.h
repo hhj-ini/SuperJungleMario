@@ -5,7 +5,7 @@ class UPlayer : public UBall
 {
 public:
     bool bIsGrounded = true;
-    int Life = 1;
+    int Hp = 1;
     bool bFacingLeft = false;
 
     const FVector& GetPosition() const { return Location; }
@@ -28,6 +28,8 @@ public:
     void SetState(PlayerState InState);
     void SetVelocityY(float y);
 	void TakeDamage(int damage);
+	void Grow();
+	void Shrink();
 
     virtual void UpdateAnimation(float deltaTime);
 

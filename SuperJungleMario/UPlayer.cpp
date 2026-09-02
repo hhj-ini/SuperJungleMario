@@ -1,6 +1,7 @@
 #pragma once
 #include "UPlayer.h"
 #include "UEnemy.h"
+#include "UMushroom.h"
 #include <math.h>
 #include "ResourceManager.h"
 #include <cmath>
@@ -16,7 +17,7 @@ UPlayer::UPlayer()
 	Velocity.y = 0.0f;
 
 	bIsGrounded = true;
-	Life = 1;
+	Hp = 1;
 	width = scaleMod;
 	height = scaleMod;
 	bFacingLeft = false;
@@ -103,6 +104,7 @@ bool UPlayer::CollisionCheck(UPrimitive* other)
 				Location.x = other->Location.x + (other->width / 2.0f) + (width / 2.0f);
 				Velocity.x = 0;
 			}
+			break;
 		case EObjectType::ENEMY:
 			if (UEnemy* enemy = dynamic_cast<UEnemy*>(other))
 			{
@@ -114,9 +116,14 @@ bool UPlayer::CollisionCheck(UPrimitive* other)
 				{
 					TakeDamage(1);
 				}
-
 			}
-			return true;
+			break;
+		case EObjectType::MUSHROOM:
+			if (Hp == 1)
+			{
+				Grow();
+			}
+			break;
 
 		}
 	}
@@ -173,16 +180,39 @@ void UPlayer::SetVelocityY(float y)
 
 void UPlayer::TakeDamage(int damage)
 {
-	--Life;
+	--Hp;
 
-	if (Life >= 1)
+	if (Hp >= 1)
 	{
-		// 작아지는 로직
+		Shrink();
 	}
-	else if (Life == 0)
+	else if (Hp == 0)
 	{
 		SetState(PlayerState::DEAD);
 	}
+}
+
+void UPlayer::Grow()
+{
+	++Hp;
+
+	float oldHeight = height;
+
+	width *= 1.3f;
+	height *= 1.5f;
+	Location.y += (height - oldHeight) / 2.0f;
+	
+}
+
+void UPlayer::Shrink()
+{
+	--Hp;
+
+	float oldHeight = height;
+
+	width *= 0.7f;
+	height *= 0.5f;
+	Location.y += (oldHeight - height) / 2.0f;
 }
 
 void UPlayer::UpdateAnimation(float deltaTime)

@@ -19,7 +19,7 @@ char charList[] =
 	'0', '0', '0', '3', '0', '0',
 	'X', '0', '1',
 	'1', '/', '1',
-	'0', '0', '0'
+	'.', '.', '.'
 };
 
 POINT charPositionsStart[] =
@@ -69,9 +69,12 @@ void UUi::UpdateGameTime(int currentTime)
 	{
 		// game over 로직 차후 구현
 	}
-	charList[28] = '0' + currentTime % 10;
-	charList[27] = '0' + (currentTime / 10) % 10;
-	charList[26] = '0' + (currentTime / 100) % 10;
+	else if (currentTime < 401)
+	{
+		charList[28] = '0' + currentTime % 10;
+		charList[27] = '0' + (currentTime / 10) % 10;
+		charList[26] = '0' + (currentTime / 100) % 10;
+	}
 }
 
 void UUi::UpdateScoreUI(int score)
@@ -90,9 +93,19 @@ void UUi::UpdateCoinUI(int coin)
 	charList[21] = '0' + (coin / 10) % 10;
 }
 
+void UUi::UpdateLifeUI(int life)
+{
+	charListStart[10] = '0' + life % 10;
+}
+
 void UUi::UpdateUV(int index)
 {
 	UUi::uv = Translate(charList[index]);
+}
+
+void UUi::UpdateUVStart(int index)
+{
+	UUi::uv = Translate(charListStart[index]);
 }
 
 // char input을 u, v 좌표로 변환 

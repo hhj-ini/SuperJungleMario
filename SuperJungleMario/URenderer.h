@@ -47,19 +47,13 @@ public:
 	ID3D11Buffer* ConstantBuffer = nullptr;
 	// 셰이더에 데이터를 전달하기 위한 상수 버퍼
 
-	FLOAT ClearColor[4] =
-	{
-		0.0844f,
-		0.1812f,
-		0.7682f,
-		1.0f
-	};
+	FLOAT ClearColor[4] ={0.0844f, 0.1812f, 0.7682f, 1.0f};
 	// 화면을 초기화(Clear) 할 때 사용할 색상(RGBA)
 
 	D3D11_VIEWPORT ViewportInfo;
 	// 렌더링 영역을 정의하는 뷰포트 정보
 
-	ID3D11SamplerState* UISamplerStete;
+	ID3D11SamplerState* UISamplerState;
 	// ui sampler state. ui 텍스쳐를 어떻게 샘플링 할지를 결정
 
 
@@ -154,6 +148,7 @@ public:
 	{
 		DirectX::XMFLOAT4X4 World;
 		DirectX::XMFLOAT4X4 View;
+		FVector AnimOffset;
 	};
 
 	void CreateConstantBuffer();
@@ -166,6 +161,9 @@ public:
 
 	void UpdateConstantBuffer(const DirectX::XMMATRIX& world, const DirectX::XMMATRIX& view);
 
+	// 애니메이션 오프셋 추가 위한 함수. (오버로딩)
+	void UpdateConstantBuffer(const DirectX::XMMATRIX& world, const DirectX::XMMATRIX& view, const FVector& animOffset);
+
 	/////////////////////////////////////////////////////////////
 	// 텍스처 load 관련
 
@@ -174,7 +172,7 @@ public:
 	ID3D11PixelShader* TexturePixelShader;
 	ID3D11InputLayout* TextureInputLayout;
 
-	ID3D11SamplerState* TextureSamplerStete;
+	ID3D11SamplerState* TextureSamplerState;
 
 	// 2dTexture 불러오는 함수 (파일 경로, 텍스쳐 저장할 포인터)
 	void LoadTexture(std::wstring InPath, ID3D11Resource*& InResourcePtr, ID3D11ShaderResourceView*& InRVPtr);

@@ -8,12 +8,14 @@ UMushroom::UMushroom()
 	Velocity.y = 0.0f;
 	// y 축 초기속도 갖지 않도록 함.
 
-	Location.x = 0.0f;
+	Location.x = 0.5f;
 	Location.y = 0.0f;
 	// 물음표 위치로 애니메이션 이전에 위치 설정 필요함
 
 	width = scaleMod;
 	height = scaleMod;
+
+	ObjectType = EObjectType::MUSHROOM;
 }
 
 void UMushroom::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)
@@ -60,16 +62,25 @@ bool UMushroom::CollisionCheck(UPrimitive* other)
 		case EObjectType::BOX: // 박스와 충돌 시 처리
 			if (overlapX > overlapY) { //y축방향으로 충돌시 y속도 0으로 처리
 				Location.y = other->Location.y + (other->height / 2.0f) + (height / 2.0f);
+				Velocity.x = -0.05f;
 				Velocity.y = 0;
-				break;
 			}
-			else { // x축방향으로 충돌시 x속도 0으로 처리
-				Location.x = other->Location.x + (other->width / 2.0f) + (width / 2.0f);
-				Velocity.x = 0;
-			}
+			//else { // x축방향으로 충돌시 x속도 0으로 처리
+			//	Location.x = other->Location.x + (other->width / 2.0f) + (width / 2.0f);
+			//	Velocity.x = 0;
+			//}
+			break;
+		case EObjectType::PLAYER:
+			mrState = MushroomState::DESTROYED;
+			break;
+		case EObjectType::ENEMY:
+			// 적과 충돌 시 처리
+			break;
 		}
 	}
+
 	return false;
+
 }
 
 void UMushroom::Move()
@@ -80,17 +91,13 @@ void UMushroom::Move()
 	}
 	this->UBall::Move();
 
-	if (mrState == MushroomState::ANIMATING && Location.y - StartAnimLocationY > 0.1f)
+	if (mrState == MushroomState::ANIMATING && Location.y - StartAnimLocationY > 0.05f)
 	{
 		// 위로 올라가는 애니메이션 멈추기
 		SetState(MushroomState::ENABLE);
+		// Location.x = 0.0f;
 	}
 }
-
-//void UMushroom::UpdateVelocity(bool bGravity)
-//{
-//	//return; // 버섯에서는 속도처리 하지 않도록 함
-//}
 
 void UMushroom::SetState(MushroomState InState)
 {	
@@ -107,16 +114,26 @@ void UMushroom::SetState(MushroomState InState)
 		// 애니메이션 끝나면 
 		// SetState(MushroomState::ENABLE); 호출
 		mrState = MushroomState::ENABLE;
-		Velocity.x = 0.01f;
+		Velocity.x = -0.01f;
 		Velocity.y = 0.0f;
-
-		//UpdateVelocity(true);
-
 		break;
 
 	case MushroomState::WAITING:
 
 		break;
 	
+	case MushroomState::DESTROYED:
+		mrState = MushroomState::DESTROYED;
+		break;
 	}
 }
+
+//void UMushroom::UpdateVelocity(bool bGravity)
+//{
+//	if (mrState == MushroomState::ANIMATING)
+//	{
+//		// 애니메이션 중에는 중력 적용하지 않음
+//		return;
+//	}
+//	UBall::UpdateVelocity(bGravity);
+//}

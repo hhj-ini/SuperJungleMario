@@ -247,8 +247,6 @@ void URenderer::ReleaseShader()
 		SimpleVertexShader->Release();
 		SimpleVertexShader = nullptr;
 	}
-
-
 	// ui 셰이더 해제
 	if (UIInputLayout)
 	{
@@ -267,7 +265,6 @@ void URenderer::ReleaseShader()
 		UIVertexShader->Release();
 		UIVertexShader = nullptr;
 	}
-
 	// Texture 관련 셰이더 해제
 	if (TextureInputLayout)
 	{
@@ -306,7 +303,7 @@ void URenderer::Prepare()
 
 void URenderer::PrepareShaderResource(ID3D11ShaderResourceView* InSRVPtr)
 {
-	DeviceContext->PSSetSamplers(0, 1, &TextureSamplerStete);
+	DeviceContext->PSSetSamplers(0, 1, &TextureSamplerState);
 	DeviceContext->PSSetShaderResources(0, 1, &InSRVPtr);
 }
 
@@ -335,12 +332,12 @@ void URenderer::RenderPrimitive(ID3D11Buffer* pBuffer, UINT numVertices)
 // RenderUI 하기 전 파이프라인을 모두 UI... 으로 attach
 void URenderer::PrepareUIShader(ID3D11ShaderResourceView* UISRV)
 {
+	// 텍스쳐 바인딩
+	DeviceContext->PSSetShaderResources(0, 1, &UISRV);
+	DeviceContext->PSSetSamplers(0, 1, &UISamplerState);
 	DeviceContext->VSSetShader(UIVertexShader, nullptr, 0);
 	DeviceContext->PSSetShader(UIPixelShader, nullptr, 0);
 	DeviceContext->IASetInputLayout(UIInputLayout);
-	// 텍스쳐 바인딩
-	DeviceContext->PSSetShaderResources(1, 1, &UISRV);
-	DeviceContext->PSSetSamplers(1, 1, &UISamplerStete);
 }
 
 // ui 렌더링 
@@ -472,6 +469,30 @@ void URenderer::UpdateConstantBuffer(const DirectX::XMMATRIX& world, const Direc
 	}
 }
 
+void URenderer::UpdateConstantBuffer(const DirectX::XMMATRIX& world, const DirectX::XMMATRIX& view, const FVector& animOffset)
+{
+	if (ConstantBuffer)	// 버퍼가 있을 때만 아래 코드 실행
+	{
+		D3D11_MAPPED_SUBRESOURCE constantbufferMSR;
+
+		FConstants constants;
+
+		DirectX::XMStoreFloat4x4(&constants.World, DirectX::XMMatrixTranspose(world));
+		DirectX::XMStoreFloat4x4(&constants.View, DirectX::XMMatrixTranspose(view));
+
+		DeviceContext->Map(ConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &constantbufferMSR);
+
+		FConstants* constant = (FConstants*)constantbufferMSR.pData;
+		{
+			constant->World = constants.World;
+			constant->View = constants.View;
+			constant->AnimOffset = animOffset;
+		}
+		DeviceContext->Unmap(ConstantBuffer, 0);
+
+	}
+}
+
 // 화면 픽셀 좌표를 NDC 좌표로 변환
 DirectX::XMFLOAT2 URenderer::GetNDCoordinate(POINT point, int width, int height)
 {
@@ -489,7 +510,7 @@ void URenderer::UpdateUI(DirectX::XMFLOAT2 NDCoord, ID3D11Buffer* vertexBuffer, 
 
 		DeviceContext->Map(vertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &vertexBufferMSR);
 
-		FVertexUI* ui = (FVertexUI*)vertexBufferMSR.pData;
+		FVertexUI* ui = (FVertexUI*)vertexBufferMSR.pData; 
 		{
 			FVertexUI corners[4] =
 			{
@@ -531,7 +552,7 @@ void URenderer::CreateTextureSamplerState()
 	samplerdesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
 	samplerdesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
 
-	Device->CreateSamplerState(&samplerdesc, &TextureSamplerStete);
+	Device->CreateSamplerState(&samplerdesc, &TextureSamplerState);
 }
 
 void URenderer::ReleaseResource(ID3D11Resource*& InResourcePtr)
@@ -559,6 +580,8 @@ void URenderer::CreateUISamplerState()
 	samplerdesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
 	samplerdesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
 	samplerdesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
+	samplerdesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
 
-	Device->CreateSamplerState(&samplerdesc, &UISamplerStete);
+	HRESULT hr = Device->CreateSamplerState(&samplerdesc, &UISamplerState);
+
 }

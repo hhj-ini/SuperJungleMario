@@ -106,28 +106,6 @@ void UBall::Move()
 	Location.y += Velocity.y * deltaTime;
 	Location.z += Velocity.z * deltaTime;
 	}
-
-	/*float renderRadius = Radius * scaleMod;
-	if (Location.x <= leftBorder + renderRadius)
-	{
-		Velocity.x *= -1.0f;
-		Location.x = leftBorder + renderRadius;
-	}
-	if (Location.x >= rightBorder - renderRadius)
-	{
-		Velocity.x *= -1.0f;
-		Location.x = rightBorder - renderRadius;
-	}
-	if (Location.y <= bottomBorder + renderRadius)
-	{
-		Velocity.y *= -1.0f;
-		Location.y = bottomBorder + renderRadius;
-	}
-	if (Location.y >= topBorder - renderRadius)
-	{
-		Velocity.y *= -1.0f;
-		Location.y = topBorder - renderRadius;
-	}*/
 }
 
 void UBall::UpdateVelocity(bool bGravity)
@@ -138,8 +116,6 @@ void UBall::UpdateVelocity(bool bGravity)
 	{
 		Velocity.y -= gravity * deltaTime;
 	}
-
-
 }
 
 void UBall::UpdateAnimation(float deltaTime)
