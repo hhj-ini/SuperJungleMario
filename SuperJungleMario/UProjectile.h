@@ -44,5 +44,7 @@ private:
 
     float CollisionTimer = 0.0f;
     const float CollisionInterval = 0.15f;
+
+    float ExplosionTimer = 0.0f;
 };
 
