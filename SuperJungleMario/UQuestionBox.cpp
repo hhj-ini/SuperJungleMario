@@ -40,3 +40,15 @@ void UQuestionBox::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)
 
 	renderer.RenderPrimitive(pBuffer, num);
 }
+void UQuestionBox::OnHitFromBelow()
+{
+	AnimState = EAnimState::UP;
+	BoxType = EBoxType::HARD;
+	
+	if (ItemPtr == nullptr)
+	{
+		//event 발생
+		return;
+	}
+	ItemPtr->SetAnimation();	// 아이템 애니메이션 시작
+}

@@ -129,7 +129,9 @@ void UMushroom::SetState(MushroomState InState)
 		break;
 	}
 }
-
+void UMushroom::SetAnimation() {
+	SetState(MushroomState::ANIMATING);
+}
 //void UMushroom::UpdateVelocity(bool bGravity)
 //{
 //	if (mrState == MushroomState::ANIMATING)

@@ -56,7 +56,7 @@ bool UFlower::CollisionCheck(UPrimitive* other) {
 	return false;
 }
 
-void UFlower::FlowFlower() {
+void UFlower::SetAnimation() {
 	Velocity.y = 0.01f; // 꽃이 위로 올라가는 속도 설정
 	fState = FlowerState::ANIMATING; // 꽃 상태를 ANIMATING으로 변경
 }
