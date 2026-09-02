@@ -226,9 +226,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	UPrimitive* brick = new UBrick(0.1f, -0.4f, 1.0f, 1.0f);
 	PrimitiveList[primitiveCount++] = brick;
 
-	UQuestionBox* question = new UQuestionBox;
-	PrimitiveList[primitiveCount++] = question;
-	PrimitiveList[primitiveCount++] = question->ItemPtr;
+	//UQuestionBox* question = new UQuestionBox;
+	//PrimitiveList[primitiveCount++] = question;
+	//PrimitiveList[primitiveCount++] = question->ItemPtr;
 
 	// 프로젝타일 테스트
 	UPrimitive* projectile = new UProjectile;

@@ -12,6 +12,7 @@ public:
 		QUESTION,	// 물음표 박스 (부서지고 이벤트 발생)
 		HARD,		// 하드박스 (안부서짐)
 		BRICK		// 벽돌박스 (부서지고 이벤트 발생)
+		
 	};
 
 	static int inline TotalNumBox = 0;
