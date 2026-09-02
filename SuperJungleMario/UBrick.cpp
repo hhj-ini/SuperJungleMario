@@ -6,6 +6,12 @@ UBrick::UBrick() : UBox()
 	BoxType = EBoxType::BRICK;
 }
 
+UBrick::UBrick(float x, float y, float w, float h)	
+	: UBox(x, y, w, h)
+{
+	UBrick();
+}
+
 bool UBrick::CollisionCheck(UPrimitive* other)
 {
 	if (EObjectType::ENEMY == other->ObjectType)	// 상대가 적이면 
@@ -13,7 +19,7 @@ bool UBrick::CollisionCheck(UPrimitive* other)
 		// 1. 머리위에 존재하는 지 확인
 		// 가로가 겹치는지 확인
 		float sumHalfWidth = (width / 2.0f) + (other->width / 2.0f);
-		float xdistance = std::fabs((Location.x + scaleMod) - other->Location.x);
+		float xdistance = std::fabs((Location.x) - other->Location.x);
 		float overlapX = sumHalfWidth - xdistance;
 
 		// 세로가 겹치는지 확인

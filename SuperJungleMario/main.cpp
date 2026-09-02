@@ -190,7 +190,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	PrimitiveList[primitiveCount++] = goomba;
 	GoombaList[0] = goomba;
 
-	UPrimitive* brick = new UBrick;
+	UPrimitive* brick = new UBrick(0.1f, -0.3f, 1.0f, 1.0f);
 	PrimitiveList[primitiveCount++] = brick;
 
 	UQuestionBox* question = new UQuestionBox;
