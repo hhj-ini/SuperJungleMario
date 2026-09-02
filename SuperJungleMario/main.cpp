@@ -394,7 +394,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 					camera.Reset(); 
 				}
 			}
-			if (player && player->Location.y < -3.0f) // 마리오가 떨어졌으면
+			if (player && player->Location.y < -2.5f) // 마리오가 떨어졌으면
 			{
 				if (UGameLogic::GetInstance().removeOneLife()) // 목숨--
 				{
@@ -410,6 +410,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			{
 				//RemoveObject(PrimitiveList, primitiveCount, i);
 				continue;
+			}
+			if (UGameLogic::GetInstance().IsRestart())
+			{
+				UGameLogic::GetInstance().resetAll();
+				player->SetState(UPlayer::PlayerState::ALIVE);
+				player->Location.x = 0.1f;
+				player->Location.y = -0.5f;
+
+				camera.Reset();
 			}
 		}
 

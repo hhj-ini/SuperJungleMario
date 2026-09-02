@@ -53,5 +53,7 @@ public:
 	bool IsRestart();
 	void setRestart(bool input);
 
+	void resetAll();
+
 	DirectX::XMFLOAT2 getCoordinate();
 };

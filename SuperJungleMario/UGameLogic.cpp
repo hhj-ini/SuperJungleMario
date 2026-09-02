@@ -133,6 +133,23 @@ void UGameLogic::setRestart(bool input)
 	restart = input;
 }
 
+void UGameLogic::resetAll()
+{
+	score = 0;
+	coin = 0;
+	life = 3;
+	ending = false;
+	started = false;
+	gameOver = false;
+	x = 0;
+	y = 0;
+	showScore = false;
+	showBlack = false;
+	respawn = false;
+	needRestart = false;
+	restart = false;
+}
+
 DirectX::XMFLOAT2 UGameLogic::getCoordinate()
 {
 	return DirectX::XMFLOAT2(x, y);
