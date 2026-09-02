@@ -48,6 +48,8 @@ void MapReader(UPrimitive** AllMapObjects, size_t& objectCount, USoundManager* s
 				questionBoxCoinPtr->ItemPtr = coinPtr;
 				AllMapObjects[objectCount++] = coinPtr;
 				AllMapObjects[objectCount++] = questionBoxCoinPtr;
+				questionBoxCoinPtr->SetSoundResource(soundManager);
+				coinPtr->SetSoundResource(soundManager);
 				break;
 			}
 			case 'P':
@@ -79,11 +81,13 @@ void MapReader(UPrimitive** AllMapObjects, size_t& objectCount, USoundManager* s
 			case 'C':
 				break;
 
-			case 'E': 
-				pp = new UEnemy(screenX, screenY, 1.0f, 1.0f);				//굼바 스폰 생성
-				AllMapObjects[objectCount++] = pp;
-				pp->SetSoundResource(soundManager);
+			case 'E':
+			{
+				UEnemy* enemy = new UEnemy(screenX, screenY, 1.0f, 1.0f);
+				AllMapObjects[objectCount++] = enemy;
+				enemy->SetSoundResource(soundManager);
 				break;
+			}
 
 			case 'M': {
 				UQuestionBox* questionBoxPtr = new UQuestionBox(screenX, screenY, 1.0f, 1.0f, UQuestionBox::EItemType::MUSHROOM);

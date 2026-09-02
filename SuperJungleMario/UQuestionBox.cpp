@@ -2,6 +2,7 @@
 #include "UMushroom.h"
 #include "ResourceManager.h"
 #include "UFlower.h"
+#include "USoundManager.h"
 
 UQuestionBox::UQuestionBox(float x, float y, float w, float h, EItemType itemType)
 {
@@ -67,6 +68,27 @@ void UQuestionBox::OnHitFromBelow()
 	{
 		//event 발생
 		return;
-      	}
+    }
 	ItemPtr->SetAnimation();                          	// 아이템 애니메이션 시작
-    }               
+
+	if (myItemType == EItemType::COIN)
+	{
+		SoundManager->PlaySoundResource(SoundBufferMap[L"coin"]);
+	}
+	else 
+	{
+		SoundManager->PlaySoundResource(SoundBufferMap[L"item"]);
+	}
+
+}
+
+void UQuestionBox::SetSoundResource(USoundManager* soundManager)
+{
+	SoundManager = soundManager;
+
+	std::wstring soundName = L"item";	//설정한 이름으로 접근 가능
+	SoundBufferMap[soundName] = ResourceManager::GetInstance().GetSoundResource(L"Resource\\Sound\\item.wav", soundManager);
+	
+	soundName = L"coin";	//설정한 이름으로 접근 가능
+	SoundBufferMap[soundName] = ResourceManager::GetInstance().GetSoundResource(L"Resource\\Sound\\coin.wav", soundManager);
+}

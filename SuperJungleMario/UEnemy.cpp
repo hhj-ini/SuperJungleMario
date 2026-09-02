@@ -31,9 +31,15 @@ UEnemy::UEnemy(float x, float y, float w, float h)
 	width = w * scaleMod;
 	height = h * scaleMod;
 
-	bisMove = true;
+	bIsActive = true;
+	bisMove = false;
 	SetState(EnemyState::ALIVE);
 	ObjectType = EObjectType::ENEMY;
+}
+
+void UEnemy::SetPlayer(UPlayer* InPlayer)
+{
+	Player = InPlayer;
 }
 
 void UEnemy::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)
@@ -141,6 +147,26 @@ bool UEnemy::CollisionCheck(UPrimitive* other)
 			}
 			break;
 		}
+		case EObjectType::ENEMY:
+		{
+			float rightBoxDistance = std::fabs(Location.x - (other->Location.x + scaleMod));
+				float overlapRightSideBox = sumHalfHeight - rightBoxDistance;
+
+				if (overlapRightSideBox > 0.0f)	// 오른쪽에서 충돌
+				{
+					Location.x = other->Location.x + (other->width / 2.0f) + (width / 2.0f);
+					Velocity.x *= -1.0f;
+					break;
+				}
+				else
+				{
+					Location.x = other->Location.x - ((other->width / 2.0f) + (width / 2.0f));
+					Velocity.x *= -1.0f;
+					break;
+				}
+			
+			break;
+		}
 		default:
 			break;
 		return false;
@@ -155,11 +181,15 @@ void UEnemy::Move()
 		return;
 	}
 
-	/*if (!UGameLogic::GetInstance().IsStarted())
+	if (Player)
 	{
-		return;
-	}*/
+		float diffDistance = std::fabs(Player->Location.x - Location.x);
 
+		if (diffDistance < 1.0f)
+		{
+			bisMove = true;
+		}
+	}
 	this->UBall::Move();
 }
 
@@ -169,7 +199,7 @@ void UEnemy::SetState(UEnemy::EnemyState InState)
 	{
 	case EnemyState::ALIVE:
 		eState = EnemyState::ALIVE;
-		Velocity.x = 0.01f;
+		Velocity.x = -0.005f;
 		break;
 
 	case EnemyState::DEAD:
@@ -206,4 +236,12 @@ void UEnemy::SetSoundResource(USoundManager* soundManager)
 
 	std::wstring soundName = L"GoombaDead";	//설정한 이름으로 접근 가능
 	SoundBufferMap[soundName] = ResourceManager::GetInstance().GetSoundResource(L"Resource\\Sound\\GoombaDead.wav", soundManager);
+}
+
+void UEnemy::UpdateVelocity(bool bGravity)
+{
+	if (!bisMove)
+		return;
+
+	UBall::UpdateVelocity(bGravity);
 }

@@ -9,7 +9,7 @@
 #include "UBox.h"
 #include "UCamera.h"
 #include "UFlower.h"
-
+#include "USoundManager.h"
 
 UPlayer::UPlayer()
 {
@@ -24,6 +24,7 @@ UPlayer::UPlayer()
 	bFireMario = false;
 	bIsGrounded = false;
 	bAttacking = false;
+	bisMove = false;
 
 	Hp = 1;
 	width = scaleMod;
@@ -119,6 +120,10 @@ void UPlayer::UpdateVelocity(bool bGravity)
 
 bool UPlayer::CollisionCheck(UPrimitive* other)
 {
+	if (other->bIsActive == false)
+	{
+		return false;
+	}
 	// 기본 충돌 체크 로직 구현
 
 	// 가로가 겹치는지 확인
@@ -151,18 +156,21 @@ bool UPlayer::CollisionCheck(UPrimitive* other)
 				}
 				else 	// 2. 박스 아래에서 충돌된 경우
 				{
-					UBox* bp = dynamic_cast<UBox*>(other);
-					
-					Location.y = other->Location.y - ((other->height / 2.0f) + (height / 2.0f));	
-					if (bp && (UBox::EBoxType::BRICK == bp->BoxType || UBox::EBoxType::QUESTION == bp->BoxType))
+					if (Velocity.y > 0.0f)
 					{
-						// 의도적으로 overlap되도록 함
-						float overlapAcceptDegree = 0.0001f;
-						Location.y += overlapAcceptDegree;
+						UBox* bp = dynamic_cast<UBox*>(other);
+
+						Location.y = other->Location.y - ((other->height / 2.0f) + (height / 2.0f));
+						if (bp && (UBox::EBoxType::BRICK == bp->BoxType || UBox::EBoxType::QUESTION == bp->BoxType))
+						{
+							// 의도적으로 overlap되도록 함
+							float overlapAcceptDegree = 0.0001f;
+							Location.y += overlapAcceptDegree;
+						}
+
+						Velocity.y *= -0.5f;
+						break;
 					}
-					
-					Velocity.y *= -0.5f;
-					break;
 				}
 			}
 			else { // x축방향으로 충돌시 x속도 0으로 처리
@@ -296,13 +304,15 @@ void UPlayer::Move()
 		return;
 	}*/
 
-	if (pState == PlayerState::ALIVE)
+	if (pState == PlayerState::ALIVE && bisMove)
 	{
 		Velocity.x = 0.0f;
 		if (bIsGrounded && (GetAsyncKeyState(VK_SPACE) & 0x8000))
 		{
 			Velocity.y = 0.05f;
 			bIsGrounded = false;
+
+			SoundManager->PlaySoundResource(SoundBufferMap[L"jump"]);
 		}
 
 		if (GetAsyncKeyState(VK_LEFT) & 0x8000)
@@ -356,6 +366,7 @@ void UPlayer::TakeDamage()
 
 	Hp = 0;
 	SetState(PlayerState::DEAD);
+	SoundManager->PlaySoundResource(SoundBufferMap[L"death"]);
 }
 
 void UPlayer::Grow()
@@ -426,6 +437,20 @@ void UPlayer::UpdateAnimation(float deltaTime)
 	}
 }
 
+void UPlayer::SetSoundResource(USoundManager* soundManager)
+{
+	SoundManager = soundManager;
+
+	std::wstring soundName = L"jump";	//설정한 이름으로 접근 가능
+	SoundBufferMap[soundName] = ResourceManager::GetInstance().GetSoundResource(L"Resource\\Sound\\jump.wav", soundManager);
+
+	soundName = L"fireball";	//설정한 이름으로 접근 가능
+	SoundBufferMap[soundName] = ResourceManager::GetInstance().GetSoundResource(L"Resource\\Sound\\fireball.wav", soundManager);
+
+	soundName = L"death";	//설정한 이름으로 접근 가능
+	SoundBufferMap[soundName] = ResourceManager::GetInstance().GetSoundResource(L"Resource\\Sound\\death.wav", soundManager);
+}
+
 void UPlayer::Respawn()
 {
 	UPlayer::SetState(UPlayer::PlayerState::ALIVE);
@@ -467,7 +492,7 @@ void UPlayer::RequestFire()
 
 	bShotFireRequest = true;
 	bAttacking = true;
-	
+	SoundManager->PlaySoundResource(SoundBufferMap[L"fireball"]);
 
 	CurrentFrame = bFacingLeft ? 19 : 18;
 

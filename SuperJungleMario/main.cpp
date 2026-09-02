@@ -230,6 +230,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	//int playerIdx = UBall::TotalNumBalls;
 	UPlayer* player = new UPlayer;
 	PrimitiveList[primitiveCount++] = player;
+	player->SetSoundResource(&soundManager);
 
 	UBall* ProjectileList[20] = {};
 	for (int i = 0; i < 20; ++i)
@@ -244,9 +245,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 	}
 
-	/*UBall* goomba = new UEnemy;
-	PrimitiveList[primitiveCount++] = goomba;*/
-
 	//UQuestionBox* question = new UQuestionBox;
 	//PrimitiveList[primitiveCount++] = question;
 	//PrimitiveList[primitiveCount++] = question->ItemPtr;
@@ -259,11 +257,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	//{
 	//	ms->SetOwner(player);
 	//}
-
-	// 텍스쳐 파일 로드 테스트 코드
-	//ID3D11Resource* MushroomTest = nullptr;
-	//ID3D11ShaderResourceView* MushroomTestSRV = nullptr;
-	//renderer.LoadTexture(L"Resource\\Mushroom.png", MushroomTest, MushroomTestSRV);
 
 	//Map 생성
 	int mapObjectStartIndex = primitiveCount;
@@ -278,12 +271,29 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		// 게임 경과 시간 기록
 		QueryPerformanceCounter(&currentGameTime);
 		GameTime = static_cast<double>(currentGameTime.QuadPart - startGameTime.QuadPart) / static_cast<double>(frequencyGame.QuadPart);
+
+		UPlayer* mainPlayer = nullptr;
+
+		for (size_t i = 0; i < primitiveCount; ++i)
+		{
+			if (UPlayer* p = dynamic_cast<UPlayer*>(PrimitiveList[i]))
+			{
+				mainPlayer = p;
+				break;
+			}
+		}
+
 		if (!UGameLogic::GetInstance().IsStarted()) // 시작 전이면 게임 경과 시간 멈추기
 		{
 			GameTime = 0.0f;
 		}
 		else if (StartTime == 0.0f)// 아무 키나 눌러 게임이 시작됨
 		{
+			if (mainPlayer)
+			{
+				mainPlayer->bisMove = true;
+				mainPlayer->Velocity.y = 0.0f;
+			}
 			StartTime = GameTime; // 주석 제거 주석 제거 주석 제거
 			UGameLogic::GetInstance().setShowBlack(true);
 		}
@@ -321,14 +331,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		// 카메라가 플레이어 추적
 		camera.Follow(player->Location);
 		renderer.ViewMatrix = camera.GetViewMatrix();
-
-		// 카메라가 플레이어를 추적하지 않음
-		// renderer.ViewMatrix = DirectX::XMMatrixIdentity();
-
+		
 		for (size_t i = 0; i < primitiveCount; ++i)
 		{
 			if (PrimitiveList[i]->bIsActive == false) continue;
 			PrimitiveList[i]->Tick(deltaTime);
+
+			if (UEnemy* enemy = dynamic_cast<UEnemy*>(PrimitiveList[i]))
+			{
+				enemy->SetPlayer(mainPlayer);
+			}
 
 			if (UBall* b = dynamic_cast<UBall*>(PrimitiveList[i]))
 			{
@@ -442,9 +454,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			}
 		}
 
-	
 		renderer.Prepare();
-		//renderer.PrepareShaderResource(MushroomTestSRV);
 		renderer.PrepareShader();
 
 		for (size_t i = 0; i < primitiveCount; ++i)
@@ -454,12 +464,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 
 		}
-
-		// Ground 렌더링
-		//for (int i = 0;i < 40; ++i)
-		//{
-		//	Ground[i]->Render(renderer, cubeBuffer, numVerticescube);
-		//}
 
 		// UI 렌더링 
 		renderer.PrepareUIShader(UIBlackSRV);
@@ -612,7 +616,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	//	PrimitiveList[i] = nullptr;
 	//}
 	 
-
 	delete[] PrimitiveList;
 	PrimitiveList = nullptr;
 
@@ -620,7 +623,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	ImGui_ImplDX11_Shutdown();
 	ImGui_ImplWin32_Shutdown();
 	ImGui::DestroyContext();
-
 
 	// 생성된 버텍스 버퍼를 소멸 - 셰이더 소멸 전 호출
 	renderer.ReleaseVertexBuffer(cubeBuffer);
