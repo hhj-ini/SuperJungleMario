@@ -39,7 +39,7 @@ public:
     virtual bool CollisionCheck(UPrimitive* other)override;
 
     virtual void Move() override;
-    bool IsFlowerDestroyed() const { return mrState == FlowerState::DESTROYED; }
+    bool IsFlowerDestroyed() const { return fState == FlowerState::DESTROYED; }
 
     void SetEnable();
 
@@ -48,8 +48,9 @@ public:
     void FlowFlower();
     // void UpdateVelocity(bool bGravity) override;
 
+
 private:
-    FlowerState mrState = FlowerState::WAITING;
+    FlowerState fState = FlowerState::WAITING;
     float InitHeight;
 };
 
