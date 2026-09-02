@@ -16,7 +16,7 @@ public:
     
 
 public:
-    UEnemy();
+    UEnemy(float locationX, float locationY, float width, float height);
 
     virtual void Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num);
     virtual bool CollisionCheck(UPrimitive* other);
