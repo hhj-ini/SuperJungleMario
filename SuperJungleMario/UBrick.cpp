@@ -54,7 +54,7 @@ bool UBrick::CollisionCheck(UPrimitive* other)
 			return false;
 		}
 
-		if (BoxType == EBoxType::HARD) return false;
+		if (BoxType == EBoxType::HARD || BoxType == EBoxType::CHANGEDHARD) return false;
 		// 1. 플레이어가 블럭 아래에 있는지 확인
 		bool isUnder = (Location.y - other->Location.y) > 0.0f ? true : false;
 		if (!isUnder)	// 아래에 없으면
@@ -81,7 +81,6 @@ bool UBrick::CollisionCheck(UPrimitive* other)
 			//가상함수
 			//마리오가 아래에서 위로 블럭을 쳤을때 작동하는 기능 구현 
 			OnHitFromBelow();
-			AnimState = EAnimState::UP;
 			KillEnemy();
 
 			UPlayer* pp = dynamic_cast<UPlayer*>(other);
@@ -241,7 +240,6 @@ void UBrick::BrokenAnimSet()
 void UBrick::OnHitFromBelow()
 {
 	AnimState = EAnimState::UP;
-	BoxType = EBoxType::HARD;
 }
 
 void UBrick::SetAnimState(EAnimState InState)
