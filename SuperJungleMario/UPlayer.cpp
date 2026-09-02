@@ -17,7 +17,7 @@ UPlayer::UPlayer()
 	Velocity.y = 0.0f;
 
 	bBigMario = false;
-	bIsGrounded = false;
+	bIsGrounded = true;
 
 	Hp = 1;
 	width = scaleMod;
@@ -180,7 +180,6 @@ bool UPlayer::CollisionCheck(UPrimitive* other)
 	return false;
 }
 
-
 void UPlayer::SetState(UPlayer::PlayerState InState)
 {
 	switch (InState)
@@ -193,7 +192,6 @@ void UPlayer::SetState(UPlayer::PlayerState InState)
 		break;
 	}
 }
-
 
 void UPlayer::Move()
 {
@@ -210,23 +208,16 @@ void UPlayer::Move()
 		{
 			Velocity.x -= 0.01f;
 			bFacingLeft = true;
-			bIsGrounded = false;
 		}
 		else if (GetAsyncKeyState(VK_RIGHT) & 0x8000)
 		{
 			Velocity.x += 0.01f;
 			bFacingLeft = false;
-			bIsGrounded = false;
 		}		
 		
 		Location.x += Velocity.x * deltaTime;
 		Location.y += Velocity.y * deltaTime;
 	}
-}
-
-void UPlayer::SetVelocityY(float y)
-{
-	Velocity.y = y;
 }
 
 void UPlayer::TakeDamage()
