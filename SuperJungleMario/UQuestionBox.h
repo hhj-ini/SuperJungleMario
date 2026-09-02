@@ -17,5 +17,6 @@ public:
     virtual void Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num) override;
 
 	EItemType myItemType;
+	UPrimitive* ItemPtr = nullptr;	// 박스에서 나오는 아이템 포인터
 };
 

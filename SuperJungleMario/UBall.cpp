@@ -18,7 +18,9 @@ UBall::UBall()
 	height = Radius * scaleMod;
 	
 }
-
+UBall::UBall(float x, float y, float w, float h) :UPrimitive(x, y, w, h)
+{
+}
 UBall::~UBall()
 {
 	--TotalNumBalls;

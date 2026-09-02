@@ -46,11 +46,15 @@ void MapReader(UPrimitive** AllMapObjects, size_t& objectCount) {
 				//계단 생성
 				break;
 
-			case 'F':
-				AllMapObjects[objectCount++] = new UQuestionBox(screenX, screenY, 1.0f, 1.0f, UQuestionBox::EItemType::FLOWER);
+			case 'F': {
+				UFlower* flowerPtr = new UFlower(screenX, screenY, 1.0f, 1.0f);
+				UQuestionBox* questionBoxPtr = new UQuestionBox(screenX, screenY, 1.0f, 1.0f, UQuestionBox::EItemType::FLOWER);
+				questionBoxPtr->ItemPtr = flowerPtr;
+				AllMapObjects[objectCount++] = questionBoxPtr;
+				AllMapObjects[objectCount++] = flowerPtr;
 				//꽃 생성
 				break;
-
+			}
 			case 'C':
 				break;
 

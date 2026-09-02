@@ -1,5 +1,9 @@
 #include "UFlower.h"
 #include "ResourceManager.h"
+UFlower::UFlower(float x, float y, float w, float h) : UBall(x, y, w, h)
+{
+
+}
 
 void UFlower::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num) {
 	if (fState == FlowerState::ENABLE || fState == FlowerState::ANIMATING)
@@ -21,7 +25,7 @@ void UFlower::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num) {
 		renderer.RenderPrimitive(pBuffer, num);
 	}
 }
-
+ 
 bool UFlower::CollisionCheck(UPrimitive* other) {
 	// 가로가 겹치는지 확인
 	float sumHalfWidth = (width / 2.0f) + (other->width / 2.0f);

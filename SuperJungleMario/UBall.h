@@ -19,7 +19,7 @@ public:
 
 public:
 	UBall();
-
+	UBall(float x, float y, float w, float h);
 	virtual ~UBall();
 
 	virtual void Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num);
