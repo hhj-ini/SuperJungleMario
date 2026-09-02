@@ -7,7 +7,17 @@ UGameLogic& UGameLogic::GetInstance()
 }
 
 UGameLogic::UGameLogic()
-	: score(0), coin(0), life(3), ending(false), started(true), x(0.0f), y(0.0f), showScore(false)
+	: score(0), 
+	coin(0), 
+	life(3), 
+	ending(false), 
+	started(true),  // 이거 false로 이거 false로이거 false로이거 false로
+	gameOver(false),
+	x(0.0f), 
+	y(0.0f), 
+	showScore(false), 
+	showBlack(false),
+	respawn(false)
 {
 }
 
@@ -45,9 +55,15 @@ void UGameLogic::addOneLife()
 {
 	life++;
 }
-void UGameLogic::removeOneLife()
+bool UGameLogic::removeOneLife()
 {
 	life--;
+	if (life < 0)
+	{
+		setShowBlack(false);
+		setGameOver();
+	}
+	return life >= 0;
 }
 
 bool UGameLogic::IsEnding()
@@ -84,6 +100,15 @@ bool UGameLogic::IsGameOver()
 void UGameLogic::setGameOver()
 {
 	gameOver = true;
+}
+
+bool UGameLogic::IsShowBlack()
+{
+	return showBlack;
+}
+void UGameLogic::setShowBlack(bool input)
+{
+	showBlack = input;
 }
 
 DirectX::XMFLOAT2 UGameLogic::getCoordinate()
