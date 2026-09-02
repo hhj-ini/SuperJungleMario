@@ -1,6 +1,7 @@
 #include "UBrick.h"
 #include "ResourceManager.h"
 #include "UEnemy.h"
+#include "UPlayer.h"
 
 UBrick::UBrick() : UBox()
 {
@@ -49,6 +50,8 @@ bool UBrick::CollisionCheck(UPrimitive* other)
 		{	// 이미 애니메이션이 앞서 진행되고 있는 상황이면 충돌 확인 하지 않고 애니메이션 끝날때까지 플레이어랑 충돌 확인X
 			return false;
 		}
+
+		if (BoxType == EBoxType::HARD) return false;
 		// 1. 플레이어가 블럭 아래에 있는지 확인
 		bool isUnder = (Location.y - other->Location.y) > 0.0f ? true : false;
 		if (!isUnder)	// 아래에 없으면
@@ -72,8 +75,14 @@ bool UBrick::CollisionCheck(UPrimitive* other)
 		{	// 2. 플레이어가 블럭과 오버랩 된 경우 
 			// 블럭 애니메이션 시작
 			AnimState = EAnimState::UP;
-			BoxType = EBoxType::HARD;
 			KillEnemy();
+
+			UPlayer* pp = dynamic_cast<UPlayer*>(other);
+			if (pp && pp->bBigMario)
+			{
+				//BoxType = EBoxType::HARD;
+				bIsActive = false;
+			}
 		}
 	}
 
@@ -115,7 +124,7 @@ void UBrick::Tick()
 		if (AnimOffset.y < 0.0f)	// 절반 이상 올라왔으면
 		{
 			AnimOffset.y = 0.0f;
-			AnimState = EAnimState::STOP;
+  			AnimState = EAnimState::STOP;
 		}
 		break;
 	default:
