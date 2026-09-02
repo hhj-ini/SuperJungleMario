@@ -61,7 +61,7 @@ bool UPrimitive::CollisionCheck(UPrimitive* other)
 	//	else if (other->bisMove == false && bisMove == true) { 
 
 	//		//겹치는 간격이 작은쪽의 속도를 멈춤
-
+ 
 	//		if (overlapX < overlapY) {
 	//			Location.x += (overlapX) * ((Location.x < other->Location.x) ? -1.0f : 1.0f);
 	//			Velocity.x = 0.0f;

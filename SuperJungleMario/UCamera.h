@@ -10,7 +10,11 @@ public:
 
 	void Follow(const FVector& targetLocation)	
 	{
-		x = targetLocation.x;
+		if (targetLocation.x > x)
+		{
+			x = targetLocation.x;
+		}
+
 		y = 0.0f;
 	}
 

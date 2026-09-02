@@ -158,6 +158,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	{
 		GameEndUIList[i] = new UUi(ui_vertices, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT4(1, 1, 1, 1), UUi::Translate(charListEnd[i]), 1.0f);
 	}
+	// Over UI part
+	size_t GameOverUICnt = 35;
+	UUi** GameOverUIList = new UUi * [GameOverUICnt];
+	for (int i = 0; i < GameOverUICnt; i++)
+	{
+		GameOverUIList[i] = new UUi(ui_vertices, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT4(1, 1, 1, 1), UUi::Translate(charListOver[i]), 1.0f);
+	}
 	// ui 텍스쳐 파일 로드
 	ID3D11Resource* UIFontResource = nullptr; ID3D11ShaderResourceView* UIFontSRV = nullptr; renderer.LoadTexture(L"Resource\\font.png", UIFontResource, UIFontSRV);
 	ID3D11Resource* UIBlackResource = nullptr; ID3D11ShaderResourceView* UIBlackSRV = nullptr; renderer.LoadTexture(L"Resource\\black.png", UIBlackResource, UIBlackSRV);
@@ -284,10 +291,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		{
 			bBlackUI = false;
 		}
-		if (403 - GameTime + StartTime < 0) // 게임시간이 000초가 되면 게임오버 
-		{
-			UGameLogic::GetInstance().setEnding();
-		}
 		//if (static_cast<UPlayer*>(PrimitiveList[2]).IsPlayerDead())
 		//
 		//	bDeath = true;
@@ -344,7 +347,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				// if (j == mushroomIdx || i == mushroomIdx) continue;	// 임시로 버섯 충돌 로직 영향 받지 않도록 함
 				PrimitiveList[i]->CollisionCheck(PrimitiveList[j]);
 			}
+		}
 
+		float cameraLeft = camera.x - 1.0f;
+		if (player->Location.x < cameraLeft + player->width / 2.0f)
+		{
+			player->Location.x = cameraLeft + player->width / 2.0f;
 		}
 
 		if (UPlayer* firePlayer = dynamic_cast<UPlayer*>(player))
@@ -379,7 +387,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			if (player && player->IsPlayerDead())
 			{
 				//RemoveObject(PrimitiveList, primitiveCount, i); 
-				UGameLogic::GetInstance().setEnding(); // 플레이어가 죽으면 게임 종료
+				UGameLogic::GetInstance().setGameOver(); // 플레이어가 죽으면 게임 종료
 				continue;
 			}
 
@@ -408,7 +416,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		// UI 렌더링 
 		renderer.PrepareUIShader(UIBlackSRV);
-		if (bBlackUI || UGameLogic::GetInstance().IsEnding())
+		if (bBlackUI || UGameLogic::GetInstance().IsEnding() || UGameLogic::GetInstance().IsGameOver())
 		{
 			// 첫화면 렌더. 검은 화면 렌더.
 			BlackBackground->Render(renderer, UIBuffer, numVerticesUI, 5.0f, 5.0f, DirectX::XMFLOAT2(0.0f, 0.0f));
@@ -423,7 +431,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			renderer.PrepareUIShader(UIFontSRV);
 			for (size_t i = 0; i < UICnt; i++)
 			{
-				UIList[i]->UpdateUV(i);
+				UIList[i]->UpdateUV(charList, i);
 				UIList[i]->Render(renderer, UIBuffer, numVerticesUI, fontSize, fontSize, renderer.GetNDCoordinate(charPositions[i], 1024, 1024));
 			}
 		}
@@ -434,7 +442,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			renderer.PrepareUIShader(UIFontSRV);
 			for (size_t i = 0; i < BlackUICnt; i++)
 			{
-				BlackUIList[i]->UpdateUVBlack(i);
+				BlackUIList[i]->UpdateUV(charListBlack, i);
 				BlackUIList[i]->Render(renderer, UIBuffer, numVerticesUI, fontSize, fontSize, renderer.GetNDCoordinate(charPositionsBlack[i], 1024, 1024));
 			}
 		}
@@ -448,6 +456,17 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				StartUIList[i]->Render(renderer, UIBuffer, numVerticesUI, fontSize, fontSize, renderer.GetNDCoordinate(charPositionsStart[i], 1024, 1024));
 			}
 		}
+		if (UGameLogic::GetInstance().IsGameOver()) // Game over UI part
+		{
+			UUi::UpdateOverScoreUI(UGameLogic::GetInstance().getScore());
+			bUIRender = false;
+			renderer.PrepareUIShader(UIFontSRV);
+			for (size_t i = 0; i < GameOverUICnt; i++)
+			{
+				GameOverUIList[i]->UpdateUV(charListOver, i);
+				GameOverUIList[i]->Render(renderer, UIBuffer, numVerticesUI, fontSize, fontSize, renderer.GetNDCoordinate(charPositionsOver[i], 1024, 1024));
+			}
+		}
 		if (UGameLogic::GetInstance().IsEnding()) // Ending UI part
 		{
 			UUi::UpdateFinalScoreUI(UGameLogic::GetInstance().getScore());
@@ -455,7 +474,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			renderer.PrepareUIShader(UIFontSRV);
 			for (size_t i = 0; i < GameEndUICnt; i++)
 			{
-				GameEndUIList[i]->UpdateUVEnd(i);
+				GameEndUIList[i]->UpdateUV(charListEnd, i);
 				GameEndUIList[i]->Render(renderer, UIBuffer, numVerticesUI, fontSize, fontSize, renderer.GetNDCoordinate(charPositionsEnd[i], 1024, 1024));
 			}
 		}
@@ -477,7 +496,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		// UI 테스트용
 		ImGui::Text("Game Time %.2f", GameTime);
-		//ImGui::Checkbox("UI Test", &UGameLogic::GetInstance().ending);
+		ImGui::Checkbox("UI Test", &UGameLogic::GetInstance().gameOver);
 		//ImGui::SliderInt("Score", &UGameLogic::GameLogic().score, 0, 1000000);
 
 		if (ImGui::Checkbox("Gravity", &bGravity));
