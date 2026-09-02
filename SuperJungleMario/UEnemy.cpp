@@ -147,6 +147,26 @@ bool UEnemy::CollisionCheck(UPrimitive* other)
 			}
 			break;
 		}
+		case EObjectType::ENEMY:
+		{
+			float rightBoxDistance = std::fabs(Location.x - (other->Location.x + scaleMod));
+				float overlapRightSideBox = sumHalfHeight - rightBoxDistance;
+
+				if (overlapRightSideBox > 0.0f)	// 오른쪽에서 충돌
+				{
+					Location.x = other->Location.x + (other->width / 2.0f) + (width / 2.0f);
+					Velocity.x *= -1.0f;
+					break;
+				}
+				else
+				{
+					Location.x = other->Location.x - ((other->width / 2.0f) + (width / 2.0f));
+					Velocity.x *= -1.0f;
+					break;
+				}
+			
+			break;
+		}
 		default:
 			break;
 		return false;
