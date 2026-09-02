@@ -9,7 +9,7 @@ public: // 나중에 privite으로
 	UGameLogic();
 
 public:
-	static UGameLogic& GameLogic();
+	static UGameLogic& GetInstance();
 
 	int getScore();
 	void addScore(int addAmount);

@@ -1,6 +1,6 @@
 #include "UGameLogic.h"
 
-UGameLogic& UGameLogic::GameLogic()
+UGameLogic& UGameLogic::GetInstance()
 {
 	static UGameLogic gameLogic;
 	return gameLogic;
@@ -41,7 +41,7 @@ void UGameLogic::addOneLife()
 	life++;
 }
 
-void UGameLogic::removeOneLife() // UGameLogic::GameLogic().removeOnelife() 마다 
+void UGameLogic::removeOneLife() // 이게 호출이 되면, UI에서 검은 화면 + 마리오 원점으로 
 {
 	life--;
 	

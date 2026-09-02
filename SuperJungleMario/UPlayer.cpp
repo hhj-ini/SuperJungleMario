@@ -17,6 +17,7 @@ UPlayer::UPlayer()
 	Velocity.y = 0.0f;
 
 	bIsGrounded = true;
+	bBigMario = false;
 	Hp = 1;
 	width = scaleMod;
 	height = scaleMod;
@@ -49,7 +50,7 @@ void UPlayer::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)
 
 	XMMATRIX world = scale * translation;
 
-	if (!TextureSRVPtr[0])
+	/*if (!TextureSRVPtr[0])
 	{
 		TextureSRVPtr[0] = ResourceManager::GetInstance().GetSRV(L"Resource\\Mario\\Mario1.png", &renderer);
 	}
@@ -64,6 +65,40 @@ void UPlayer::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)
 	if (!TextureSRVPtr[3])
 	{
 		TextureSRVPtr[3] = ResourceManager::GetInstance().GetSRV(L"Resource\\Mario\\Mario4.png", &renderer);
+	}
+	if (!TextureSRVPtr[4])
+	{
+		TextureSRVPtr[4] = ResourceManager::GetInstance().GetSRV(L"Resource\\Mario\\Mario5.png", &renderer);
+	}
+	if (!TextureSRVPtr[5])
+	{
+		TextureSRVPtr[5] = ResourceManager::GetInstance().GetSRV(L"Resource\\Mario\\Mario6.png", &renderer);
+	}*/
+
+	const wchar_t* MarioTextures[] =
+	{
+		L"Resource\\Mario\\Mario1.png",
+		L"Resource\\Mario\\Mario2.png",
+		L"Resource\\Mario\\Mario3.png",
+		L"Resource\\Mario\\Mario4.png",
+		L"Resource\\Mario\\Mario5.png",
+		L"Resource\\Mario\\Mario6.png",
+
+		L"Resource\\Mario\\BigMario1.png",
+		L"Resource\\Mario\\BigMario2.png",
+		L"Resource\\Mario\\BigMario3.png",
+		L"Resource\\Mario\\BigMario4.png",
+		L"Resource\\Mario\\BigMario5.png",
+		L"Resource\\Mario\\BigMario6.png"
+	};
+
+	for (int i = 0; i < 12; ++i)
+	{
+		if (!TextureSRVPtr[i])
+		{
+			TextureSRVPtr[i] =
+				ResourceManager::GetInstance().GetSRV(MarioTextures[i], &renderer);
+		}
 	}
 
 	renderer.PrepareShaderResource(TextureSRVPtr[CurrentFrame]);
@@ -98,7 +133,6 @@ bool UPlayer::CollisionCheck(UPrimitive* other)
 				bIsGrounded = true;
 				Location.y = other->Location.y + (other->height / 2.0f) + (height / 2.0f);
 				Velocity.y = 0;
-				break;
 			}
 			else { // x축방향으로 충돌시 x속도 0으로 처리
 				Location.x = other->Location.x + (other->width / 2.0f) + (width / 2.0f);
@@ -196,10 +230,15 @@ void UPlayer::Grow()
 {
 	++Hp;
 
+	if (Hp == 2)
+	{
+		bBigMario = true;
+	}
+
 	float oldHeight = height;
 
-	width *= 1.3f;
-	height *= 1.5f;
+	width *= 1.0f;
+	height *= 2.0f;
 	Location.y += (height - oldHeight) / 2.0f;
 	
 }
@@ -220,17 +259,23 @@ void UPlayer::UpdateAnimation(float deltaTime)
 	AnimationTimer += deltaTime;
 	if (AnimationTimer >= FrameInterval)
 	{
-		if (Velocity.x > 0.0f)
+		int BaseFrame = bBigMario ? 6 : 0;
+
+		if (!bIsGrounded)
 		{
-			CurrentFrame = (CurrentFrame + 1) % 2; 
+			CurrentFrame = BaseFrame + (bFacingLeft ? 5 : 4);
+		}
+		else if (Velocity.x > 0.0f)
+		{
+			CurrentFrame = BaseFrame + (CurrentFrame + 1) % 2;
 		}
 		else if (Velocity.x < 0.0f)
 		{
-			CurrentFrame = 2 + (CurrentFrame + 1) % 2; 
+			CurrentFrame = BaseFrame + 2 + (CurrentFrame + 1) % 2;
 		}
 		else
 		{
-			CurrentFrame = bFacingLeft ? 2 : 0; 
+			CurrentFrame = BaseFrame + (bFacingLeft ? 2 : 0);
 		}
 		AnimationTimer = 0.0f;
 	}
