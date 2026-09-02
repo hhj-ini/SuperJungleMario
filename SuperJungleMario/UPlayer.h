@@ -44,6 +44,7 @@ public:
 	void Shrink();
 
     virtual void UpdateAnimation(float deltaTime);
+    virtual void SetSoundResource(USoundManager* soundManager) override;
 
     bool IsPlayerDead() const { return pState == PlayerState::DEAD; }
     bool CollisionCheck(UPrimitive* other) override ;
@@ -67,5 +68,5 @@ private:
     const float DamageInvincibleTime = 1.0f;
 
     float FireTimer = 0.0f;
-    const float FireInterval = 0.6f;
+    const float FireInterval = 0.4f;
 };

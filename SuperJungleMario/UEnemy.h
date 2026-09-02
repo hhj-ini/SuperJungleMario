@@ -13,7 +13,7 @@ public:
     };
 
     const FVector& GetPosition() const { return Location; }
-    
+    UPlayer* Player = nullptr;
 
 public:
     UEnemy(float locationX, float locationY, float width, float height);
@@ -24,12 +24,15 @@ public:
 
     virtual void Move() override;
 
+    void SetPlayer(UPlayer* InPlayer);
     void SetState(EnemyState InState);
     void OnDeath(UPlayer* player);
     float GetHeight() const { return height; }
 
     virtual void UpdateAnimation(float deltaTime);
     virtual void SetSoundResource(USoundManager* soundManager) override;
+    virtual void UpdateVelocity(bool bGravity) override;
+
 private:
     EnemyState eState = EnemyState::ALIVE;
 

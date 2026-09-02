@@ -9,7 +9,7 @@
 #include "UBox.h"
 #include "UCamera.h"
 #include "UFlower.h"
-
+#include "USoundManager.h"
 
 UPlayer::UPlayer()
 {
@@ -119,6 +119,10 @@ void UPlayer::UpdateVelocity(bool bGravity)
 
 bool UPlayer::CollisionCheck(UPrimitive* other)
 {
+	if (other->bIsActive == false)
+	{
+		return false;
+	}
 	// 기본 충돌 체크 로직 구현
 
 	// 가로가 겹치는지 확인
@@ -249,6 +253,8 @@ bool UPlayer::CollisionCheck(UPrimitive* other)
 				{
 					++Hp;
 					Grow();
+
+					mr->SetState(UMushroom::MushroomState::DESTROYED);
 				}
 			}
 			break;
@@ -289,6 +295,11 @@ void UPlayer::SetState(UPlayer::PlayerState InState)
 
 void UPlayer::Move()
 {
+	/*if (!UGameLogic::GetInstance().IsStarted())
+	{
+		return;
+	}*/
+
 	if (pState == PlayerState::ALIVE)
 	{
 		Velocity.x = 0.0f;
@@ -296,6 +307,8 @@ void UPlayer::Move()
 		{
 			Velocity.y = 0.05f;
 			bIsGrounded = false;
+
+			SoundManager->PlaySoundResource(SoundBufferMap[L"jump"]);
 		}
 
 		if (GetAsyncKeyState(VK_LEFT) & 0x8000)
@@ -349,6 +362,7 @@ void UPlayer::TakeDamage()
 
 	Hp = 0;
 	SetState(PlayerState::DEAD);
+	SoundManager->PlaySoundResource(SoundBufferMap[L"death"]);
 }
 
 void UPlayer::Grow()
@@ -419,6 +433,20 @@ void UPlayer::UpdateAnimation(float deltaTime)
 	}
 }
 
+void UPlayer::SetSoundResource(USoundManager* soundManager)
+{
+	SoundManager = soundManager;
+
+	std::wstring soundName = L"jump";	//설정한 이름으로 접근 가능
+	SoundBufferMap[soundName] = ResourceManager::GetInstance().GetSoundResource(L"Resource\\Sound\\jump.wav", soundManager);
+
+	soundName = L"fireball";	//설정한 이름으로 접근 가능
+	SoundBufferMap[soundName] = ResourceManager::GetInstance().GetSoundResource(L"Resource\\Sound\\fireball.wav", soundManager);
+
+	soundName = L"death";	//설정한 이름으로 접근 가능
+	SoundBufferMap[soundName] = ResourceManager::GetInstance().GetSoundResource(L"Resource\\Sound\\death.wav", soundManager);
+}
+
 void UPlayer::Respawn()
 {
 	UPlayer::SetState(UPlayer::PlayerState::ALIVE);
@@ -460,7 +488,7 @@ void UPlayer::RequestFire()
 
 	bShotFireRequest = true;
 	bAttacking = true;
-	
+	SoundManager->PlaySoundResource(SoundBufferMap[L"fireball"]);
 
 	CurrentFrame = bFacingLeft ? 19 : 18;
 
