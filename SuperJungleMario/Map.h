@@ -41,7 +41,7 @@ inline const char* MapData[MapHeight] =
 	"................?...BMB?B.....................PP.........PP.....?............BFB...............B....BB....?..?..?....B..........BB......S..S..........SS..S............BB?B............SSSSSS........L...CCCCC.....",   //  9
 	"......................................PP......PP.........PP............................................................................SS..SS........SSS..SS..........................SSSSSSS........L...CCCCC.....",   //  10
 	"............................PP........PP......PP.........PP...........................................................................SSS..SSS......SSSS..SSS.....PP..............PP.SSSSSSSS........L...CCCCC.....",   //  11
-	"......................E.....PP........PPE.....PP.E...E...PP..............................................E..E......E........E.E.......SSSS..SSSS....SSSSS..SSSS....PP........EE....PPSSSSSSSSS.........S..CCCCC.....",   //  12
+	"......................E.....PP........PPE.....PP.E...E...PP..............................................E..E......E........E.E......SSSS..SSSS....SSSSS..SSSS....PP........EE....PPSSSSSSSSS.........S..CCCCC.....",   //  12
 	"GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG..GGGGGGGGGGGGGGG...GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG..GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG",   //  13
 	"GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG..GGGGGGGGGGGGGGG...GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG..GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG",   //  14
 };
