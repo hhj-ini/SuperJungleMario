@@ -24,6 +24,7 @@ UPlayer::UPlayer()
 	bFireMario = false;
 	bIsGrounded = false;
 	bAttacking = false;
+	bisMove = false;
 
 	Hp = 1;
 	width = scaleMod;
@@ -155,18 +156,21 @@ bool UPlayer::CollisionCheck(UPrimitive* other)
 				}
 				else 	// 2. 박스 아래에서 충돌된 경우
 				{
-					UBox* bp = dynamic_cast<UBox*>(other);
-					
-					Location.y = other->Location.y - ((other->height / 2.0f) + (height / 2.0f));	
-					if (bp && (UBox::EBoxType::BRICK == bp->BoxType || UBox::EBoxType::QUESTION == bp->BoxType))
+					if (Velocity.y > 0.0f)
 					{
-						// 의도적으로 overlap되도록 함
-						float overlapAcceptDegree = 0.0001f;
-						Location.y += overlapAcceptDegree;
+						UBox* bp = dynamic_cast<UBox*>(other);
+
+						Location.y = other->Location.y - ((other->height / 2.0f) + (height / 2.0f));
+						if (bp && (UBox::EBoxType::BRICK == bp->BoxType || UBox::EBoxType::QUESTION == bp->BoxType))
+						{
+							// 의도적으로 overlap되도록 함
+							float overlapAcceptDegree = 0.0001f;
+							Location.y += overlapAcceptDegree;
+						}
+
+						Velocity.y *= -0.5f;
+						break;
 					}
-					
-					Velocity.y *= -0.5f;
-					break;
 				}
 			}
 			else { // x축방향으로 충돌시 x속도 0으로 처리
@@ -300,7 +304,7 @@ void UPlayer::Move()
 		return;
 	}*/
 
-	if (pState == PlayerState::ALIVE)
+	if (pState == PlayerState::ALIVE && bisMove)
 	{
 		Velocity.x = 0.0f;
 		if (bIsGrounded && (GetAsyncKeyState(VK_SPACE) & 0x8000))
@@ -313,13 +317,13 @@ void UPlayer::Move()
 
 		if (GetAsyncKeyState(VK_LEFT) & 0x8000)
 		{
-			Velocity.x = -0.02f;
+			Velocity.x = -0.015f;
 			bFacingLeft = true;
 			// bIsGrounded = false;
 		}
 		else if (GetAsyncKeyState(VK_RIGHT) & 0x8000)
 		{
-			Velocity.x = 0.02f;
+			Velocity.x = 0.015f;
 			bFacingLeft = false;
 			// bIsGrounded = false;
 		}		
@@ -374,6 +378,8 @@ void UPlayer::Grow()
 	width = scaleMod;
 	height = scaleMod * 2.0f;
 	Location.y += (height - oldHeight) / 2.0f;
+
+	SoundManager->PlaySoundResource(SoundBufferMap[L"powerup"]);
 }
 
 void UPlayer::Shrink()
@@ -445,6 +451,9 @@ void UPlayer::SetSoundResource(USoundManager* soundManager)
 
 	soundName = L"death";	//설정한 이름으로 접근 가능
 	SoundBufferMap[soundName] = ResourceManager::GetInstance().GetSoundResource(L"Resource\\Sound\\death.wav", soundManager);
+
+	soundName = L"powerup";	//설정한 이름으로 접근 가능
+	SoundBufferMap[soundName] = ResourceManager::GetInstance().GetSoundResource(L"Resource\\Sound\\powerup.wav", soundManager);
 }
 
 void UPlayer::Respawn()

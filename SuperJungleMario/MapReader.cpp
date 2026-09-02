@@ -31,7 +31,7 @@ void MapReader(UPrimitive** AllMapObjects, size_t& objectCount, USoundManager* s
 				break;
 
 			case 'B':
-				pp = new UBrick(screenX, screenY, 1.0f, 1.0f);
+				pp = new UBrick(screenX, screenY, 1.0f, 1.0f); 
 				AllMapObjects[objectCount++] = pp;
 				pp->SetSoundResource(soundManager);
 				//벽돌 생성
@@ -106,7 +106,6 @@ void MapReader(UPrimitive** AllMapObjects, size_t& objectCount, USoundManager* s
 			}
 		}
 	}
-
 	float screenX = MapOriginX + 198.f * mapScale;
 	float screenY = MapOriginY + (float)(MapHeight - 1 - 7.5) * mapScale;
 	UPrimitive* pp = new UFlag(screenX, screenY, 2.0f, 8.0f);
