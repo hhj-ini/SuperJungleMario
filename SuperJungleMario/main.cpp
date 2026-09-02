@@ -28,7 +28,11 @@
 
 #include "UBrick.h"
 #include "UProjectile.h"
+
 #include "UFlower.h"
+
+#include "UQuestionBox.h"
+
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -198,8 +202,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	PrimitiveList[primitiveCount++] = goomba;
 	GoombaList[0] = goomba;
 
-	UPrimitive* brick = new UBrick;
+	UPrimitive* brick = new UBrick(0.1f, -0.4f, 1.0f, 1.0f);
 	PrimitiveList[primitiveCount++] = brick;
+
+	UQuestionBox* question = new UQuestionBox;
+	PrimitiveList[primitiveCount++] = question;
+	PrimitiveList[primitiveCount++] = question->ItemPtr;
 
 	// 프로젝타일 테스트
 	UPrimitive* projectile = new UProjectile;
@@ -310,16 +318,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				b->UpdateAnimation(elapsedTime / 1000.0f);	// deltaTime 단위는 초 단위로 전달
 				for (int k = 0; k < 40; ++k)   // player->Ground 충돌 체크
 				{
-					if (b->CollisionCheck(Ground[k]))
-					{
-						if (UPlayer* p = dynamic_cast<UPlayer*>(b))
-						{
-							if (p->Location.y > Ground[k]->Location.y)   
-							{
-								p->bIsGrounded = true;
-							}
-						}
-					}
+					b->CollisionCheck(Ground[k]);
 				}
 			}	
 		}
