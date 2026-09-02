@@ -153,11 +153,13 @@
     <ClCompile Include="UBox.cpp" />
     <ClCompile Include="UBrick.cpp" />
     <ClCompile Include="UEnemy.cpp" />
+    <ClCompile Include="UFlower.cpp" />
     <ClCompile Include="UGameLogic.cpp" />
     <ClCompile Include="UMushroom.cpp" />
     <ClCompile Include="UPlayer.cpp" />
     <ClCompile Include="UPrimitive.cpp" />
     <ClCompile Include="UProjectile.cpp" />
+    <ClCompile Include="UQuestionBox.cpp" />
     <ClCompile Include="URenderer.cpp" />
     <ClCompile Include="UUi.cpp" />
   </ItemGroup>
@@ -179,12 +181,14 @@
     <ClInclude Include="UBrick.h" />
     <ClInclude Include="UCamera.h" />
     <ClInclude Include="UEnemy.h" />
+    <ClInclude Include="UFlower.h" />
     <ClInclude Include="UGameLogic.h" />
     <ClInclude Include="UI.h" />
     <ClInclude Include="UMushroom.h" />
     <ClInclude Include="UPlayer.h" />
     <ClInclude Include="UPrimitive.h" />
     <ClInclude Include="UProjectile.h" />
+    <ClInclude Include="UQuestionBox.h" />
     <ClInclude Include="URenderer.h" />
     <ClInclude Include="UUi.h" />
   </ItemGroup>

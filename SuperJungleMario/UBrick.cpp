@@ -6,6 +6,12 @@ UBrick::UBrick() : UBox()
 	BoxType = EBoxType::BRICK;
 }
 
+UBrick::UBrick(float x, float y, float w, float h)	
+	: UBox(x, y, w, h)
+{
+	UBrick();
+}
+
 bool UBrick::CollisionCheck(UPrimitive* other)
 {
 	if (EObjectType::ENEMY == other->ObjectType)	// 상대가 적이면 
@@ -13,7 +19,7 @@ bool UBrick::CollisionCheck(UPrimitive* other)
 		// 1. 머리위에 존재하는 지 확인
 		// 가로가 겹치는지 확인
 		float sumHalfWidth = (width / 2.0f) + (other->width / 2.0f);
-		float xdistance = std::fabs((Location.x + scaleMod) - other->Location.x);
+		float xdistance = std::fabs((Location.x) - other->Location.x);
 		float overlapX = sumHalfWidth - xdistance;
 
 		// 세로가 겹치는지 확인
@@ -43,7 +49,7 @@ bool UBrick::CollisionCheck(UPrimitive* other)
 			return false;
 		}
 		// 1. 플레이어가 블럭 아래에 있는지 확인
-		bool isUnder = (Location.y - other->Location.y) > 0.0f ? false : true;
+		bool isUnder = (Location.y - other->Location.y) > 0.0f ? true : false;
 		if (!isUnder)	// 아래에 없으면
 		{	// 위에 있는 경우는 그대로 충돌 로직 유지하고 아래에서 점프하는 경우 신경쓰지 않아도 됨.
 			return false;
@@ -60,10 +66,11 @@ bool UBrick::CollisionCheck(UPrimitive* other)
 		float ydistance = std::fabs(Location.y - other->Location.y);
 		float overlapY = sumHalfHeight - ydistance;
 		
-			
-		if (overlapX > 0 && overlapY > 0)
+		const float overlapDegree = 0.025f;
+		if (overlapX > overlapDegree && overlapY > 0)
 		{	// 2. 플레이어가 블럭과 오버랩 된 경우 
 			// 블럭 애니메이션 시작
+			AnimState = EAnimState::UP;
 		}
 	}
 
@@ -92,7 +99,7 @@ void UBrick::Tick()
 		return;
 		break;
 	case UBrick::EAnimState::UP:
-		AnimOffset.y += 0.05;
+		AnimOffset.y += 0.07;
 
 		if (AnimOffset.y > 0.5f)	// 절반 이상 올라왔으면
 		{

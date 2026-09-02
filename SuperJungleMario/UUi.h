@@ -10,6 +10,10 @@ extern POINT charPositionsStart[];
 
 extern char charListStart[];
 
+extern POINT charPositionsEnd[];
+
+extern char charListEnd[];
+
 class UUi
 {
 public:

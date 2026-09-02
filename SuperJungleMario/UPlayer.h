@@ -26,6 +26,7 @@ public:
     ~UPlayer() override;
 
     void Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num) override;
+    void UpdateVelocity(bool bGravity) override;
     void Move() override;
 
     void SetState(PlayerState InState);
@@ -38,6 +39,7 @@ public:
 
     bool IsPlayerDead() const { return pState == PlayerState::DEAD; }
     bool CollisionCheck(UPrimitive* other) override ;
+    void Respawn();
 
 private:
     PlayerState pState = PlayerState::ALIVE;

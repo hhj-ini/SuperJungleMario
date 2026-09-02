@@ -13,6 +13,7 @@ public:
         DOWN
     };
     UBrick();
+    UBrick(float x, float y, float w, float h);
 
     virtual bool CollisionCheck(UPrimitive* other) override;
     virtual void Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num) override;

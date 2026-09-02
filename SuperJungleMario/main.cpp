@@ -29,6 +29,11 @@
 #include "UBrick.h"
 #include "UProjectile.h"
 
+#include "UFlower.h"
+
+#include "UQuestionBox.h"
+
+
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 // 각종 메시지를 처리할 함수
@@ -123,6 +128,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	{
 		GameStartUIList[i] = new UUi(ui_vertices, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT4(1, 1, 1, 1), UUi::Translate(charListStart[i]), 1.0f);
 	}
+	// UI GameEnd 리스트 생성
+	size_t GameEndUICnt = 48;
+	UUi** GameEndUIList = new UUi * [GameEndUICnt];
+	for (int i = 0; i < GameEndUICnt; i++)
+	{
+		GameEndUIList[i] = new UUi(ui_vertices, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT4(1, 1, 1, 1), UUi::Translate(charListEnd[i]), 1.0f);
+	}
 	// UI 리스트 생성
 	size_t uiCnt = 29;
 	UUi** UIList = new UUi*[uiCnt];
@@ -157,9 +169,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	double elapsedTime = 0.0;	
 	// 게임 진행 시간 타이머 초기화
 	LARGE_INTEGER frequencyGame,startGameTime, currentGameTime;
-	double GameTime = 0.0;
+	double GameTime = 0.0f;
 	QueryPerformanceFrequency(&frequencyGame);
 	QueryPerformanceCounter(&startGameTime);
+	double timer = 0.0f;
 
 	// UI 렌더링 여부
 	bool bUIRender = true;
@@ -189,8 +202,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	PrimitiveList[primitiveCount++] = goomba;
 	GoombaList[0] = goomba;
 
-	UPrimitive* brick = new UBrick;
+	UPrimitive* brick = new UBrick(0.1f, -0.4f, 1.0f, 1.0f);
 	PrimitiveList[primitiveCount++] = brick;
+
+	UQuestionBox* question = new UQuestionBox;
+	PrimitiveList[primitiveCount++] = question;
+	PrimitiveList[primitiveCount++] = question->ItemPtr;
 
 	// 프로젝타일 테스트
 	UPrimitive* projectile = new UProjectile;
@@ -200,6 +217,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		ms->SetOwner(player);
 	}
 
+	// Flower 테스트
+	UPrimitive* flower = new UFlower(0.3f, -0.3f, 1.0f, 1.0f);
+	PrimitiveList[primitiveCount++] = flower;
 
 	// 텍스쳐 파일 로드 테스트 코드
 	//ID3D11Resource* MushroomTest = nullptr;
@@ -244,10 +264,18 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		{
 			bGameStart = false;
 		}
-		if (UGameLogic::GetInstance().getLife() < 0)
-		{
-			bGameEnd = true;
-		}
+		//if (static_cast<UPlayer*>(PrimitiveList[2]).IsPlayerDead())
+		//
+		//	bDeath = true;
+		//	timer = GameTime;
+		//	UGameLogic::GetInstance().removeOneLife();
+		//	// 마리오 다시 살리고, 원점으로 돌리는 로직 추가
+		//	dynamic_cast<UPlayer*>(player)->SetState(UPlayer::PlayerState::ALIVE);
+		//}
+		//if (bGameEnd && GameTime - timer > 1.5f) // 1.5초 후에 다시 게임 시작
+		//{
+		//	bDeath = false;
+		//}
 
 		MSG msg;
 
@@ -290,16 +318,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				b->UpdateAnimation(elapsedTime / 1000.0f);	// deltaTime 단위는 초 단위로 전달
 				for (int k = 0; k < 40; ++k)   // player->Ground 충돌 체크
 				{
-					if (b->CollisionCheck(Ground[k]))
-					{
-						if (UPlayer* p = dynamic_cast<UPlayer*>(b))
-						{
-							if (p->Location.y > Ground[k]->Location.y)   
-							{
-								p->bIsGrounded = true;
-							}
-						}
-					}
+					b->CollisionCheck(Ground[k]);
 				}
 			}	
 		}
@@ -346,13 +365,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		// UI 렌더링 
 		renderer.PrepareUIShader(UIBlackSRV);
-		if (bGameStart || bDeath)
+		if (bGameStart || bDeath || UGameLogic::GetInstance().IsEnding())
 		{
 			// 첫화면 렌더. 검은 화면 렌더.
 			BlackBackground->Render(renderer, UIBuffer, numVerticesUI, 5.0f, 5.0f);
 		}
-		UUi::UpdateScoreUI(UGameLogic::GetInstance().score);
-		UUi::UpdateCoinUI(UGameLogic::GetInstance().coin);
+		UUi::UpdateScoreUI(UGameLogic::GetInstance().getScore());
+		UUi::UpdateCoinUI(UGameLogic::GetInstance().getCoin());
 		const float fontSize = 0.09f;
 		if (bUIRender)
 		{
@@ -384,6 +403,19 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				GameStartUIList[i]->Render(renderer, UIBuffer, numVerticesUI, fontSize, fontSize);
 			}
 		}
+		if (UGameLogic::GetInstance().IsEnding())
+		{
+			bUIRender = false;
+			renderer.PrepareUIShader(UIFontSRV);
+			for (int i = 0; i < GameEndUICnt; i++)
+			{
+				GameEndUIList[i]->setNDCoord(renderer.GetNDCoordinate(charPositionsEnd[i], 1024, 1024));
+			}
+			for (size_t i = 0; i < GameEndUICnt; i++)
+			{
+				GameEndUIList[i]->Render(renderer, UIBuffer, numVerticesUI, fontSize, fontSize);
+			}
+		}
 
 		// ImGui 렌더링 준비, 컨트롤 설정, 렌더링 요청
 		ImGui_ImplDX11_NewFrame();
@@ -396,7 +428,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		// UI 테스트용
 		ImGui::Checkbox("Show UI", &bUIRender);
-		//ImGui::Checkbox("Show Start UI", &bGameStart);
+		ImGui::Checkbox("UI Test", &UGameLogic::GetInstance().ending);
 		//ImGui::SliderInt("Score", &UGameLogic::GameLogic().score, 0, 1000000);
 		//if (bUIRender)
 		//{
@@ -434,7 +466,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				bp->AnimState = UBrick::EAnimState::UP;
 			}
 		}
-	
+
+		// Flower 테스트용
+		if (ImGui::Button("Flower"))
+		{
+			if (UFlower* fl = dynamic_cast<UFlower*>(flower))
+			{
+				fl->FlowFlower(); 
+			}
+		}
+
 		ImGui::End();
 
 		ImGui::Render();
