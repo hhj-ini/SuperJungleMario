@@ -45,6 +45,15 @@ bool USoundManager::InitializeDirectSound(HWND hwnd)
     return true;
 }
 
+void USoundManager::ReleaseSoundBuffer(IDirectSoundBuffer* SoundBuffer)
+{
+    if (SoundBuffer)
+    {
+        SoundBuffer->Release();
+        SoundBuffer = nullptr;
+    }
+}
+
 bool USoundManager::LoadWavFile(const std::wstring& InPath, IDirectSoundBuffer*& SoundBufferPtr)
 {
     if (!std::filesystem::exists(InPath))
@@ -127,6 +136,18 @@ bool USoundManager::LoadAudioData(WAVEFORMATEX* waveFormat, unsigned char* audio
 
 
     return true;
+}
+
+void USoundManager::ElaryLoadSoundResource(IDirectSoundBuffer* InSoundBuffer)
+{
+    InSoundBuffer->SetCurrentPosition(0);
+
+    // 볼륨 최대 설정
+    InSoundBuffer->SetVolume(DSBVOLUME_MIN);
+
+    // 0: 한번 재생,
+    // DSBPLAY_LOOPING: 반복재생
+    InSoundBuffer->Play(0, 0, 0);
 }
 
 void USoundManager::PlaySoundResource(IDirectSoundBuffer* InSoundBuffer)
