@@ -68,11 +68,19 @@ void UQuestionBox::OnHitFromBelow()
 	{
 		//event 발생
 		return;
-      	}
+    }
 	ItemPtr->SetAnimation();                          	// 아이템 애니메이션 시작
 
-	SoundManager->PlaySoundResource(SoundBufferMap[L"item"]);
-    }
+	if (myItemType == EItemType::COIN)
+	{
+		SoundManager->PlaySoundResource(SoundBufferMap[L"coin"]);
+	}
+	else 
+	{
+		SoundManager->PlaySoundResource(SoundBufferMap[L"item"]);
+	}
+
+}
 
 void UQuestionBox::SetSoundResource(USoundManager* soundManager)
 {
@@ -80,5 +88,7 @@ void UQuestionBox::SetSoundResource(USoundManager* soundManager)
 
 	std::wstring soundName = L"item";	//설정한 이름으로 접근 가능
 	SoundBufferMap[soundName] = ResourceManager::GetInstance().GetSoundResource(L"Resource\\Sound\\item.wav", soundManager);
-
+	
+	soundName = L"coin";	//설정한 이름으로 접근 가능
+	SoundBufferMap[soundName] = ResourceManager::GetInstance().GetSoundResource(L"Resource\\Sound\\coin.wav", soundManager);
 }
