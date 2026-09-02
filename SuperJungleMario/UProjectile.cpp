@@ -26,7 +26,7 @@ void UProjectile::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)
         return;
     }
 
-    if (EProjectileState::ROLLING == CurrState)
+    if (EProjectileState::ROLLING == CurrState || EProjectileState::HIT == CurrState)
     {
         // 렌더하기 전에 텍스쳐 바인딩
         if (!TextureSRVPtr[0])
@@ -45,23 +45,17 @@ void UProjectile::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)
         {
             TextureSRVPtr[3] = ResourceManager::GetInstance().GetSRV(L"Resource\\Projectile\\Projectile4.png", &renderer);
         }
+        if (!TextureSRVPtr[4])
+        {
+            TextureSRVPtr[4] = ResourceManager::GetInstance().GetSRV(L"Resource\\Projectile\\Projectile5.png", &renderer);
+        }
         renderer.PrepareShaderResource(TextureSRVPtr[CurrentFrame]);
 
         DirectX::XMMATRIX world = DirectX::XMMatrixScaling(width, height, 1.0f) * DirectX::XMMatrixTranslation(Location.x, Location.y, Location.z);
         renderer.UpdateConstantBuffer(world, renderer.ViewMatrix);
-
         renderer.RenderPrimitive(pBuffer, num);
+        
     }
-
-    if (EProjectileState::HIT == CurrState)
-    {
-
-    }
-
-    /*DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(Location.x, Location.y, Location.z);
-    renderer.UpdateConstantBuffer(world, renderer.ViewMatrix);
-
-    renderer.RenderPrimitive(pBuffer, num);*/
 }
 
 bool UProjectile::CollisionCheck(UPrimitive * other)
@@ -91,6 +85,9 @@ bool UProjectile::CollisionCheck(UPrimitive * other)
             if (UEnemy* enemy = dynamic_cast<UEnemy*>(other))
             {
 				enemy->OnDeath(dynamic_cast<UPlayer*>(Owner));
+                CurrState = EProjectileState::HIT;
+                CurrentFrame = 4;
+                ExplosionTimer = 0.0f;
                 DeactivateProjectile();
 			}
 			break;
@@ -104,6 +101,9 @@ bool UProjectile::CollisionCheck(UPrimitive * other)
             ++LifeTime;
             if (LifeTime > 2)
             {
+                CurrState = EProjectileState::HIT;
+                CurrentFrame = 4;
+                ExplosionTimer = 0.0f;
                 DeactivateProjectile();
             }
 
@@ -114,7 +114,14 @@ bool UProjectile::CollisionCheck(UPrimitive * other)
                 if (overlapOnTheBox > 0.0f)	// 1. 박스 위를 걷고있는 경우
                 {
                     Location.y = other->Location.y + (other->height / 2.0f) + (height / 2.0f);
-                    Velocity.y *= 1.0f;
+                    if (Velocity.y > 0.05f)
+                    {
+						Velocity.y *= 1.0f;
+                    }
+                    else
+                    {
+                        Velocity.y *= -1.0f;
+                    }
                     break;
                 }
                 else 	// 2. 박스 아래에서 충돌된 경우
@@ -150,6 +157,15 @@ bool UProjectile::CollisionCheck(UPrimitive * other)
             if (CollisionTimer < CollisionInterval)
             {
                 break;
+            }
+
+            ++LifeTime;
+            if (LifeTime > 2)
+            {
+                CurrState = EProjectileState::HIT;
+                CurrentFrame = 4;
+                ExplosionTimer = 0.0f;
+                DeactivateProjectile();
             }
 
             if (overlapX > overlapY) { //y축방향으로 충돌시 y속도 0으로 처리		
@@ -213,20 +229,10 @@ void UProjectile::SetState(EProjectileState InState)
         CurrState = EProjectileState::WAITING;
         break;
     case EProjectileState::ROLLING:
-        // 애니메이션 재생 필요
-
-        // 속도, 위치 초기화
-        /*Location.x = Owner->Location.x;
-        Location.y = Owner->Location.y;
-
-        Velocity.x = 0.1f;
-        Velocity.y = -0.1f;*/
-
         CurrState = EProjectileState::ROLLING;
-
         break;
     case EProjectileState::HIT:
-        // 애니메이션 재생 필요
+		CurrentFrame = 4;
         CurrState = EProjectileState::HIT;
 
         Velocity.x = 0.0f;
@@ -247,31 +253,55 @@ bool UProjectile::ActivateProjectile(FVector PlayerLocation, bool bFacingLeft, f
     {
         return false;
     }
-		CurrState = EProjectileState::ROLLING;
+    CurrentFrame = 0;
+    AnimationTimer = 0.0f;
+    ExplosionTimer = 0.0f;
 
-		bActive = true;
-		bisMove = true;
-        LifeTime = 0; // 초기화
+	CurrState = EProjectileState::ROLLING;
 
-		Location.x = PlayerLocation.x + (bFacingLeft ? -1.0f : 1.0f) * (playerWidth / 2.0f + width / 2.0f);
-		Location.y = PlayerLocation.y;
+	bActive = true;
+	bisMove = true;
+    LifeTime = 0; // 초기화
 
-        Velocity.x = bFacingLeft ? -0.015f : 0.015f;
+	Location.x = PlayerLocation.x + (bFacingLeft ? -1.0f : 1.0f) * (playerWidth / 2.0f + width / 2.0f);
+	Location.y = PlayerLocation.y;
+
+    Velocity.x = bFacingLeft ? -0.025f : 0.025f;
 
     return true;
 }
 
 void UProjectile::DeactivateProjectile()
 {
+    CurrState = EProjectileState::HIT;
+    CurrentFrame = 4;
+
     bActive = false;
 	bisMove = false;
-	CurrState = EProjectileState::WAITING;
+    
     Velocity.x = 0.0f;
     Velocity.y = 0.0f;
+
+    ExplosionTimer = 0.0f;
 }
 
 void UProjectile::UpdateAnimation(float deltaTime)
 {
+    if (CurrState == EProjectileState::HIT)
+    {
+        CurrentFrame = 4;
+        ExplosionTimer += deltaTime;
+
+        if (ExplosionTimer >= 0.1f)
+        {
+            CurrState = EProjectileState::WAITING;
+            bActive = false;
+            bisMove = false;
+        }
+
+        return;
+    }
+
     AnimationTimer += deltaTime;
     CollisionTimer += deltaTime;
     if (AnimationTimer >= FrameInterval)
@@ -283,14 +313,6 @@ void UProjectile::UpdateAnimation(float deltaTime)
 
 void UProjectile::UpdateVelocity(bool bGravity)
 {
-    /*float gravity = (bGravity) ? GravityAmount : 0.0f;
-
-    if (bGravity)
-    {
-        Velocity.y -= gravity * deltaTime;
-    }*/
-   
-    Velocity.y -= 0.00001f;
+    Velocity.y -= 0.00015f;
     
-    //return;
 }

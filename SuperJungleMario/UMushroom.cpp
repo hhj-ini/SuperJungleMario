@@ -1,22 +1,18 @@
 #include "UMushroom.h"
 #include "ResourceManager.h"
 
-UMushroom::UMushroom()
-	: UBall()
+UMushroom::UMushroom(float x, float y, float w, float h) : UBall(x, y, w, h)
 {
-	Velocity.x = 0.0f;
-	Velocity.y = 0.0f;
-	// y 축 초기속도 갖지 않도록 함.
-
-	Location.x = 0.5f;
-	Location.y = 0.0f;
-	// 물음표 위치로 애니메이션 이전에 위치 설정 필요함
-
-	width = scaleMod;
-	height = scaleMod;
 
 	ObjectType = EObjectType::MUSHROOM;
-}
+	Location.x = x;
+	Location.y = y;
+	width = w * scaleMod;
+	height = h * scaleMod;
+	bisMove = false;
+	StartAnimLocationY = y;
+	
+} 
 
 void UMushroom::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)
 {
@@ -57,19 +53,28 @@ bool UMushroom::CollisionCheck(UPrimitive* other)
 	// 충돌
 	if (overlapX > 0 && overlapY > 0) {
 
+		if (mrState != MushroomState::ENABLE) {
+			// 활성화 상태 이외에는 충돌 처리하지 않음
+			return false;
+		}
+
 		switch (other->ObjectType)
 		{
-		case EObjectType::BOX: // 박스와 충돌 시 처리
+		case (EObjectType::BOX): // 박스와 충돌 시 처리
 			if (overlapX > overlapY) { //y축방향으로 충돌시 y속도 0으로 처리
 				Location.y = other->Location.y + (other->height / 2.0f) + (height / 2.0f);
-				Velocity.x = -0.01f;
+				
 				Velocity.y = 0;
 			}
-			//else { // x축방향으로 충돌시 x속도 0으로 처리
-			//	Location.x = other->Location.x + (other->width / 2.0f) + (width / 2.0f);
-			//	Velocity.x = 0;
-			//}
+			if (overlapX < overlapY) { // x축방향으로 충돌시 x속도 0으로 처리
+				Location.x = other->Location.x + (other->width / 2.0f) + (width / 2.0f);
+				if (Velocity.x > 0.0f) { Velocity.x = -std::fabs(Velocity.x); }
+				else { Velocity.x = std::fabs(Velocity.x); }
+				}
+				Velocity.x *= -1.0f;
 			break;
+			
+
 		case EObjectType::PLAYER:
 			mrState = MushroomState::DESTROYED;
 			// 버섯을 먹으면 점수가 1000점 올라감
@@ -91,14 +96,17 @@ void UMushroom::Move()
 	{	// wating 상태에서는 움직이지 않음. early return
 		return;
 	}
-	this->UBall::Move();
+	
 
-	if (mrState == MushroomState::ANIMATING && Location.y - StartAnimLocationY > 0.05f)
-	{
-		// 위로 올라가는 애니메이션 멈추기
-		SetState(MushroomState::ENABLE);
-		// Location.x = 0.0f;
+	if (mrState == MushroomState::ANIMATING) {
+		Location.y += 0.01f; // 꽃이 위로 올라감
+		if (Location.y >= UMushroom::StartAnimLocationY + height) {
+			Velocity.y = 0.0f;
+			SetState(MushroomState::ENABLE); // 꽃이 다 올라오면 ENABLE 상태로 변경
+			return;
+		}
 	}
+	this->UBall::Move();
 }
 
 void UMushroom::SetState(MushroomState InState)
@@ -106,22 +114,23 @@ void UMushroom::SetState(MushroomState InState)
 	switch (InState)
 	{
 	case MushroomState::ANIMATING:
-		// 버섯 들어있던 물음표 박스 충돌 시 SetState(MushroomState::ANIMATING); 호출
 		mrState = MushroomState::ANIMATING;
-		Velocity.y = 0.01f;
-		StartAnimLocationY = Location.y;
+		bisMove = true;
+		// 버섯 들어있던 물음표 박스 충돌 시 SetState(MushroomState::ANIMATING); 호출
+		Velocity.y = 0.001f;
+		//StartAnimLocationY = Location.y;
 		break;
 
 	case MushroomState::ENABLE:
 		// 애니메이션 끝나면 
 		// SetState(MushroomState::ENABLE); 호출
 		mrState = MushroomState::ENABLE;
-		Velocity.x = -0.01f;
+		Velocity.x = 0.005f;
 		Velocity.y = 0.0f;
 		break;
 
 	case MushroomState::WAITING:
-
+		bisMove = false;
 		break;
 	
 	case MushroomState::DESTROYED:
@@ -132,12 +141,14 @@ void UMushroom::SetState(MushroomState InState)
 void UMushroom::SetAnimation() {
 	SetState(MushroomState::ANIMATING);
 }
-//void UMushroom::UpdateVelocity(bool bGravity)
-//{
-//	if (mrState == MushroomState::ANIMATING)
-//	{
-//		// 애니메이션 중에는 중력 적용하지 않음
-//		return;
-//	}
-//	UBall::UpdateVelocity(bGravity);
-//}
+
+void UMushroom::UpdateVelocity(bool bGravity)
+{
+	if (mrState == MushroomState::ANIMATING)
+	{
+		// 애니메이션 중에는 중력 적용하지 않음
+		return;
+	}
+	bGravity = true;
+	UBall::UpdateVelocity(bGravity);
+}

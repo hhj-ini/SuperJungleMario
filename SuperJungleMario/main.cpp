@@ -212,7 +212,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	/////////// 여기서 테스트용 객체 추가하시면 됩니다 ////////////////
 	int mushroomIdx = UBall::TotalNumBalls;
 	//PrimitiveList[mushroomIdx] = new UMushroom;
-	PrimitiveList[primitiveCount++] = new UMushroom;
+	//PrimitiveList[primitiveCount++] = new UMushroom();
 
 	PrimitiveList[primitiveCount++] = new UFlower(0.0f, 0.0f, 1.0f, 1.0f);  // test용으로 flower 추가
 
