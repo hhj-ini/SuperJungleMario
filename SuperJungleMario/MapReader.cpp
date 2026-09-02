@@ -41,7 +41,7 @@ void MapReader(UPrimitive** AllMapObjects, size_t& objectCount) {
 				break;
 
 			case 'S':
-				AllMapObjects[objectCount++] = new UBox(screenX, screenY, 1.0f, 1.0f);
+				AllMapObjects[objectCount++] = new UBox(screenX, screenY, 1.0f, 1.0f, UBox::EBoxType::HARD);
 				//계단 생성
 				break;
 

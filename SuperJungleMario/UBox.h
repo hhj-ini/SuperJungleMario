@@ -29,6 +29,7 @@ public:
 		ObjectType = EObjectType::BOX;
 	}
 	UBox(float locationX, float locationY, float width, float height); //위치x,y,  가로,세로
+	UBox(float locationX, float locationY, float width, float height, EBoxType bt); //위치x,y,  가로,세로
 	virtual ~UBox();
 
 
