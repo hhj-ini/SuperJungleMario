@@ -31,9 +31,15 @@ UEnemy::UEnemy(float x, float y, float w, float h)
 	width = w * scaleMod;
 	height = h * scaleMod;
 
-	bisMove = true;
+	bIsActive = true;
+	bisMove = false;
 	SetState(EnemyState::ALIVE);
 	ObjectType = EObjectType::ENEMY;
+}
+
+void UEnemy::SetPlayer(UPlayer* InPlayer)
+{
+	Player = InPlayer;
 }
 
 void UEnemy::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)
@@ -155,11 +161,15 @@ void UEnemy::Move()
 		return;
 	}
 
-	/*if (!UGameLogic::GetInstance().IsStarted())
+	if (Player)
 	{
-		return;
-	}*/
+		float diffDistance = std::fabs(Player->Location.x - Location.x);
 
+		if (diffDistance < 1.0f)
+		{
+			bisMove = true;
+		}
+	}
 	this->UBall::Move();
 }
 
@@ -169,7 +179,7 @@ void UEnemy::SetState(UEnemy::EnemyState InState)
 	{
 	case EnemyState::ALIVE:
 		eState = EnemyState::ALIVE;
-		Velocity.x = 0.01f;
+		Velocity.x = -0.01f;
 		break;
 
 	case EnemyState::DEAD:
@@ -206,4 +216,12 @@ void UEnemy::SetSoundResource(USoundManager* soundManager)
 
 	std::wstring soundName = L"GoombaDead";	//설정한 이름으로 접근 가능
 	SoundBufferMap[soundName] = ResourceManager::GetInstance().GetSoundResource(L"Resource\\Sound\\GoombaDead.wav", soundManager);
+}
+
+void UEnemy::UpdateVelocity(bool bGravity)
+{
+	if (!bisMove)
+		return;
+
+	UBall::UpdateVelocity(bGravity);
 }
