@@ -50,7 +50,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		PostQuitMessage(0);
 		break;
 	case WM_KEYDOWN:
-		if (!UGameLogic::GetInstance().IsNeedRestart() && !UGameLogic::GetInstance().IsRestart())
+		if (!UGameLogic::GetInstance().IsNeedRestart() && !UGameLogic::GetInstance().IsRestart() && UGameLogic::GetInstance().IsAudioReady())
 		{
 			UGameLogic::GetInstance().setStarted();
 		}

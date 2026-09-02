@@ -18,6 +18,7 @@ private: // 나중에 privite으로
 	bool needRestart;
 	bool restart;
 	bool renderUI;
+	bool audioReady;
 	UGameLogic();
 
 public:
@@ -58,6 +59,9 @@ public:
 
 	bool IsRenderUI();
 	void setRenderUI(bool input);
+
+	bool IsAudioReady();
+	void setAudioReady();
 
 	DirectX::XMFLOAT2 getCoordinate();
 };
