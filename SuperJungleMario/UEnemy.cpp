@@ -199,7 +199,7 @@ void UEnemy::SetState(UEnemy::EnemyState InState)
 	{
 	case EnemyState::ALIVE:
 		eState = EnemyState::ALIVE;
-		Velocity.x = -0.01f;
+		Velocity.x = -0.005f;
 		break;
 
 	case EnemyState::DEAD:
