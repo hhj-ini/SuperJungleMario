@@ -2,10 +2,12 @@
 #include "ResourceManager.h"
 #include "UEnemy.h"
 #include "UPlayer.h"
+#include "UGameLogic.h"
 
 UBrick::UBrick() : UBox()
 {
 	BoxType = EBoxType::BRICK;
+
 }
 
 UBrick::UBrick(float x, float y, float w, float h)	
@@ -81,7 +83,12 @@ bool UBrick::CollisionCheck(UPrimitive* other)
 			if (pp && pp->bBigMario)
 			{
 				//BoxType = EBoxType::HARD;
-				bIsActive = false;
+				//bIsActive = false;
+				BrokenAnimInit();
+				bIsBroken = true;
+				
+				// 50점 
+				UGameLogic::GetInstance().addScore(50);
 			}
 		}
 	}
@@ -96,14 +103,33 @@ void UBrick::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)
 	}
 	renderer.PrepareShaderResource(TextureSRVPtr[0]);
 
-	DirectX::XMMATRIX world = DirectX::XMMatrixScaling(width, height, 1.0f) * DirectX::XMMatrixTranslation(Location.x, Location.y, Location.z);
-	
-	renderer.UpdateConstantBuffer(world, renderer.ViewMatrix, AnimOffset);
+	if (!bIsBroken)
+	{
+		DirectX::XMMATRIX world = DirectX::XMMatrixScaling(width, height, 1.0f) * DirectX::XMMatrixTranslation(Location.x, Location.y, Location.z);
 
-	renderer.RenderPrimitive(pBuffer, num);
+		renderer.UpdateConstantBuffer(world, renderer.ViewMatrix, AnimOffset);
+
+		renderer.RenderPrimitive(pBuffer, num);
+	}
+	else
+	{
+		for (size_t i = 0; i < 4; ++i)
+		{
+			DirectX::XMMATRIX world = DirectX::XMMatrixScaling(width / 4.f, height/ 4.f, 1.0f) * DirectX::XMMatrixTranslation(Location.x, Location.y, Location.z);
+
+			renderer.UpdateConstantBuffer(world, renderer.ViewMatrix, BrokenAnimOffset[i]);
+
+			renderer.RenderPrimitive(pBuffer, num);
+		}
+	}
+	
+
+
 }
 
-void UBrick::Tick()
+
+
+void UBrick::Tick(float deltaTime)
 {
 	switch (AnimState)
 	{
@@ -131,6 +157,29 @@ void UBrick::Tick()
 		break;
 	}
 
+	if (bIsBroken)
+	{
+		float yMax = -1.0f;
+		for (size_t i = 0; i < 4; ++i)
+		{
+			BrokenAnimVelocity[i].y += - 0.98f * deltaTime;
+
+			BrokenAnimOffset[i].x += BrokenAnimVelocity[i].x * deltaTime;
+			BrokenAnimOffset[i].y += BrokenAnimVelocity[i].y * deltaTime;
+
+			if (BrokenAnimOffset[i].y > yMax)
+			{
+				yMax = BrokenAnimOffset[i].y;
+			}
+		}
+
+		if (yMax < 0.0f)
+		{
+			bIsActive = false;
+		}
+
+	}
+
 }
 
 void UBrick::KillEnemy()
@@ -143,6 +192,30 @@ void UBrick::KillEnemy()
 			ep->OnDeath(nullptr);
 		}
 	}
+}
+
+void UBrick::BrokenAnimInit()
+{
+     	for (size_t i = 0; i < 4; ++i)
+	{
+		BrokenAnimOffset[i].x = Location.x;
+		BrokenAnimOffset[i].y = Location.y;
+	}
+
+	BrokenAnimVelocity[0].x = -2.25f;
+	BrokenAnimVelocity[1].x = +3.25f;
+	BrokenAnimVelocity[2].x = -3.0f;
+	BrokenAnimVelocity[3].x = +2.25f;
+	BrokenAnimVelocity[0].y= +2.2f;
+	BrokenAnimVelocity[1].y = +2.2f;
+	BrokenAnimVelocity[2].y = +2.4f;
+	BrokenAnimVelocity[3].y = +2.4f;
+}
+
+
+void UBrick::BrokenAnimSet()
+{
+	
 }
 
 void UBrick::SetAnimState(EAnimState InState)

@@ -32,7 +32,7 @@ UPlayer::~UPlayer()
 {
 }
 
-void UPlayer::Tick()
+void UPlayer::Tick(float deltaTime)
 {
 	
 }

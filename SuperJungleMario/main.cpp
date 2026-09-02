@@ -309,7 +309,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		for (size_t i = 0; i < primitiveCount; ++i)
 		{
 			if (PrimitiveList[i]->bIsActive == false) continue;
-			PrimitiveList[i]->Tick();
+			PrimitiveList[i]->Tick(deltaTime);
 
 			if (UBall* b = dynamic_cast<UBall*>(PrimitiveList[i]))
 			{
