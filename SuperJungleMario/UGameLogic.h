@@ -14,7 +14,7 @@ private: // 나중에 privite으로
 	float x;
 	float y;
 	bool IsFloatingScore;
-	std::vector<int> floatingScoreList;
+	int lastScore;
 	bool showBlack;
 	bool respawn;
 	bool needRestart;
@@ -45,8 +45,8 @@ public:
 	bool bIsFloatingScore();
 	void setIsFloatingScore(bool input);
 
-	std::vector<int> getFloatingScoreList();
-	void setFloatingScoreList(std::vector<int> &scoreList);
+	int getLastScore();
+	void setLastScore(int score);
 
 	bool IsGameOver();
 	void setGameOver();

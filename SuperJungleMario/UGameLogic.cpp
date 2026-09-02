@@ -16,7 +16,7 @@ UGameLogic::UGameLogic()
 	x(0.0f),
 	y(0.0f),
 	IsFloatingScore(false),
-	floatingScoreList({}),
+	lastScore(0),
 	showBlack(false),
 	respawn(false),
 	needRestart(false),
@@ -36,7 +36,7 @@ void UGameLogic::addScore(int addAmount, float xCoord, float yCoord) // 해당 �
 	x = xCoord;
 	y = yCoord;
 	setIsFloatingScore(true);
-	floatingScoreList.push_back(addAmount);
+	setLastScore(addAmount);
 }
 
 int UGameLogic::getCoin()
@@ -100,13 +100,13 @@ void UGameLogic::setIsFloatingScore(bool input)
 	IsFloatingScore = input;
 }
 
-std::vector<int> UGameLogic::getFloatingScoreList()
+int UGameLogic::getLastScore()
 {
-	return floatingScoreList;
+	return lastScore;
 }
-void UGameLogic::setFloatingScoreList(std::vector<int> &scoreList)
+void UGameLogic::setLastScore(int score)
 {
-	floatingScoreList = scoreList;
+	lastScore = score;
 }
 
 bool UGameLogic::IsGameOver()

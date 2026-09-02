@@ -6,6 +6,7 @@
 #include <d3d11.h>
 #include <d3dcompiler.h>
 #include <DirectXMath.h>
+#include <vector>
 
 #include "ImGui/imgui.h"
 #include "ImGui/imgui_internal.h"
@@ -137,7 +138,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	// Top UI part
 	size_t UICnt = 29;
 	UUi** UIList = new UUi * [UICnt];
-	for (int i = 0; i < UICnt; i++)
+	for (size_t i = 0; i < UICnt; i++)
 	{
 		UIList[i] = new UUi(ui_vertices, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT4(1, 1, 1, 1), UUi::TranslateUV(charList[i]));
 	}
@@ -145,7 +146,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	// Black UI part
 	size_t BlackUICnt = 11;
 	UUi** BlackUIList = new UUi * [BlackUICnt];
-	for (int i = 0; i < BlackUICnt; i++)
+	for (size_t i = 0; i < BlackUICnt; i++)
 	{
 		BlackUIList[i] = new UUi(ui_vertices, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT4(1, 1, 1, 1), UUi::TranslateUV(charListBlack[i]));
 	}
@@ -154,7 +155,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	// Start UI part
 	size_t StartUICnt = 43;
 	UUi** StartUIList = new UUi * [StartUICnt];
-	for (int i = 0; i < StartUICnt; i++)
+	for (size_t i = 0; i < StartUICnt; i++)
 	{
 		StartUIList[i] = new UUi(ui_vertices, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT4(1, 1, 1, 1), UUi::TranslateUV(charListStart[i]));
 	}
@@ -162,30 +163,29 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	// Ending UI part
 	size_t GameEndUICnt = 60;
 	UUi** GameEndUIList = new UUi * [GameEndUICnt];
-	for (int i = 0; i < GameEndUICnt; i++)
+	for (size_t i = 0; i < GameEndUICnt; i++)
 	{
 		GameEndUIList[i] = new UUi(ui_vertices, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT4(1, 1, 1, 1), UUi::TranslateUV(charListEnd[i]));
 	}
 	// Over UI part
 	size_t GameOverUICnt = 35;
 	UUi** GameOverUIList = new UUi * [GameOverUICnt];
-	for (int i = 0; i < GameOverUICnt; i++)
+	for (size_t i = 0; i < GameOverUICnt; i++)
 	{
 		GameOverUIList[i] = new UUi(ui_vertices, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT4(1, 1, 1, 1), UUi::TranslateUV(charListOver[i]));
 	}
 	// Floating score UI part
-	size_t FloatingScoreUICnt = 1000;
-	UUi** FloatingScoreUIList = new UUi*[FloatingScoreUICnt];
-	for (int i = 0; i < GameOverUICnt; i++)
-	{
-		GameOverUIList[i] = nullptr;
-	}
+	std::vector<UUi*> FloatingScoreUIList;
+	std::vector<double> FloatingScoreTimeList;
+	std::vector<int> FloatingScoreScoreList;
+
 	// ui 텍스쳐 파일 로드
 	ID3D11Resource* UIFontResource = nullptr; ID3D11ShaderResourceView* UIFontSRV = nullptr; renderer.LoadTexture(L"Resource\\font.png", UIFontResource, UIFontSRV);
 	ID3D11Resource* UIBlackResource = nullptr; ID3D11ShaderResourceView* UIBlackSRV = nullptr; renderer.LoadTexture(L"Resource\\black.png", UIBlackResource, UIBlackSRV);
 	ID3D11Resource* UIMarioResource = nullptr; ID3D11ShaderResourceView* UIMarioSRV = nullptr; renderer.LoadTexture(L"Resource\\Mario\\Mario1.png", UIMarioResource, UIMarioSRV);
 	ID3D11Resource* UICoinResource = nullptr; ID3D11ShaderResourceView* UICoinSRV = nullptr; renderer.LoadTexture(L"Resource\\Coin.png", UICoinResource, UICoinSRV);
 	ID3D11Resource* UITitleResource = nullptr; ID3D11ShaderResourceView* UITitleSRV = nullptr; renderer.LoadTexture(L"Resource\\title.png", UITitleResource, UITitleSRV);
+	ID3D11Resource* UIFloatingResource = nullptr; ID3D11ShaderResourceView* UIFloatingSRV = nullptr; renderer.LoadTexture(L"Resource\\score.png", UIFloatingResource, UIFloatingSRV);
 
 	//ID3D11Buffer* cubeBuffer = renderer.CreateVertexBuffer(cube_vertices, sizeof(cube_vertices));
 	ID3D11Buffer* cubeBuffer = renderer.CreateTextureVertexBuffer(cube_vertices, sizeof(cube_vertices));
@@ -522,19 +522,23 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 		if (UGameLogic::GetInstance().bIsFloatingScore()) // floating score rendering
 		{
-			renderer.PrepareUIShader(UIFontSRV);
-			UGameLogic::GetInstance().getCoordinate();
+			// 객체를 생성해야함
+			UUi* newFloatingScore = new UUi(ui_vertices);
+			FloatingScoreUIList.push_back(newFloatingScore);
+			FloatingScoreTimeList.push_back(GameTime);
+			FloatingScoreScoreList.push_back(UGameLogic::GetInstance().getLastScore());
+			renderer.PrepareUIShader(UIFloatingSRV);
 			//NDC 업데이트해야 
+			float ndcX = UGameLogic::GetInstance().getCoordinate().x - camera.x;
+			float ndcY = UGameLogic::GetInstance().getCoordinate().y - camera.y;
 			//FloatingScoreUI->UpdateUV(charFloatingList, 0);
-			for (size_t i = 0; i < FloatingScoreUICnt; i++)
+			for (size_t i = 0; i < FloatingScoreUIList.size(); i++)
 			{
-				FloatingScoreUIList[i]->UpdateFloatingUV(UGameLogic::GetInstance().getFloatingScoreList()[i]);
-				FloatingScoreUIList[i]->Render(renderer, UIBuffer, numVerticesUI, fontSize / 0.01f, fontSize / 0.01f, UGameLogic::GetInstance().getCoordinate());
+				FloatingScoreUIList[i]->UpdateFloatingUV(UGameLogic::GetInstance().getLastScore());
+				FloatingScoreUIList[i]->Render(renderer, UIBuffer, numVerticesUI, fontSize / 0.5f, fontSize / 0.5f, DirectX::XMFLOAT2(ndcX, ndcY));
 			}
-
-			//UGameLogic::GetInstance().setShowScore(false);
-			//UGameLogic::GetInstance().setShowingScore(0);
-			//UGameLogic::GetInstance().setShowScore(false); // 이러면 한 프레임만 되긴 하는데 일단 이렇게 
+			UGameLogic::GetInstance().setIsFloatingScore(false);
+			UGameLogic::GetInstance().setLastScore(0); // 이러면 한 프레임만 되긴 하는데 일단 이렇게 
 		}
 
 		// ImGui 렌더링 준비, 컨트롤 설정, 렌더링 요청
