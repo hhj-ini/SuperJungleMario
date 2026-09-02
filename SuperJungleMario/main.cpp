@@ -178,8 +178,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	UPrimitive** PrimitiveList = new UPrimitive*[ballPoolCnt];
 
-	const float backGroundScale = 0.0062;
-	UPrimitive* backGround = new UBackground(9.55f, -0.947f, 3376.0f * backGroundScale, 480.0f * backGroundScale);
+	const float backGroundScale = 0.006196;
+	UPrimitive* backGround = new UBackground(9.537f, -0.947f, 3376.0f * backGroundScale, 480.0f * backGroundScale);
 	PrimitiveList[primitiveCount++] = backGround;
 
 	PrimitiveList[primitiveCount++] = new UBall;
