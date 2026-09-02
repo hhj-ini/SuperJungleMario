@@ -452,7 +452,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		if (UGameLogic::GetInstance().IsRenderUI()) // Top UI part
 		{
 			renderer.PrepareUIShader(UIMarioSRV);
-			CoinUI->Render(renderer, UIBuffer, numVerticesUI, 0.1f, 0.1f, DirectX::XMFLOAT2(-0.24f, 0.84f));
+			CoinUI->Render(renderer, UIBuffer, numVerticesUI, 0.08f, 0.08f, DirectX::XMFLOAT2(-0.24f, 0.84f));
 			renderer.PrepareUIShader(UIFontSRV);
 			for (size_t i = 0; i < UICnt; i++)
 			{
