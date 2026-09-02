@@ -63,7 +63,7 @@ bool UGameLogic::removeOneLife()
 		setShowBlack(false);
 		setGameOver();
 	}
-	return life >= 0;
+	return life > -1;
 }
 
 bool UGameLogic::IsEnding()
