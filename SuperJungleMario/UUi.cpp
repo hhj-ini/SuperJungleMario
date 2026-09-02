@@ -22,14 +22,14 @@ char charList[] =
 	'.', '.', '.'
 };
 
-POINT charPositionsStart[] =
+POINT charPositionsBlack[] =
 {
 	{ 355, 352 }, { 390, 350 }, { 425, 350 }, { 454, 349 }, { 489, 346 },
 	{ 570, 348 }, { 610, 350 }, { 643, 347 },
 	{ 519, 505 }, { 614, 500 },
 };
 
-char charListStart[] =
+char charListBlack[] =
 {
 	'W', 'O', 'R', 'L', 'D',
 	'1', '/', '1',
@@ -67,6 +67,37 @@ char charListEnd[] =
 	'A',
 	'T', 'O',
 	'R', 'E', 'S', 'T', 'A', 'R', 'T'
+};
+
+POINT charPositionsStart[] =
+{
+	// @2026 JUNGLE
+	{ 470, 494 }, { 505, 490 }, { 540, 490 }, { 575, 490 }, { 610, 490 },
+	{ 675, 490 }, { 710, 492 }, { 745, 490 }, { 780, 488 }, { 815, 490 }, { 850, 487 },
+
+	// 1 PLAYER GAME
+	{ 370, 590 },
+	{ 435, 590 }, { 470, 590 }, { 505, 588 }, { 540, 592 }, { 575, 588 }, { 610, 590 },
+	{ 675, 587 }, { 710, 587 }, { 745, 589 }, { 780, 587 },
+
+	// 2 PLAYER GAME
+	{ 370, 640 },
+	{ 435, 640 }, { 470, 640 }, { 505, 638 }, { 540, 642 }, { 575, 638 }, { 610, 640 },
+	{ 675, 637 }, { 710, 637 }, { 745, 639 }, { 780, 637 },
+
+	// TOP: 330650
+	{ 430, 794 }, { 465, 793 }, { 500, 793 }, { 535, 790 }, 
+	{ 600, 790 }, { 635, 790 }, { 670, 790 }, { 705, 790 }, { 740, 790 }, { 775, 790 }
+};
+
+char charListStart[] =
+{
+	'@', '2', '0', '2', '6', 'J', 'U', 'N', 'G', 'L', 'E',
+
+	'1', 'P', 'L', 'A', 'Y', 'E', 'R', 'G', 'A', 'M', 'E',
+	'2', 'P', 'L', 'A', 'Y', 'E', 'R', 'G', 'A', 'M', 'E',
+
+	'T', 'O', 'P', ':', '3', '3', '0', '6', '5', '0'
 };
 
 UUi::UUi(FVertexUI* UIVertex, DirectX::XMFLOAT2 NDCoord, DirectX::XMFLOAT4 rgba, DirectX::XMFLOAT4 uv, float scale)
@@ -129,7 +160,7 @@ void UUi::UpdateCoinUI(int coin)
 
 void UUi::UpdateLifeUI(int life)
 {
-	charListStart[10] = '0' + life % 10;
+	charListBlack[10] = '0' + life % 10;
 }
 
 void UUi::UpdateUV(int index)
@@ -137,9 +168,9 @@ void UUi::UpdateUV(int index)
 	UUi::uv = Translate(charList[index]);
 }
 
-void UUi::UpdateUVStart(int index)
+void UUi::UpdateUVBlack(int index)
 {
-	UUi::uv = Translate(charListStart[index]);
+	UUi::uv = Translate(charListBlack[index]);
 }
 
 // char input을 u, v 좌표로 변환 
@@ -192,6 +223,16 @@ DirectX::XMFLOAT4 UUi::Translate(char input)
 	{
 		col = 7.1;
 		row = 8;
+	}
+	else if (input == '@')
+	{
+		col = 8.1;
+		row = 7;
+	}
+	else if (input == ':')
+	{
+		col = 7.1;
+		row = 4;
 	}
 
 	float u0 = (cellHeight * row + cellHeight) / textureHeight;

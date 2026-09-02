@@ -7,6 +7,7 @@ public: // 나중에 privite으로
 	int coin;
 	int life;
 	bool ending;
+	bool started;
 	UGameLogic();
 
 public:
@@ -24,4 +25,7 @@ public:
 
 	bool IsEnding();
 	void setEnding();
+
+	bool IsStarted();
+	void setStarted();
 };
