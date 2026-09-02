@@ -92,13 +92,9 @@ bool UBrick::CollisionCheck(UPrimitive* other)
 				//bIsActive = false;
 				BrokenAnimInit();
 				
-				if (BoxType == EBoxType::QUESTION) {
-					bIsBroken = false;
-				}
-				else {
-					bIsBroken = true;
-				}
+				
 				bIsBroken = true;
+				
 				SoundManager->PlaySoundResource(SoundBufferPtr);
 				// 50점 
 				UGameLogic::GetInstance().addScore(50, Location.x, Location.y);
