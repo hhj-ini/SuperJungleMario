@@ -1,14 +1,16 @@
 #include "Map.h"
 void MapReader(UPrimitive** AllMapObjects,size_t& objectCount) {
 
-
 	for (int i = 0;i < MapHeight;++i) {
 		for (int j = 0;j < MapWidth;j++) {
+
+			float screenX = MapOriginX + (float)j * mapScale;
+			float screenY = MapOriginY + (float)(MapHeight - 1 - i) * mapScale;
 
 			switch (MapData[i][j]) {
 
 			case '.':
-				continue;
+				break;
 
 			case 'G':
 				AllMapObjects[objectCount++] = new UBox(MapOriginX + (float)j * mapScale, MapOriginY + (float)i * mapScale, 1.0f, 1.0f);
@@ -36,6 +38,7 @@ void MapReader(UPrimitive** AllMapObjects,size_t& objectCount) {
 				break;
 
 			case 'F':
+				AllMapObjects[objectCount++] = new UFlower(MapOriginX + (float)j * mapScale, MapOriginY + (float)i * mapScale, 1.0f, 1.0f);
 				break;
 
 			case 'C':
