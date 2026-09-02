@@ -11,11 +11,12 @@ UGameLogic::UGameLogic()
 	coin(0),
 	life(3),
 	ending(false),
-	started(false),  
+	started(false),
 	gameOver(false),
 	x(0.0f),
 	y(0.0f),
-	showScore(false),
+	IsFloatingScore(false),
+	floatingScoreList({}),
 	showBlack(false),
 	respawn(false),
 	needRestart(false),
@@ -34,7 +35,8 @@ void UGameLogic::addScore(int addAmount, float xCoord, float yCoord) // 해당 �
 	score = score + addAmount;
 	x = xCoord;
 	y = yCoord;
-	setShowScore(true);
+	setIsFloatingScore(true);
+	floatingScoreList.push_back(addAmount);
 }
 
 int UGameLogic::getCoin()
@@ -89,13 +91,22 @@ void UGameLogic::setStarted()
 	started = true;
 }
 
-bool UGameLogic::IsShowScore()
+bool UGameLogic::bIsFloatingScore()
 {
-	return showScore;
+	return IsFloatingScore;
 }
-void UGameLogic::setShowScore(bool input)
+void UGameLogic::setIsFloatingScore(bool input)
 {
-	showScore = input;
+	IsFloatingScore = input;
+}
+
+std::vector<int> UGameLogic::getFloatingScoreList()
+{
+	return floatingScoreList;
+}
+void UGameLogic::setFloatingScoreList(std::vector<int> &scoreList)
+{
+	floatingScoreList = scoreList;
 }
 
 bool UGameLogic::IsGameOver()
@@ -145,7 +156,7 @@ void UGameLogic::resetAll()
 	gameOver = false;
 	x = 0.0f;
 	y = 0.0f;
-	showScore = false;
+	IsFloatingScore = false;
 	showBlack = false;
 	respawn = false;
 	needRestart = false;

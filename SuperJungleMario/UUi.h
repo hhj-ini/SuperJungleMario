@@ -71,4 +71,10 @@ public:
 	static void UpdateOverScoreUI(int score);
 
 	void UpdateUV(char* charList, int index);
+
+	void UpdateFloatingUV(int index);
+
+	static DirectX::XMFLOAT4 TranslateUV(char input);
+
+	static DirectX::XMFLOAT4 TranslateFloatingUV(int score);
 };

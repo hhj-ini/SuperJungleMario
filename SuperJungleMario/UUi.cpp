@@ -128,20 +128,6 @@ char charListStart[] =
 	'T', 'O', 'P', ':', '3', '3', '0', '6', '5', '0'
 };
 
-//POINT charScoreList [] =
-//{
-//	{'5', '0'},
-//	{'1', '0', '0'},
-//	{'2', '0', '0'},
-//	{'1', '0', '0', '0'},
-//};
-
-//char charScoreList [[]] =
-//{
-//	{ { -0.01f, 0 }, {0.01f, 0} },
-//	{}
-//};
-
 UUi::UUi(FVertexUI* UIVertex, DirectX::XMFLOAT2 NDCoord, DirectX::XMFLOAT4 rgba, DirectX::XMFLOAT4 uv)
 	:UIVertex(UIVertex)
 	, NDCoord(NDCoord)
@@ -224,13 +210,35 @@ void UUi::UpdateOverScoreUI(int score)
 	charListOver[14] = '0' + (score / 100000) % 10;
 }
 
+void UUi::UpdateFloatingUV(int score)
+{
+	UUi::uv = UUi::TranslateFloatingUV(score);
+}
+
+DirectX::XMFLOAT4 UUi::TranslateFloatingUV(int score)
+{
+	switch (score)
+	{
+	case 100:
+		return DirectX::XMFLOAT4(0, 0.5f, 0, 0.5f);
+	case 200:
+		return DirectX::XMFLOAT4(0.5f, 1, 0, 0.5f);
+	case 1000:
+		return DirectX::XMFLOAT4(0, 0.5f, 0.5f, 1);
+	case 5000:
+		return DirectX::XMFLOAT4(0.5f, 1, 0.5f, 1);
+	default:
+		return DirectX::XMFLOAT4(0, 0, 0, 0);
+	}
+}
+
 void UUi::UpdateUV(char* charList, int index)
 {
-	UUi::uv = UUi::Translate(charList[index]);
+	UUi::uv = UUi::TranslateUV(charList[index]);
 }
 
 // char input을 u, v 좌표로 변환 
-DirectX::XMFLOAT4 UUi::Translate(char input)
+DirectX::XMFLOAT4 UUi::TranslateUV(char input)
 {
 	float textureWidth = 1000.0f;
 	float textureHeight = 1000.0f;

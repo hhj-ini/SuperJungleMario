@@ -139,7 +139,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	UUi** UIList = new UUi * [UICnt];
 	for (int i = 0; i < UICnt; i++)
 	{
-		UIList[i] = new UUi(ui_vertices, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT4(1, 1, 1, 1), UUi::Translate(charList[i]));
+		UIList[i] = new UUi(ui_vertices, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT4(1, 1, 1, 1), UUi::TranslateUV(charList[i]));
 	}
 	UUi* CoinUI = new UUi(ui_vertices, DirectX::XMFLOAT2(-0.24f, 0.84f));
 	// Black UI part
@@ -147,7 +147,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	UUi** BlackUIList = new UUi * [BlackUICnt];
 	for (int i = 0; i < BlackUICnt; i++)
 	{
-		BlackUIList[i] = new UUi(ui_vertices, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT4(1, 1, 1, 1), UUi::Translate(charListBlack[i]));
+		BlackUIList[i] = new UUi(ui_vertices, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT4(1, 1, 1, 1), UUi::TranslateUV(charListBlack[i]));
 	}
 	UUi* BlackBackground = new UUi(ui_vertices);
 	UUi* MarioUI = new UUi(ui_vertices, DirectX::XMFLOAT2(-0.2f, 0.025f));
@@ -156,7 +156,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	UUi** StartUIList = new UUi * [StartUICnt];
 	for (int i = 0; i < StartUICnt; i++)
 	{
-		StartUIList[i] = new UUi(ui_vertices, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT4(1, 1, 1, 1), UUi::Translate(charListStart[i]));
+		StartUIList[i] = new UUi(ui_vertices, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT4(1, 1, 1, 1), UUi::TranslateUV(charListStart[i]));
 	}
 	UUi* TitleUI = new UUi(ui_vertices);
 	// Ending UI part
@@ -164,20 +164,27 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	UUi** GameEndUIList = new UUi * [GameEndUICnt];
 	for (int i = 0; i < GameEndUICnt; i++)
 	{
-		GameEndUIList[i] = new UUi(ui_vertices, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT4(1, 1, 1, 1), UUi::Translate(charListEnd[i]));
+		GameEndUIList[i] = new UUi(ui_vertices, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT4(1, 1, 1, 1), UUi::TranslateUV(charListEnd[i]));
 	}
 	// Over UI part
 	size_t GameOverUICnt = 35;
 	UUi** GameOverUIList = new UUi * [GameOverUICnt];
 	for (int i = 0; i < GameOverUICnt; i++)
 	{
-		GameOverUIList[i] = new UUi(ui_vertices, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT4(1, 1, 1, 1), UUi::Translate(charListOver[i]));
+		GameOverUIList[i] = new UUi(ui_vertices, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT4(1, 1, 1, 1), UUi::TranslateUV(charListOver[i]));
+	}
+	// Floating score UI part
+	size_t FloatingScoreUICnt = 1000;
+	UUi** FloatingScoreUIList = new UUi*[FloatingScoreUICnt];
+	for (int i = 0; i < GameOverUICnt; i++)
+	{
+		GameOverUIList[i] = nullptr;
 	}
 	// ui 텍스쳐 파일 로드
 	ID3D11Resource* UIFontResource = nullptr; ID3D11ShaderResourceView* UIFontSRV = nullptr; renderer.LoadTexture(L"Resource\\font.png", UIFontResource, UIFontSRV);
 	ID3D11Resource* UIBlackResource = nullptr; ID3D11ShaderResourceView* UIBlackSRV = nullptr; renderer.LoadTexture(L"Resource\\black.png", UIBlackResource, UIBlackSRV);
 	ID3D11Resource* UIMarioResource = nullptr; ID3D11ShaderResourceView* UIMarioSRV = nullptr; renderer.LoadTexture(L"Resource\\Mario\\Mario1.png", UIMarioResource, UIMarioSRV);
-	//ID3D11Resource* UICoinResource = nullptr; ID3D11ShaderResourceView* UICoinSRV = nullptr; renderer.LoadTexture(L"Resource\\Coin.png", UICoinResource, UICoinSRV);
+	ID3D11Resource* UICoinResource = nullptr; ID3D11ShaderResourceView* UICoinSRV = nullptr; renderer.LoadTexture(L"Resource\\Coin.png", UICoinResource, UICoinSRV);
 	ID3D11Resource* UITitleResource = nullptr; ID3D11ShaderResourceView* UITitleSRV = nullptr; renderer.LoadTexture(L"Resource\\title.png", UITitleResource, UITitleSRV);
 
 	//ID3D11Buffer* cubeBuffer = renderer.CreateVertexBuffer(cube_vertices, sizeof(cube_vertices));
@@ -444,12 +451,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			BlackBackground->Render(renderer, UIBuffer, numVerticesUI, 5.0f, 5.0f, DirectX::XMFLOAT2(0.0f, 0.0f));
 		}
 		UUi::UpdateScoreUI(UGameLogic::GetInstance().getScore());
-		UUi::UpdateCoinUI(UGameLogic::GetInstance().getLife());
+		UUi::UpdateCoinUI(UGameLogic::GetInstance().getCoin());
 		const float fontSize = 0.09f;
 		if (UGameLogic::GetInstance().IsRenderUI()) // Top UI part
 		{
-			renderer.PrepareUIShader(UIMarioSRV);
-			CoinUI->Render(renderer, UIBuffer, numVerticesUI, 0.08f, 0.08f, DirectX::XMFLOAT2(-0.24f, 0.84f));
+			renderer.PrepareUIShader(UICoinSRV);
+			CoinUI->Render(renderer, UIBuffer, numVerticesUI, 0.09f, 0.09f, DirectX::XMFLOAT2(-0.24f, 0.84f));
 			renderer.PrepareUIShader(UIFontSRV);
 			for (size_t i = 0; i < UICnt; i++)
 			{
@@ -501,10 +508,20 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				GameEndUIList[i]->Render(renderer, UIBuffer, numVerticesUI, fontSize, fontSize, renderer.GetNDCoordinate(charPositionsEnd[i], 1024, 1024));
 			}
 		}
-		if (UGameLogic::GetInstance().IsShowScore()) // floating score rendering
+		if (UGameLogic::GetInstance().bIsFloatingScore()) // floating score rendering
 		{
 			renderer.PrepareUIShader(UIFontSRV);
-			
+			UGameLogic::GetInstance().getCoordinate();
+			//NDC 업데이트해야 
+			//FloatingScoreUI->UpdateUV(charFloatingList, 0);
+			for (size_t i = 0; i < FloatingScoreUICnt; i++)
+			{
+				FloatingScoreUIList[i]->UpdateFloatingUV(UGameLogic::GetInstance().getFloatingScoreList()[i]);
+				FloatingScoreUIList[i]->Render(renderer, UIBuffer, numVerticesUI, fontSize / 0.01f, fontSize / 0.01f, UGameLogic::GetInstance().getCoordinate());
+			}
+
+			//UGameLogic::GetInstance().setShowScore(false);
+			//UGameLogic::GetInstance().setShowingScore(0);
 			//UGameLogic::GetInstance().setShowScore(false); // 이러면 한 프레임만 되긴 하는데 일단 이렇게 
 		}
 
@@ -613,7 +630,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	renderer.ReleaseResource(UIFontResource);renderer.ReleaseSRV(UIFontSRV);
 	renderer.ReleaseResource(UIBlackResource);renderer.ReleaseSRV(UIBlackSRV);
 	renderer.ReleaseResource(UIMarioResource);renderer.ReleaseSRV(UIMarioSRV);
-	//renderer.ReleaseResource(UICoinResource);renderer.ReleaseSRV(UICoinSRV);
+	renderer.ReleaseResource(UICoinResource);renderer.ReleaseSRV(UICoinSRV);
 	renderer.ReleaseResource(UITitleResource);renderer.ReleaseSRV(UITitleSRV);
 
 	ResourceManager::GetInstance().ReleaseResource(&renderer, &soundManager);

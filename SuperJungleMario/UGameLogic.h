@@ -1,5 +1,6 @@
 #pragma once
 #include <DirectXMath.h>
+#include <vector>
 
 class UGameLogic
 {
@@ -12,7 +13,8 @@ private: // 나중에 privite으로
 	bool gameOver;
 	float x;
 	float y;
-	bool showScore;
+	bool IsFloatingScore;
+	std::vector<int> floatingScoreList;
 	bool showBlack;
 	bool respawn;
 	bool needRestart;
@@ -40,8 +42,11 @@ public:
 	bool IsStarted();
 	void setStarted();
 
-	bool IsShowScore();
-	void setShowScore(bool input);
+	bool bIsFloatingScore();
+	void setIsFloatingScore(bool input);
+
+	std::vector<int> getFloatingScoreList();
+	void setFloatingScoreList(std::vector<int> &scoreList);
 
 	bool IsGameOver();
 	void setGameOver();
