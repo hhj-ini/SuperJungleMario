@@ -411,6 +411,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			timer = 0.0f;
 			player->Reset();
 			camera.Reset();
+
+			UGameLogic::GetInstance().setStarted();
 		}
 		if (player && (player->IsPlayerDead() || player->Location.y < -2.5f))
 		{

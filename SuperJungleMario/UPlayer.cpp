@@ -293,6 +293,10 @@ void UPlayer::SetState(UPlayer::PlayerState InState)
 		pState = PlayerState::ALIVE;
 		break;
 	case PlayerState::DEAD:
+		if (pState != PlayerState::DEAD)
+		{
+			SoundManager->PlaySoundResource(SoundBufferMap[L"death"]);
+		}
 		pState = PlayerState::DEAD;
 		break;
 	}
@@ -367,7 +371,7 @@ void UPlayer::TakeDamage()
 
 	Hp = 0;
 	SetState(PlayerState::DEAD);
-	SoundManager->PlaySoundResource(SoundBufferMap[L"death"]);
+	
 }
 
 void UPlayer::Grow()
