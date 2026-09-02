@@ -68,9 +68,9 @@ bool USoundManager::LoadWavFile(const std::wstring& InPath, IDirectSoundBuffer*&
     waveFormat.wFormatTag = WAVE_FORMAT_PCM;
     waveFormat.nChannels = *((short*)&header[22]);
     waveFormat.nSamplesPerSec = *((int*)&header[24]);
-    waveFormat.wBitsPerSample = *((int*)&header[28]);
+    waveFormat.nAvgBytesPerSec= *((int*)&header[28]);
     waveFormat.nBlockAlign = *((short*)&header[32]);
-    waveFormat.nAvgBytesPerSec = *((short*)&header[34]);
+    waveFormat.wBitsPerSample = *((short*)&header[34]);
     waveFormat.cbSize = 0;
 
 
@@ -82,25 +82,30 @@ bool USoundManager::LoadWavFile(const std::wstring& InPath, IDirectSoundBuffer*&
     return LoadAudioData(&waveFormat, audioData, audioDataSize, SoundBufferPtr);
 }
 
-bool USoundManager::LoadAudioData(WAVEFORMATEX* waveFormat, unsigned char* audioData, DWORD audioDataSize, IDirectSoundBuffer* InSoundBuffer)
+bool USoundManager::LoadAudioData(WAVEFORMATEX* waveFormat, unsigned char* audioData, DWORD audioDataSize, IDirectSoundBuffer*& InSoundBuffer)
 {
     DSBUFFERDESC bufferDesc;
     ZeroMemory(&bufferDesc, sizeof(DSBUFFERDESC));
     bufferDesc.dwSize = sizeof(DSBUFFERDESC);
-    bufferDesc.dwFlags = DSBCAPS_PRIMARYBUFFER | DSBCAPS_CTRLVOLUME;
-    bufferDesc.dwBufferBytes = 0;
+
+    bufferDesc.dwFlags = DSBCAPS_CTRLVOLUME;
+    bufferDesc.dwBufferBytes = audioDataSize;
     bufferDesc.dwReserved = 0;
-    bufferDesc.lpwfxFormat = NULL;
+    bufferDesc.lpwfxFormat = waveFormat;
     bufferDesc.guid3DAlgorithm = GUID_NULL;
 
     IDirectSoundBuffer* tempBuffer = nullptr;
     if (FAILED(DirectSound->CreateSoundBuffer(&bufferDesc, &tempBuffer, NULL)))
     {
+        std::wstring error = L"CreateSoundBuffer Fail";
+        MessageBox(NULL, error.c_str(), L"Error", MB_OK);
         return false;
     }
 
     if (FAILED(tempBuffer->QueryInterface(IID_IDirectSoundBuffer8, (void**)&InSoundBuffer)))
     {
+        std::wstring error = L"QueryInterface Fail";
+        MessageBox(NULL, error.c_str(), L"Error", MB_OK);
         return false;
     }
     tempBuffer->Release();
@@ -110,36 +115,38 @@ bool USoundManager::LoadAudioData(WAVEFORMATEX* waveFormat, unsigned char* audio
     DWORD buffersize;
     if (FAILED(InSoundBuffer->Lock(0, audioDataSize, (void**)&bufferPtr, (DWORD*)&buffersize, NULL, 0, 0)))
     {
+        std::wstring error = L"Lock Fail";
+        MessageBox(NULL, error.c_str(), L"Error", MB_OK);
         return false;
     }
 
     memcpy(bufferPtr, audioData, audioDataSize);
 
     // 버퍼잠금 해제
-    SecondaryBuffer->Unlock((void*)bufferPtr, buffersize, NULL, 0);
+    InSoundBuffer->Unlock((void*)bufferPtr, buffersize, NULL, 0);
 
 
     return true;
 }
 
-void USoundManager::PlaySound()
+void USoundManager::PlaySoundResource(IDirectSoundBuffer* InSoundBuffer)
 {
     // 재생 위치를 처음으로 초기화
-    SecondaryBuffer->SetCurrentPosition(0);
+    InSoundBuffer->SetCurrentPosition(0);
 
     // 볼륨 최대 설정
-    SecondaryBuffer->SetVolume(DSBVOLUME_MAX);
+    InSoundBuffer->SetVolume(DSBVOLUME_MAX);
 
     // 0: 한번 재생,
     // DSBPLAY_LOOPING: 반복재생
-    SecondaryBuffer->Play(0, 0, 0);
+    InSoundBuffer->Play(0, 0, 0);
 }
 
-void USoundManager::StopSound()
+void USoundManager::StopSound(IDirectSoundBuffer* SoundBufferPtr)
 {
-    if (SecondaryBuffer)
+    if (SoundBufferPtr)
     {
-        SecondaryBuffer->Stop();
+        SoundBufferPtr->Stop();
     }
 }
 

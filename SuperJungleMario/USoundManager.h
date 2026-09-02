@@ -23,10 +23,10 @@ public:
 	bool LoadWavFile(const std::wstring& InPath, IDirectSoundBuffer*& SoundBufferPtr);
 
 	bool LoadAudioData(WAVEFORMATEX* waveFormat, unsigned char* audioData,
-		DWORD audioDataSize, IDirectSoundBuffer* InSoundBuffer);
+		DWORD audioDataSize, IDirectSoundBuffer*& InSoundBuffer);
 
-	void PlaySound();
-	void StopSound();
+	void PlaySoundResource(IDirectSoundBuffer* SoundBufferPtr);
+	void StopSound(IDirectSoundBuffer* SoundBufferPtr);
 	void ShutdownDirectSound();	
 };
 

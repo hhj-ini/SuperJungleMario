@@ -20,6 +20,8 @@ public:
     virtual void OnHitFromBelow();
 
     virtual void Tick(float deltaTime) override;
+    
+    virtual void SetSoundResource(USoundManager* soundManager) override;
 
     void KillEnemy();
     void BrokenAnimInit();

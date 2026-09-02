@@ -35,6 +35,7 @@
 
 #include "Map.h"
 #include "UBackground.h"
+#include "USoundManager.h"
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -104,6 +105,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	renderer.CreateConstantBuffer();
 	renderer.CreateUISamplerState();
 	renderer.CreateTextureSamplerState();
+
+	// 사운드매니저 생성
+	USoundManager soundManager;
+	soundManager.InitializeDirectSound(hWnd);
 
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
@@ -238,9 +243,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	PrimitiveList[primitiveCount++] = goomba;
 	GoombaList[0] = goomba;
 
-	UPrimitive* brick = new UBrick(0.1f, -0.4f, 1.0f, 1.0f);
-	PrimitiveList[primitiveCount++] = brick;
-
 	//UQuestionBox* question = new UQuestionBox;
 	//PrimitiveList[primitiveCount++] = question;
 	//PrimitiveList[primitiveCount++] = question->ItemPtr;
@@ -259,7 +261,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	//renderer.LoadTexture(L"Resource\\Mushroom.png", MushroomTest, MushroomTestSRV);
 
 	//Map 생성
-	MapReader(PrimitiveList, primitiveCount);
+	MapReader(PrimitiveList, primitiveCount, &soundManager);
 
 
 	// Main Loop(Quit Message가 들어오기 전까지 아래 Loop를 무한히 실행하게 됨.
@@ -501,15 +503,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			}
 		}
 
-		// 브릭 애니메이션 테스트용
-		if (ImGui::Button("Brick"))
-		{
-			if (UBrick* bp = dynamic_cast<UBrick*>(brick))
-			{
-				bp->AnimState = UBrick::EAnimState::UP;
-			}
-		}
-		
 
 
 		// Flower 테스트용
