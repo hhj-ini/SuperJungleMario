@@ -244,12 +244,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	//// Box 추가////
 	UPrimitive** Ground = nullptr;
-	Ground = new UPrimitive * [40];  // 10을 변수로 변경해야함. 지금은 임시테스트용
+	Ground = new UPrimitive * [50];  // 10을 변수로 변경해야함. 지금은 임시테스트용
 	
 	for (int i = 0;i < 40; ++i)
 	{
 		Ground[i] = new UBox(-1.0f+i*scaleMod , -0.8f, 1.0f, 1.0f);
 	}
+
 
 
 	// Main Loop(Quit Message가 들어오기 전까지 아래 Loop를 무한히 실행하게 됨.
@@ -305,13 +306,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		for (size_t i = 0; i < primitiveCount; ++i)
 		{
 			PrimitiveList[i]->Tick();
-			for (size_t j = 0; j < primitiveCount; ++j) 
-			{
-				if (i == j) continue;
-				// if (j == mushroomIdx || i == mushroomIdx) continue;	// 임시로 버섯 충돌 로직 영향 받지 않도록 함
-				PrimitiveList[i]->CollisionCheck(PrimitiveList[j]);
-			}
-
 			if (UBall* b = dynamic_cast<UBall*>(PrimitiveList[i]))
 			{
 				b->Move();				
@@ -322,6 +316,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 					b->CollisionCheck(Ground[k]);
 				}
 			}	
+
+			for (size_t j = 0; j < primitiveCount; ++j)
+			{
+				if (i == j) continue;
+				// if (j == mushroomIdx || i == mushroomIdx) continue;	// 임시로 버섯 충돌 로직 영향 받지 않도록 함
+				PrimitiveList[i]->CollisionCheck(PrimitiveList[j]);
+			}
 		}
 
 		for (size_t i = 0; i < primitiveCount; ++i)

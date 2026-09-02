@@ -25,6 +25,7 @@ public:
     UPlayer();
     ~UPlayer() override;
 
+    virtual void Tick() override;
     void Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num) override;
     void UpdateVelocity(bool bGravity) override;
     void Move() override;
