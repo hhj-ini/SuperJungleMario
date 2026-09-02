@@ -123,6 +123,7 @@ void UEnemy::OnDeath(UPlayer* player)
 	{
 		SetState(EnemyState::DEAD);
 		player->SetVelocityY(0.03f); 
+		bIsActive = false;
 	}
 }
 
