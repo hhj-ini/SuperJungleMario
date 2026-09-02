@@ -1,9 +1,6 @@
 #pragma once
-#include "Uprimitive.h"
-#include "UBox.h"
-#include "UEnemy.h"
-#include "UFlower.h"
-#include "UPipe.h"
+
+class UPrimitive;
 
 constexpr int   MapWidth = 212;
 constexpr int   MapHeight = 15;
@@ -40,7 +37,7 @@ inline const char* MapData[MapHeight] =
 	"................?...B?B?B.....................PP.........PP.....?............BFB..............B?....?.....?..?........BBBB.......B?B.....S..S..........S...S............B?B.............SSSSSS........L...CCCCC.....",   //  9  기본 블럭 줄
 	"......................................PP......PP.........PP.............................................................................SS..SS........SS...SS..........................SSSSSSS........L...CCCCC.....",   // 10
 	"............................PP........PP......PP.........PP............................................................................SSS..SSS......SSS...SSS.....PP..............PP.SSSSSSSS........L...CCCCC.....",   // 11
-	"......................E.....PP........PPE.....PP...EE....PP......................................EE........E......EE........EE........SSSS..SSSS....SSSS...SSSS....PP........EE....PPSSSSSSSSS........L...CCCCC.....",   // 12  지면 바로 위
+	"......................E.....PP........PPE.....PP...EE....PP......................................EE........E......EE........EE........SSSS..SSSS....SSSS...SSSS....PP........EE....PPSSSSSSSSS........S...CCCCC.....",   // 12  지면 바로 위
 	"GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG..GGGGGGGGGGGGGGG...GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG..GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG",   // 13  지면
 	"GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG..GGGGGGGGGGGGGGG...GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG..GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG",   // 14  지면
 };

@@ -140,12 +140,12 @@ bool UPlayer::CollisionCheck(UPrimitive* other)
 					UBox* bp = dynamic_cast<UBox*>(other);
 					
 					Location.y = other->Location.y - ((other->height / 2.0f) + (height / 2.0f));	
-					if (bp && (UBox::EBoxType::BRICK == bp->BoxType || UBox::EBoxType::QUESTION == bp->BoxType))
-					{
-						// 의도적으로 overlap되도록 함
-						float overlapAcceptDegree = 0.01f;
-						Location.y += overlapAcceptDegree;
-					}
+					//if (bp && (UBox::EBoxType::BRICK == bp->BoxType || UBox::EBoxType::QUESTION == bp->BoxType))
+					//{
+					//	// 의도적으로 overlap되도록 함
+					//	//float overlapAcceptDegree = 0.01f;
+					//	//Location.y += overlapAcceptDegree;
+					//}
 					
 					Velocity.y *= -0.5f;
 					break;

@@ -71,6 +71,7 @@ bool UBrick::CollisionCheck(UPrimitive* other)
 		{	// 2. 플레이어가 블럭과 오버랩 된 경우 
 			// 블럭 애니메이션 시작
 			AnimState = EAnimState::UP;
+			BoxType = EBoxType::HARD;
 		}
 	}
 
