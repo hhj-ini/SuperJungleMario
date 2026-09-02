@@ -34,7 +34,6 @@
 #include "UQuestionBox.h"
 
 #include "Map.h"
-
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 // 각종 메시지를 처리할 함수
@@ -172,7 +171,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	ID3D11Buffer* cubeBuffer = renderer.CreateTextureVertexBuffer(cube_vertices, sizeof(cube_vertices));
 
 
-	size_t ballPoolCnt = 70;	// 초기에 70개만큼 공 풀 확보
+	size_t ballPoolCnt = 500;	// 초기에 70개만큼 공 풀 확보
 	size_t primitiveCount = 0;	// 현재 공 풀에 들어있는 공 갯수
 
 	UPrimitive** PrimitiveList = new UPrimitive*[ballPoolCnt];
@@ -245,11 +244,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	UPrimitive** Ground = nullptr;
 	Ground = new UPrimitive * [40];  // 10을 변수로 변경해야함. 지금은 임시테스트용
 	
+	// Ground 생성
 	for (int i = 0;i < 40; ++i)
 	{
 		Ground[i] = new UBox(-1.0f+i*scaleMod , -0.8f, 1.0f, 1.0f);
 	}
 
+	//Map 생성
+	//MapReader(PrimitiveList, primitiveCount);
 
 	// Main Loop(Quit Message가 들어오기 전까지 아래 Loop를 무한히 실행하게 됨.
 	while (bIsExit == false)
