@@ -321,14 +321,25 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		// 카메라가 플레이어 추적
 		camera.Follow(player->Location);
 		renderer.ViewMatrix = camera.GetViewMatrix();
+		UPlayer* mainPlayer = nullptr;
 
-		// 카메라가 플레이어를 추적하지 않음
-		// renderer.ViewMatrix = DirectX::XMMatrixIdentity();
-
+		for (size_t i = 0; i < primitiveCount; ++i)
+		{
+			if (UPlayer* p = dynamic_cast<UPlayer*>(PrimitiveList[i]))
+			{
+				mainPlayer = p;
+				break;
+			}
+		}
 		for (size_t i = 0; i < primitiveCount; ++i)
 		{
 			if (PrimitiveList[i]->bIsActive == false) continue;
 			PrimitiveList[i]->Tick(deltaTime);
+
+			if (UEnemy* enemy = dynamic_cast<UEnemy*>(PrimitiveList[i]))
+			{
+				enemy->SetPlayer(mainPlayer);
+			}
 
 			if (UBall* b = dynamic_cast<UBall*>(PrimitiveList[i]))
 			{
