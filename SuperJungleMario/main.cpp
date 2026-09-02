@@ -173,7 +173,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	ID3D11Resource* UITitleResource = nullptr; ID3D11ShaderResourceView* UITitleSRV = nullptr; renderer.LoadTexture(L"Resource\\title.png", UITitleResource, UITitleSRV);
 	// UI 렌더링 여부
 	bool bUIRender = true;
-	bool bBlackUI = false; // 일단 false로 
 	bool bGameEnd = false;
 
 	//ID3D11Buffer* cubeBuffer = renderer.CreateVertexBuffer(cube_vertices, sizeof(cube_vertices));
@@ -204,10 +203,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	double elapsedTime = 0.0;	
 	// 게임 진행 시간 타이머 초기화
 	LARGE_INTEGER frequencyGame,startGameTime, currentGameTime;
-	double GameTime = 0.0f;
 	QueryPerformanceFrequency(&frequencyGame);
 	QueryPerformanceCounter(&startGameTime);
+	double GameTime = 0.0f;
 	double StartTime = 0.0f;
+	double timer = 0.0f;
 
 	/////////// 여기서 테스트용 객체 추가하시면 됩니다 ////////////////
 	int mushroomIdx = UBall::TotalNumBalls;
@@ -283,26 +283,22 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 		else if (StartTime == 0.0f)// 아무 키나 눌러 게임이 시작됨
 		{
-			//StartTime = GameTime; // 주석 제거 주석 제거 주석 제거
-			//bBlackUI = true;
+			StartTime = GameTime; // 주석 제거 주석 제거 주석 제거
+			UGameLogic::GetInstance().setShowBlack(true);
 		}
 		UUi::UpdateGameTime(403 - GameTime + StartTime);
-		if (GameTime > StartTime + 2) // 게임시간이 1초 지나면 첫화면 넘기기
+		if (UGameLogic::GetInstance().IsShowBlack())
 		{
-			bBlackUI = false;
+			if (timer == 0.0f)
+			{
+				timer = GameTime;
+			}
+			else if (GameTime - timer > 1.0f) // 3초 지나면 블랙 ui 제거
+			{
+				UGameLogic::GetInstance().setShowBlack(false);
+				timer = 0.0f;
+			}
 		}
-		//if (static_cast<UPlayer*>(PrimitiveList[2]).IsPlayerDead())
-		//
-		//	bDeath = true;
-		//	timer = GameTime;
-		//	UGameLogic::GetInstance().removeOneLife();
-		//	// 마리오 다시 살리고, 원점으로 돌리는 로직 추가
-		//	dynamic_cast<UPlayer*>(player)->SetState(UPlayer::PlayerState::ALIVE);
-		//}
-		//if (bGameEnd && GameTime - timer > 1.5f) // 1.5초 후에 다시 게임 시작
-		//{
-		//	bDeath = false;
-		//}
 
 		MSG msg;
 
@@ -387,10 +383,24 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			if (player && player->IsPlayerDead())
 			{
 				//RemoveObject(PrimitiveList, primitiveCount, i); 
-				UGameLogic::GetInstance().setGameOver(); // 플레이어가 죽으면 게임 종료
-				continue;
+				if (UGameLogic::GetInstance().removeOneLife()) // 목숨--
+				{
+					UGameLogic::GetInstance().setShowBlack(true); // 리스폰
+					player->SetState(UPlayer::PlayerState::ALIVE);
+					player->Location.x = 0;
+					player->Location.y = 0;
+				}
 			}
-
+			if (player && player->Location.y < -1.0f) // 마리오가 떨어졌으면
+			{
+				if (UGameLogic::GetInstance().removeOneLife()) // 목숨--
+				{
+					UGameLogic::GetInstance().setShowBlack(true); // 리스폰
+					player->SetState(UPlayer::PlayerState::ALIVE);
+					player->Location.x = 0;
+					player->Location.y = 0;
+				}
+			}
 			if (mushroom && mushroom->IsMushroomDestroyed())
 			{
 				//RemoveObject(PrimitiveList, primitiveCount, i);
@@ -416,7 +426,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		// UI 렌더링 
 		renderer.PrepareUIShader(UIBlackSRV);
-		if (bBlackUI || UGameLogic::GetInstance().IsEnding() || UGameLogic::GetInstance().IsGameOver())
+		if (UGameLogic::GetInstance().IsShowBlack() || UGameLogic::GetInstance().IsEnding() || UGameLogic::GetInstance().IsGameOver())
 		{
 			// 첫화면 렌더. 검은 화면 렌더.
 			BlackBackground->Render(renderer, UIBuffer, numVerticesUI, 5.0f, 5.0f, DirectX::XMFLOAT2(0.0f, 0.0f));
@@ -435,7 +445,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				UIList[i]->Render(renderer, UIBuffer, numVerticesUI, fontSize, fontSize, renderer.GetNDCoordinate(charPositions[i], 1024, 1024));
 			}
 		}
-		if (bBlackUI) // Black UI part
+		UUi::UpdateLifeUI(UGameLogic::GetInstance().getLife());
+		if (UGameLogic::GetInstance().IsShowBlack()) // Black UI part
 		{
 			renderer.PrepareUIShader(UIMarioSRV);
 			MarioUI->Render(renderer, UIBuffer, numVerticesUI, 0.1f, 0.1f, DirectX::XMFLOAT2(-0.2f, 0.025f));

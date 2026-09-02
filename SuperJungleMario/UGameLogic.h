@@ -13,6 +13,8 @@ public: // 나중에 privite으로
 	float x;
 	float y;
 	bool showScore;
+	bool showBlack;
+	bool respawn;
 	UGameLogic();
 
 public:
@@ -26,7 +28,7 @@ public:
 
 	int getLife();
 	void addOneLife();
-	void removeOneLife();
+	bool removeOneLife();
 
 	bool IsEnding();
 	void setEnding();
@@ -39,6 +41,9 @@ public:
 
 	bool IsGameOver();
 	void setGameOver();
+
+	bool IsShowBlack();
+	void setShowBlack(bool input);
 
 	DirectX::XMFLOAT2 getCoordinate();
 };
