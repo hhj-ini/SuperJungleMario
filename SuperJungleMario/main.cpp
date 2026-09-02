@@ -467,6 +467,23 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			}
 		}
 
+
+		// Flower 테스트용
+		if (ImGui::Button("->"))
+		{
+			player->Location.x += 2.f;
+		}
+
+		if (ImGui::Button("<-"))
+		{
+			player->Location.x -= 2.f;
+		}
+
+		if (ImGui::Button("^"))
+		{
+			player->Location.y += 0.5f;
+		}
+
 		ImGui::End();
 
 		ImGui::Render();
