@@ -143,13 +143,6 @@ void UUi::Render(URenderer& renderer, ID3D11Buffer* vertexBuffer, UINT numVertic
 	renderer.RenderUI(vertexBuffer, numVertices);
 }
 
-//void UUi::RenderGameStart(URenderer& renderer, ID3D11Buffer* vertexBuffer, UINT numVertices, float UIWidth, float UIHeight)
-//{
-//	renderer.UpdateUI(DirectX::XMFLOAT2(0, 0), vertexBuffer, UIWidth, UIHeight, UUi::uv, UUi::rgba);
-//	renderer.RenderUI(vertexBuffer, numVertices);
-//}
-
-
 void UUi::setNDCoord(DirectX::XMFLOAT2 NDCoord)
 {
 	UUi::NDCoord = NDCoord;

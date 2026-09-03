@@ -275,9 +275,11 @@ bool UPlayer::CollisionCheck(UPrimitive* other)
 		{
 			UFlower* flower = dynamic_cast<UFlower*>(other);
 
-			if (flower && flower->GetState() == UFlower::FlowerState::ENABLE)
+			if (flower && (flower->GetState() == UFlower::FlowerState::ENABLE))
 			{
+				flower->fState = UFlower::FlowerState::DESTROYED;
 				UGameLogic::GetInstance().addScore(1000, Location.x, Location.y);
+
 				if (!bFireMario)
 				{
 					FireMario();
