@@ -69,4 +69,7 @@ private:
 
     float FireTimer = 0.0f;
     const float FireInterval = 0.4f;
+
+    float CollisionTimer = 0.0f;
+    const float CollisionInterval = 0.4f;
 };

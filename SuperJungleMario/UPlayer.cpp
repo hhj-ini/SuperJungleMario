@@ -232,6 +232,11 @@ bool UPlayer::CollisionCheck(UPrimitive* other)
 		case EObjectType::ENEMY:
 			if (UEnemy* enemy = dynamic_cast<UEnemy*>(other))
 			{
+				if (CollisionTimer < CollisionInterval)
+				{
+					break;
+				}
+
 				// 플레이어가 적에게 공격받을 시 적도 사라지는 버전
 				float enemyTop = enemy->GetPosition().y + enemy->GetHeight() / 2.0f;
 				float prePlayerBottom = GetPreviousPosition().y - GetHeight() / 2.0f;
@@ -239,10 +244,12 @@ bool UPlayer::CollisionCheck(UPrimitive* other)
 				{
 					enemy->OnDeath(this);
 					SetVelocityY(0.03f);
+					CollisionTimer = 0.0f;
 				}
 				else
 				{
 					TakeDamage();
+					CollisionTimer = 0.0f;
 				}
 			}
 			break; 
@@ -411,6 +418,8 @@ void UPlayer::UpdateAnimation(float deltaTime)
 			bAttacking = false;
 		}
 	}
+
+	CollisionTimer += deltaTime;
 
 	int BaseFrame = GetBaseFrame();
 
