@@ -429,7 +429,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			player->Reset(); // 플레이어 초기화
 			camera.Reset(); // 카메라 초기화
 
-			//UGameLogic::GetInstance().setStarted();
+			
 		}
 		if (player && (player->IsPlayerDead() || player->Location.y < -2.5f))  // 플레이어가 죽었을때 되돌아가는 부분
 		{
