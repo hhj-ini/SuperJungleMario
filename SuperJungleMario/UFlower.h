@@ -47,8 +47,8 @@ public:
     // void UpdateVelocity(bool bGravity) override;
 
 
-private:
     FlowerState fState = FlowerState::WAITING;
+private:
     float InitHeight;
 };
 

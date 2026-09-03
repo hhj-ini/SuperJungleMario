@@ -51,6 +51,7 @@ bool UFlower::CollisionCheck(UPrimitive* other) {
 		{
 		case EObjectType::PLAYER: 
 			fState = FlowerState::DESTROYED; // 플레이어와 충돌 시 꽃을 DESTROYED 상태로 변경
+
 			// 꽃을 먹어도 점수가 1000점 올라감
 
 			break;
