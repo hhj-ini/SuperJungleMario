@@ -502,6 +502,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 		if (UGameLogic::GetInstance().IsGameOver()) // Game over UI part
 		{
+			UUi::UpdateGameTime(400.0f);
 			UUi::UpdateOverScoreUI(UGameLogic::GetInstance().getScore());
 			UGameLogic::GetInstance().setRenderUI(false);
 			renderer.PrepareUIShader(UIFontSRV);
@@ -513,6 +514,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 		if (UGameLogic::GetInstance().IsEnding()) // Ending UI part
 		{
+			UUi::UpdateGameTime(400.0f);
 			UUi::UpdateFinalScoreUI(UGameLogic::GetInstance().getScore());
 			UGameLogic::GetInstance().setRenderUI(false);
 			renderer.PrepareUIShader(UIFontSRV);
@@ -535,11 +537,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			UGameLogic::GetInstance().setIsFloatingScore(false);
 		}
 		renderer.PrepareShaderResource(UIFloatingSRV);
-		for (size_t i = 0; i < FloatingScoreUIList.size(); i++) // Floating score rendering
+		if (!(UGameLogic::GetInstance().IsShowBlack() || UGameLogic::GetInstance().IsEnding() || UGameLogic::GetInstance().IsGameOver()))
 		{
-			FloatingScoreUIList[i].floatingUUi->UpdateFloatingUV(FloatingScoreUIList[i].displayScore);
-			FloatingScoreUIList[i].floatingUUi->Render(renderer, UIBuffer, numVerticesUI, fontSize / 0.5f, fontSize / 0.5f, FloatingScoreUIList[i].ndCoord);
+			for (size_t i = 0; i < FloatingScoreUIList.size(); i++) // Floating score rendering
+			{
+				FloatingScoreUIList[i].floatingUUi->UpdateFloatingUV(FloatingScoreUIList[i].displayScore);
+				FloatingScoreUIList[i].floatingUUi->Render(renderer, UIBuffer, numVerticesUI, fontSize / 0.5f, fontSize / 0.5f, FloatingScoreUIList[i].ndCoord);
+			}
 		}
+
 		
 
 		// ImGui 렌더링 준비, 컨트롤 설정, 렌더링 요청
