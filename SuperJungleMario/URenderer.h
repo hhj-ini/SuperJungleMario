@@ -102,9 +102,7 @@ public:
 	ID3D11InputLayout* UIInputLayout;
 	unsigned int Stride;
 	unsigned int UIStride;
-
-	ID3D11VertexShader* LineVertexShader;
-
+	
 
 	void CreateShader();
 
@@ -186,4 +184,6 @@ public:
 
 	// ui sampler state 만든다
 	void CreateUISamplerState();
+
+	void ReleaseSamplerState();
 };
