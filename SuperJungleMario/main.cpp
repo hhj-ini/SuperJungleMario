@@ -542,7 +542,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		if (ImGui::Button("->"))
 		{
 			player->Location.x += 2.f;
-			player->Location.x += 1.f;
+			player->Location.y += 0.3f;
 		}
 		
 		ImGui::End();

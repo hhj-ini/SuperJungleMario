@@ -117,7 +117,7 @@ bool UProjectile::CollisionCheck(UPrimitive * other)
                     }
                     else
                     {
-                        Velocity.y = 0.007f;
+                        Velocity.y = 0.08f;
                     }
                     break;
                 }
@@ -177,7 +177,7 @@ bool UProjectile::CollisionCheck(UPrimitive * other)
                     }
                     else
                     {
-                        Velocity.y = 0.01f;
+                        Velocity.y = 0.02f;
                     }
                     break;
                 }
@@ -267,7 +267,7 @@ bool UProjectile::ActivateProjectile(FVector PlayerLocation, bool bFacingLeft, f
     LifeTime = 0; // 초기화
 
 	Location.x = PlayerLocation.x + (bFacingLeft ? -1.0f : 1.0f) * (playerWidth / 2.0f + width / 2.0f);
-	Location.y = PlayerLocation.y + 0.07f;
+	Location.y = PlayerLocation.y + 0.03f;
 
     Velocity.x = bFacingLeft ? -0.025f : 0.025f;
 
@@ -316,6 +316,6 @@ void UProjectile::UpdateAnimation(float deltaTime)
 
 void UProjectile::UpdateVelocity(bool bGravity)
 {
-    Velocity.y = -0.003f;
+    Velocity.y = -0.01f;
     
 }
