@@ -519,7 +519,7 @@ bool UPlayer::ShotFireRequest()
 void UPlayer::Reset() // 플레이어 리스폰용
 {
 	Location.x = 0.1f;
-	Location.y = -0.7f;
+	Location.y = -0.8f;
 	Location.z = 0.0f;
 
 	Velocity.x = 0.0f;

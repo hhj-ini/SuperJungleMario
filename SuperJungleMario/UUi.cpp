@@ -161,6 +161,12 @@ void UUi::UpdateGameTime(int currentTime)
 	{
 		UGameLogic::GetInstance().setGameOver();
 	}
+	else if (UGameLogic::GetInstance().IsShowBlack())
+	{
+		charList[28] = '.';
+		charList[27] = '.';
+		charList[26] = '.';
+	}
 	else if (currentTime < 401)
 	{
 		charList[28] = '0' + currentTime % 10;
