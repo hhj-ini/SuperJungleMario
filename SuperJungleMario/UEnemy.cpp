@@ -34,6 +34,9 @@ UEnemy::UEnemy(float x, float y, float w, float h)
 	bisMove = false;
 	SetState(EnemyState::ALIVE);
 	ObjectType = EObjectType::ENEMY;
+
+	DyingAnimVelocity.x = +1.25f;
+	DyingAnimVelocity.y = +0.2f;
 }
 
 void UEnemy::SetPlayer(UPrimitive* InPlayer)
@@ -54,11 +57,27 @@ void UEnemy::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)
 		{
 			TextureSRVPtr[1] = ResourceManager::GetInstance().GetSRV(L"Resource\\Goomba2.png", &renderer);
 		}
+
+		
 		renderer.PrepareShaderResource(TextureSRVPtr[CurrentFrame]);
 
 		//DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(Location.x, Location.y, Location.z);
 		DirectX::XMMATRIX world = DirectX::XMMatrixScaling(width, height, 1.0f) * DirectX::XMMatrixTranslation(Location.x, Location.y, Location.z);
 		renderer.UpdateConstantBuffer(world, renderer.ViewMatrix);
+
+		renderer.RenderPrimitive(pBuffer, num);
+	}
+	else if (eState == EnemyState::DYING)
+	{
+		if (!TextureSRVPtr[2])
+		{
+			TextureSRVPtr[2] = ResourceManager::GetInstance().GetSRV(L"Resource\\Goomba3.png", &renderer);
+		}
+
+		renderer.PrepareShaderResource(TextureSRVPtr[CurrentFrame]);
+
+		DirectX::XMMATRIX world = DirectX::XMMatrixScaling(width, height, 1.0f) * DirectX::XMMatrixTranslation(Location.x, Location.y, Location.z);
+		renderer.UpdateConstantBuffer(world, renderer.ViewMatrix, DyingAnimOffset);
 
 		renderer.RenderPrimitive(pBuffer, num);
 	}
@@ -175,7 +194,7 @@ bool UEnemy::CollisionCheck(UPrimitive* other)
 
 void UEnemy::Move()
 {
-	if (eState == EnemyState::DEAD)
+	if (eState == EnemyState::DEAD || eState == EnemyState::DYING)
 	{
 		return;
 	}
@@ -203,6 +222,11 @@ void UEnemy::SetState(UEnemy::EnemyState InState)
 
 	case EnemyState::DEAD:
 		eState = EnemyState::DEAD;
+		bIsActive = false;
+		break;
+
+	case EnemyState::DYING:
+		eState = EnemyState::DYING;
 		break;
 	}
 }
@@ -211,19 +235,43 @@ void UEnemy::OnDeath(UPrimitive* player)
 {
 	if (eState == EnemyState::ALIVE)
 	{
-		SetState(EnemyState::DEAD);
 		SoundManager->PlaySoundResource(SoundBufferMap[L"GoombaDead"]);
-		bIsActive = false;
 		// 몬스터가 죽으면 점수 올라감
 		UGameLogic::GetInstance().addScore(100, Location.x, Location.y);
+
+ 		if (EObjectType::BOX == player->ObjectType)
+		{
+			CurrentFrame = 2;	// 뒤집어진 굼바로 변경
+			SetState(EnemyState::DYING);
+
+			return;
+		}
+		
+		SetState(EnemyState::DEAD);
 	}
 }
 
 void UEnemy::UpdateAnimation(float deltaTime)
 {
 	AnimationTimer += deltaTime;
+	
+	if (eState == EnemyState::DYING)
+	{
+		DyingAnimVelocity.y -= 9.8f * deltaTime;
+
+		DyingAnimOffset.x += DyingAnimVelocity.x * deltaTime;
+		DyingAnimOffset.y += DyingAnimVelocity.y * deltaTime;
+
+		if (DyingAnimOffset.y < -5.0f)
+		{
+			SetState(EnemyState::DEAD);
+		}
+		return;
+	}
+
 	if (AnimationTimer >= FrameInterval)
 	{
+		
 		CurrentFrame = (CurrentFrame + 1) % 2;
 		AnimationTimer = 0.0f;
 	}
