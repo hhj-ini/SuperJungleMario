@@ -9,6 +9,7 @@ public:
     enum class EnemyState
     {
         ALIVE,
+        DYING,
         DEAD
     };
 
@@ -39,4 +40,7 @@ private:
     int CurrentFrame = 0;
     float AnimationTimer = 0.0f;
     const float FrameInterval = 0.15f;
+
+    FVector DyingAnimOffset;
+    FPos DyingAnimVelocity;
 };

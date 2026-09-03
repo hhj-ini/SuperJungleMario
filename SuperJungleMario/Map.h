@@ -8,7 +8,7 @@ constexpr int   MapHeight = 15;
 
 constexpr float mapScale = 0.1f;
 constexpr float MapOriginX = -1.0f+mapScale;   // 가장 왼쪽의 중심y좌표
-constexpr float MapOriginY = -1.0f+mapScale;   // 가장 아래쪽의 중심y좌표
+constexpr float MapOriginY = -1.0f+mapScale/2;   // 가장 아래쪽의 중심y좌표
 /*
 * 추가사항은 수정해주세요
 * 

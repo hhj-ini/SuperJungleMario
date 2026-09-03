@@ -220,11 +220,11 @@ DirectX::XMFLOAT4 UUi::TranslateFloatingUV(int score)
 	switch (score)
 	{
 	case 100:
-		return DirectX::XMFLOAT4(0, 0.5f, 0, 0.5f);
+		return DirectX::XMFLOAT4(0.5f, 0.5f, 0, 0);
 	case 200:
-		return DirectX::XMFLOAT4(0.5f, 1, 0, 0.5f);
+		return DirectX::XMFLOAT4(1, 0.5f, 0.5f, 0);
 	case 1000:
-		return DirectX::XMFLOAT4(0, 0.5f, 0.5f, 1);
+		return DirectX::XMFLOAT4(0.5f, 1, 0, 0.5f);
 	case 5000:
 		return DirectX::XMFLOAT4(0.5f, 1, 0.5f, 1);
 	default:
