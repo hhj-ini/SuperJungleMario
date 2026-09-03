@@ -8,7 +8,7 @@ constexpr int   MapHeight = 15;
 
 constexpr float mapScale = 0.1f;
 constexpr float MapOriginX = -1.0f+mapScale;   // 가장 왼쪽의 중심y좌표
-constexpr float MapOriginY = -1.0f+mapScale;   // 가장 아래쪽의 중심y좌표
+constexpr float MapOriginY = -1.0f+mapScale/2;   // 가장 아래쪽의 중심y좌표
 /*
 * 추가사항은 수정해주세요
 * 
@@ -38,10 +38,10 @@ inline const char* MapData[MapHeight] =
 	"..........................................................................................................................................................................................SSS........L.............",   //  6
 	".........................................................................................................................................................................................SSSS........L.............",   //  7
 	"........................................................................................................................................................................................SSSSS........L...CCCCC.....",   //  8
-	"................?...BMB?B.....................PP.........PP.....?............BFB...............B....BB....?..?..?....BBB....BBBB........S..S..........SS..S............BB?B............SSSSSS........L...CCCCC.....",   //  9
+	"................?...BMB?B.....................PP.........PP.....?............BFB...............B....BB....?..?..?...BBBB....BBBB........S..S..........SS..S............BB?B............SSSSSS........L...CCCCC.....",   //  9
 	"......................................PP......PP.........PP............................................................................SS..SS........SSS..SS..........................SSSSSSS........L...CCCCC.....",   //  10
 	"............................PP........PP......PP.........PP...........................................................................SSS..SSS......SSSS..SSS.....PP..............PP.SSSSSSSS........L...CCCCC.....",   //  11
-	"......................E.....PP........PPE.....PP.E...E...PP.................................................E......E........E.E......SSSS..SSSS....SSSSS..SSSS....PP........EE....PPSSSSSSSSS.........S..CCCCC.....",   //  12
+	"......................E.....PP........PPE.....PP.E...E...PP.................................................E...............E.E......SSSS..SSSS....SSSSS..SSSS....PP........EE....PPSSSSSSSSS.........S..CCCCC.....",   //  12
 	"GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG..GGGGGGGGGGGGGGG...GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG..GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG",   //  13
 	"GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG..GGGGGGGGGGGGGGG...GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG..GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG",   //  14
 };

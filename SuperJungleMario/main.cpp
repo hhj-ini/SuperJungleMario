@@ -261,11 +261,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 		else if (StartTime == 0.0f)// 아무 키나 눌러 게임이 시작됨
 		{
-			if (mainPlayer)
-			{
-				mainPlayer->bisMove = true;
-				mainPlayer->Velocity.y = 0.0f;
-			}
 			StartTime = GameTime; // 주석 제거 주석 제거 주석 제거
 			UGameLogic::GetInstance().setShowBlack(true);
 		}
@@ -280,11 +275,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			{
 				UGameLogic::GetInstance().setShowBlack(false);
 				timer = 0.0f;
+				if (mainPlayer)
+				{
+					mainPlayer->bisMove = true;
+					mainPlayer->Velocity.y = 0.0f;
+				}
 			}
 		}
 		for (int i = 0; i < FloatingScoreUIList.size(); i++)
 		{
-			if (GameTime - FloatingScoreUIList[i].createdTime > 5.0f)
+			if (GameTime - FloatingScoreUIList[i].createdTime > 2.0f)
 			{
 				delete FloatingScoreUIList[i].floatingUUi;
 				FloatingScoreUIList.erase(FloatingScoreUIList.begin() + i);
@@ -394,10 +394,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 
 
-		if (player && UGameLogic::GetInstance().IsRestart())
+		if (player && UGameLogic::GetInstance().IsRestart()) // 게임이 재시작 되는 부분
 		{
 
-			for (size_t k = mapObjectStartIndex; k < primitiveCount; ++k)
+			for (size_t k = mapObjectStartIndex; k < primitiveCount; ++k) // 플레이어 제외 다 초기화
 			{
 				delete PrimitiveList[k];
 				PrimitiveList[k] = nullptr;
@@ -405,12 +405,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			primitiveCount = mapObjectStartIndex;
 			MapReader(PrimitiveList, primitiveCount, &soundManager);
 
-			UGameLogic::GetInstance().resetAll();
-			GameTime = 0.0f;
+			UGameLogic::GetInstance().resetAll(); // 로직 (점수 등) 초기화
+			GameTime = 0.0f; // 게임 시간 초기화
 			StartTime = 0.0f;
 			timer = 0.0f;
-			player->Reset();
-			camera.Reset();
+			player->Reset(); // 플레이어 초기화
+			camera.Reset(); // 카메라 초기화
 
 			UGameLogic::GetInstance().setStarted();
 		}
@@ -509,24 +509,25 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				GameEndUIList[i]->Render(renderer, UIBuffer, numVerticesUI, fontSize, fontSize, renderer.GetNDCoordinate(charPositionsEnd[i], 1024, 1024));
 			}
 		}
-		if (UGameLogic::GetInstance().bIsFloatingScore()) // floating score rendering
+		if (UGameLogic::GetInstance().bIsFloatingScore()) // floating score catch
 		{
-			// 객체를 생성해야함
-			UUi* newFloatingScore = new UUi(ui_vertices);
-			FloatingScoreUIList.push_back({newFloatingScore, GameTime, UGameLogic::GetInstance().getLastScore()});
-			renderer.PrepareUIShader(UIFloatingSRV);
 			//NDC 업데이트해야 
 			float ndcX = UGameLogic::GetInstance().getCoordinate().x - camera.x;
 			float ndcY = UGameLogic::GetInstance().getCoordinate().y - camera.y + 0.2f;
-			//FloatingScoreUI->UpdateUV(charFloatingList, 0);
-			for (size_t i = 0; i < FloatingScoreUIList.size(); i++)
-			{
-				FloatingScoreUIList[i].floatingUUi->UpdateFloatingUV(UGameLogic::GetInstance().getLastScore());
-				FloatingScoreUIList[i].floatingUUi->Render(renderer, UIBuffer, numVerticesUI, fontSize / 0.5f, fontSize / 0.5f, DirectX::XMFLOAT2(ndcX, ndcY));
-			}
+			// 객체를 생성해야함
+			UUi* newFloatingScore = new UUi(ui_vertices);
+			FloatingScoreUIList.push_back({ newFloatingScore, GameTime, UGameLogic::GetInstance().getLastScore(), DirectX::XMFLOAT2(ndcX, ndcY) });
+			renderer.PrepareUIShader(UIFloatingSRV);
+			// lock 해제
 			UGameLogic::GetInstance().setIsFloatingScore(false);
-			UGameLogic::GetInstance().setLastScore(0); // 이러면 한 프레임만 되긴 하는데 일단 이렇게 
 		}
+		renderer.PrepareShaderResource(UIFloatingSRV);
+		for (size_t i = 0; i < FloatingScoreUIList.size(); i++) // Floating score rendering
+		{
+			FloatingScoreUIList[i].floatingUUi->UpdateFloatingUV(FloatingScoreUIList[i].displayScore);
+			FloatingScoreUIList[i].floatingUUi->Render(renderer, UIBuffer, numVerticesUI, fontSize / 0.5f, fontSize / 0.5f, FloatingScoreUIList[i].ndCoord);
+		}
+		
 
 		// ImGui 렌더링 준비, 컨트롤 설정, 렌더링 요청
 		ImGui_ImplDX11_NewFrame();
