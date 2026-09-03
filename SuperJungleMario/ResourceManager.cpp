@@ -12,6 +12,12 @@ ID3D11ShaderResourceView* ResourceManager::GetSRV(const std::wstring& InPath, UR
     {
         renderer->LoadTexture(InPath, MushroomTest, MushroomTestSRV);
         SRVMap[InPath] = MushroomTestSRV;
+
+        if (MushroomTest)
+        {
+            MushroomTest->Release();
+            MushroomTest = nullptr;
+        }
     }
 
     return SRVMap[InPath];

@@ -5,7 +5,7 @@
 struct ID3D11ShaderResourceView;	// 포인터 위해서 전방선언
 struct ID3D11Resource;
 class URenderer;
-class IDirectSoundBuffer;
+struct IDirectSoundBuffer;
 class USoundManager;
 
 class ResourceManager

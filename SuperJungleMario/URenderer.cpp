@@ -122,12 +122,21 @@ void URenderer::ReleaseRasterizerState()
 		RasterizerState->Release();
 		RasterizerState = nullptr;
 	}
+
+	if (UIRasterizerState)
+	{
+		UIRasterizerState->Release();
+		UIRasterizerState = nullptr;
+	}
 }
 
 
 // 렌더러에 사용된 모든 리소스를 해제하는 함수
 void URenderer::Release()
 {
+	
+
+	ReleaseSamplerState();
 	ReleaseRasterizerState();
 
 	// 렌더 타겟을 초기화
@@ -137,6 +146,7 @@ void URenderer::Release()
 	DeviceContext->Flush();
 
 	ReleaseFrameBuffer();
+
 	ReleaseDeviceAndSwapChain();
 }
 
@@ -584,4 +594,19 @@ void URenderer::CreateUISamplerState()
 
 	HRESULT hr = Device->CreateSamplerState(&samplerdesc, &UISamplerState);
 
+}
+
+void URenderer::ReleaseSamplerState()
+{
+	if (UISamplerState)
+	{
+		UISamplerState->Release();
+		UISamplerState = nullptr;
+	}
+
+	if (TextureSamplerState)
+	{
+		TextureSamplerState->Release();
+		TextureSamplerState = nullptr;
+	}
 }

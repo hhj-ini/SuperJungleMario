@@ -612,18 +612,18 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	renderer.ReleaseShader();
 
 	// 리소스 소멸
-	//renderer.ReleaseResource(MushroomTest);
-	//renderer.ReleaseSRV(MushroomTestSRV);
 	renderer.ReleaseResource(UIFontResource);renderer.ReleaseSRV(UIFontSRV);
 	renderer.ReleaseResource(UIBlackResource);renderer.ReleaseSRV(UIBlackSRV);
 	renderer.ReleaseResource(UIMarioResource);renderer.ReleaseSRV(UIMarioSRV);
 	renderer.ReleaseResource(UICoinResource);renderer.ReleaseSRV(UICoinSRV);
 	renderer.ReleaseResource(UITitleResource);renderer.ReleaseSRV(UITitleSRV);
+	renderer.ReleaseResource(UIFloatingResource); renderer.ReleaseSRV(UIFloatingSRV);
 
 	ResourceManager::GetInstance().ReleaseResource(&renderer, &soundManager);
 
 	soundManager.ShutdownDirectSound();
 	// D3D11 소멸시키는 함수를 호출
 	renderer.Release();
+
 	return 0;
 }
