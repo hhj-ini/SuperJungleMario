@@ -26,18 +26,15 @@ void UFlag::Render(URenderer& renderer, ID3D11Buffer* pBuffer, UINT num)
 
 bool UFlag::CollisionCheck(UPrimitive * other)
 {
-	// 가로가 겹치는지 확인
-	float sumHalfWidth = (width / 2.0f) + (other->width / 2.0f);
-	float xdistance = std::fabs(Location.x - other->Location.x);
-	float overlapX = sumHalfWidth - xdistance;
-
 	// 세로가 겹치는지 확인
 	float sumHalfHeight = (height / 2.0f) + (other->height / 2.0f);
 	float ydistance = std::fabs(Location.y - other->Location.y);
 	float overlapY = sumHalfHeight - ydistance;
 
+	bool isXcoordGoal = ((Location.x - other->Location.x) - (scaleMod / 2)) > 0.0f ? false : true;
+
 	// 충돌
-	if (overlapX > 0 && overlapY > 0) {
+	if (isXcoordGoal && overlapY > 0) {
 
 		switch (other->ObjectType)
 		{

@@ -43,7 +43,7 @@ private:
     const float FrameInterval = 0.15f;
 
     float CollisionTimer = 0.0f;
-    const float CollisionInterval = 0.15f;
+    const float CollisionInterval = 0.3f;
 
     float ExplosionTimer = 0.0f;
 };

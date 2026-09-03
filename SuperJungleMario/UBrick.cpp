@@ -8,6 +8,7 @@
 UBrick::UBrick() : UBox()
 {
 	BoxType = EBoxType::BRICK;
+	ObjectType = EObjectType::BOX;
 
 }
 
@@ -15,6 +16,7 @@ UBrick::UBrick(float x, float y, float w, float h)
 	: UBox(x, y, w, h)
 {
 	BoxType = EBoxType::BRICK;
+	ObjectType = EObjectType::BOX;
 }
 
 bool UBrick::CollisionCheck(UPrimitive* other)
@@ -209,7 +211,7 @@ void UBrick::KillEnemy()
 		UEnemy* ep = dynamic_cast<UEnemy*>(elem);
 		if (ep)
 		{
-			ep->OnDeath(nullptr);
+			ep->OnDeath(this);
 		}
 	}
 }
