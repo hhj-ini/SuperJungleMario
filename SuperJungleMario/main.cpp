@@ -432,6 +432,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		if (player && (player->IsPlayerDead() || player->Location.y < -2.5f))  // 플레이어가 죽었을때 되돌아가는 부분
 		{
 			//RemoveObject(PrimitiveList, primitiveCount, i); 
+			player->SetState(UPlayer::PlayerState::DEAD);
 			if (!UGameLogic::GetInstance().IsNeedRestart() && UGameLogic::GetInstance().removeOneLife()) // 목숨--
 			{	
 				for (size_t k = mapObjectStartIndex; k < primitiveCount; ++k)
