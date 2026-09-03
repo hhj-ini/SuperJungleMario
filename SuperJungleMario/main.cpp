@@ -267,6 +267,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		UUi::UpdateGameTime(403.0f - GameTime + StartTime + UGameLogic::GetInstance().getStoppedTime()); // 게임시간 업데이트
 		if (UGameLogic::GetInstance().IsShowBlack())
 		{
+			if (mainPlayer)
+			{
+				mainPlayer->bisMove = false;			
+			}
 			if (timer == 0.0f)
 			{
 				timer = GameTime;
