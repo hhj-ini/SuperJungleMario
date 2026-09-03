@@ -28,6 +28,7 @@ private: // 나중에 privite으로
 	bool audioReady;
 	double stoppedTime;
 	bool stoppedTimeSwitch;
+	bool showImGui;
 	UGameLogic();
 
 	USoundManager* soundManager;
@@ -82,6 +83,10 @@ public:
 
 	double getStoppedTime();
 	void addStoppedTime(double time);
+
+	void switchImGui();
+	bool IsShowImGui();
+
 
 	DirectX::XMFLOAT2 getCoordinate();
 

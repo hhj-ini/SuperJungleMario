@@ -183,6 +183,7 @@ void UGameLogic::resetAll()
 	renderUI = true;
 	stoppedTime = 0.0f;
 	stoppedTimeSwitch = false;
+	showImGui = false;
 	soundManager->StopSound(SoundBufferMap[L"GameOver"]);
 	soundManager->PlaySoundResource(SoundBufferMap[L"BGM"]);
 }
@@ -218,6 +219,16 @@ void UGameLogic::addStoppedTime(double time)
 	}
 	stoppedTime += time;
 }
+
+void UGameLogic::switchImGui()
+{
+	showImGui = !showImGui;
+}
+bool UGameLogic::IsShowImGui()
+{
+	return showImGui;
+}
+
 
 DirectX::XMFLOAT2 UGameLogic::getCoordinate()
 {

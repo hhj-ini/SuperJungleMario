@@ -428,8 +428,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			timer = 0.0f;
 			player->Reset(); // 플레이어 초기화
 			camera.Reset(); // 카메라 초기화
-
-			//UGameLogic::GetInstance().setStarted();
 		}
 		if (player && (player->IsPlayerDead() || player->Location.y < -2.5f))  // 플레이어가 죽었을때 되돌아가는 부분
 		{
@@ -557,20 +555,21 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		ImGui_ImplWin32_NewFrame();
 		ImGui::NewFrame();
 
-		ImGui::Begin("Super Jungle Mario");
-		ImGui::Text("Hello Jungle Mario!");
-
-		// UI 테스트용
-		// ImGui::Text("Game Time %.2f", GameTime);
-
-		if (ImGui::Button("->"))
+		if (ImGui::IsKeyPressed(ImGuiKey_I))
 		{
-			player->Location.x += 2.f;
-			player->Location.y += 0.3f;
+			UGameLogic::GetInstance().switchImGui();
 		}
-		
-		ImGui::End();
-
+		if (UGameLogic::GetInstance().IsShowImGui())
+		{
+			ImGui::Begin("Super Jungle Mario");
+			if (ImGui::Button("->"))
+			{
+				player->Location.x += 2.0f;
+				player->Location.y += 0.3f;
+			}
+			ImGui::End();
+		}
+	
 		ImGui::Render();
 		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
