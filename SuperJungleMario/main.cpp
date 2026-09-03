@@ -261,11 +261,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 		else if (StartTime == 0.0f)// 아무 키나 눌러 게임이 시작됨
 		{
-			if (mainPlayer)
-			{
-				mainPlayer->bisMove = true;
-				mainPlayer->Velocity.y = 0.0f;
-			}
 			StartTime = GameTime; // 주석 제거 주석 제거 주석 제거
 			UGameLogic::GetInstance().setShowBlack(true);
 		}
@@ -280,6 +275,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			{
 				UGameLogic::GetInstance().setShowBlack(false);
 				timer = 0.0f;
+				if (mainPlayer)
+				{
+					mainPlayer->bisMove = true;
+					mainPlayer->Velocity.y = 0.0f;
+				}
 			}
 		}
 		for (int i = 0; i < FloatingScoreUIList.size(); i++)
