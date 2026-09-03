@@ -180,7 +180,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	ID3D11Resource* UITitleResource = nullptr; ID3D11ShaderResourceView* UITitleSRV = nullptr; renderer.LoadTexture(L"Resource\\title.png", UITitleResource, UITitleSRV);
 	ID3D11Resource* UIFloatingResource = nullptr; ID3D11ShaderResourceView* UIFloatingSRV = nullptr; renderer.LoadTexture(L"Resource\\score.png", UIFloatingResource, UIFloatingSRV);
 
-	//ID3D11Buffer* cubeBuffer = renderer.CreateVertexBuffer(cube_vertices, sizeof(cube_vertices));
 	ID3D11Buffer* cubeBuffer = renderer.CreateTextureVertexBuffer(cube_vertices, sizeof(cube_vertices));
 
 
@@ -377,39 +376,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			}
 		}
 
-		for (size_t i = 0; i < primitiveCount; ++i)
-		{
-			UEnemy* enemy = dynamic_cast<UEnemy*>(PrimitiveList[i]);
-			UPlayer* player = dynamic_cast<UPlayer*>(PrimitiveList[i]);
-			UMushroom* mushroom = dynamic_cast<UMushroom*>(PrimitiveList[i]);
-
-			//if (player && UGameLogic::GetInstance().IsRestart())
-			//{
-			//	
-			//	MapReader(PrimitiveList, primitiveCount, &soundManager);
-			//	UGameLogic::GetInstance().resetAll();
-			//	GameTime = 0.0f;
-			//	StartTime = 0.0f;
-			//	timer = 0.0f;
-			//	player->Reset();
-			//	camera.Reset();
-
-			//	continue;
-			//}
-
-			if (enemy && enemy->IsEnemyDead())
-			{
-				//RemoveObject(PrimitiveList, primitiveCount, i);
-				continue;
-			}
-
-			if (mushroom && mushroom->IsMushroomDestroyed())
-			{
-				//RemoveObject(PrimitiveList, primitiveCount, i);
-				continue;
-			}
-		}
-
 
 		if (player && UGameLogic::GetInstance().IsRestart()) // 게임이 재시작 되는 부분
 		{
@@ -431,7 +397,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 		if (player && (player->IsPlayerDead() || player->Location.y < -2.5f))  // 플레이어가 죽었을때 되돌아가는 부분
 		{
-			//RemoveObject(PrimitiveList, primitiveCount, i); 
 			player->SetState(UPlayer::PlayerState::DEAD);
 			if (!UGameLogic::GetInstance().IsNeedRestart() && UGameLogic::GetInstance().removeOneLife()) // 목숨--
 			{	
@@ -585,17 +550,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			elapsedTime = (endTime.QuadPart - startTime.QuadPart) * 1000.0 / frequency.QuadPart;
 		} while (elapsedTime < targetFrametime);
 
-
-		//QueryPerformanceCounter(&endTime);
-		//deltaTime = (double)(endTime.QuadPart - startTime.QuadPart) / frequency.QuadPart;
 	}
 
 	// 생성된 공들 메모리 해제
-	//for (size_t i = 0; i < primitiveCount; ++i)
-	//{
-	//	delete PrimitiveList[i];
-	//	PrimitiveList[i] = nullptr;
-	//}
+	for (size_t i = 0; i < primitiveCount; ++i)
+	{
+		delete PrimitiveList[i];
+		PrimitiveList[i] = nullptr;
+	}
 	 
 	delete[] PrimitiveList;
 	PrimitiveList = nullptr;
