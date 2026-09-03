@@ -24,7 +24,8 @@ UGameLogic::UGameLogic()
 	needRestart(false),
 	restart(false),
 	renderUI(true),
-	audioReady(true) // 이거 false로 이거 false로이거 false로이거 false로
+	audioReady(true), // 이거 false로 이거 false로이거 false로이거 false로
+	stoppedTime(0.0f)
 {
 }
 
@@ -180,6 +181,8 @@ void UGameLogic::resetAll()
 	needRestart = false;
 	restart = false;
 	renderUI = true;
+	stoppedTime = 0.0f;
+	stoppedTimeSwitch = false;
 	soundManager->StopSound(SoundBufferMap[L"GameOver"]);
 	soundManager->PlaySoundResource(SoundBufferMap[L"BGM"]);
 }
@@ -200,6 +203,20 @@ bool UGameLogic::IsAudioReady()
 void UGameLogic::setAudioReady()
 {
 	audioReady = true;
+}
+
+double UGameLogic::getStoppedTime()
+{
+	return stoppedTime;
+}
+void UGameLogic::addStoppedTime(double time)
+{
+	if (!stoppedTimeSwitch)
+	{
+		stoppedTimeSwitch = true;
+		return;
+	}
+	stoppedTime += time;
 }
 
 DirectX::XMFLOAT2 UGameLogic::getCoordinate()

@@ -264,7 +264,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			StartTime = GameTime; // 주석 제거 주석 제거 주석 제거
 			UGameLogic::GetInstance().setShowBlack(true);
 		}
-		UUi::UpdateGameTime(403 - GameTime + StartTime);
+		UUi::UpdateGameTime(403.0f - GameTime + StartTime + UGameLogic::GetInstance().getStoppedTime()); // 게임시간 업데이트
 		if (UGameLogic::GetInstance().IsShowBlack())
 		{
 			if (timer == 0.0f)
@@ -273,6 +273,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			}
 			else if (GameTime - timer > 3.0f) // 3초 지나면 블랙 ui 제거
 			{
+				UGameLogic::GetInstance().addStoppedTime(GameTime - timer);
 				UGameLogic::GetInstance().setShowBlack(false);
 				timer = 0.0f;
 				if (mainPlayer)
@@ -280,6 +281,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 					mainPlayer->bisMove = true;
 					mainPlayer->Velocity.y = 0.0f;
 				}
+				UUi::UpdateGameTime(403.0f - GameTime + StartTime + UGameLogic::GetInstance().getStoppedTime()); // 게임시간 업데이트
+			}
+			else
+			{
+				UUi::UpdateGameTime(403.0f - timer + StartTime + UGameLogic::GetInstance().getStoppedTime());
 			}
 		}
 		for (int i = 0; i < FloatingScoreUIList.size(); i++)
@@ -288,6 +294,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			{
 				delete FloatingScoreUIList[i].floatingUUi;
 				FloatingScoreUIList.erase(FloatingScoreUIList.begin() + i);
+			}
+			else 
+			{
+				//double 
 			}
 		}
 
@@ -414,7 +424,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 			UGameLogic::GetInstance().setStarted();
 		}
-		if (player && (player->IsPlayerDead() || player->Location.y < -2.5f))
+		if (player && (player->IsPlayerDead() || player->Location.y < -2.5f))  // 플레이어가 죽었을때 되돌아가는 부분
 		{
 			//RemoveObject(PrimitiveList, primitiveCount, i); 
 			if (!UGameLogic::GetInstance().IsNeedRestart() && UGameLogic::GetInstance().removeOneLife()) // 목숨--
