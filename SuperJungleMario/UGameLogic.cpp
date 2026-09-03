@@ -98,9 +98,9 @@ bool UGameLogic::IsStarted()
 	return started;
 }
 void UGameLogic::setStarted()
-{
+{	// 완전히 새로운 판(타이틀에서 게임 시작을 설정하는 함수)
 	started = true;
-	soundManager->PlaySoundResource(SoundBufferMap[L"BGM"]);
+	//soundManager->PlaySoundResource(SoundBufferMap[L"BGM"]);
 }
 
 bool UGameLogic::bIsFloatingScore()
@@ -145,6 +145,10 @@ bool UGameLogic::IsShowBlack()
 void UGameLogic::setShowBlack(bool input)
 {
 	showBlack = input;
+	if (false == input)
+	{
+		soundManager->PlaySoundResource(SoundBufferMap[L"BGM"]);
+	}
 }
 
 bool UGameLogic::IsNeedRestart()
@@ -185,7 +189,7 @@ void UGameLogic::resetAll()
 	stoppedTimeSwitch = false;
 	showImGui = false;
 	soundManager->StopSound(SoundBufferMap[L"GameOver"]);
-	soundManager->PlaySoundResource(SoundBufferMap[L"BGM"]);
+	//soundManager->PlaySoundResource(SoundBufferMap[L"BGM"]);
 }
 
 bool UGameLogic::IsRenderUI()
