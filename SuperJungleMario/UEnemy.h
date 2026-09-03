@@ -1,7 +1,7 @@
 #pragma once
 #include "UBall.h"
-#include "UPlayer.h"
 #include "UGameLogic.h"
+
 
 class UEnemy : public UBall
 {
@@ -13,7 +13,7 @@ public:
     };
 
     const FVector& GetPosition() const { return Location; }
-    UPlayer* Player = nullptr;
+    UPrimitive* Player = nullptr;
 
 public:
     UEnemy(float locationX, float locationY, float width, float height);
@@ -24,9 +24,9 @@ public:
 
     virtual void Move() override;
 
-    void SetPlayer(UPlayer* InPlayer);
+    void SetPlayer(UPrimitive* InPlayer);
     void SetState(EnemyState InState);
-    void OnDeath(UPlayer* player);
+    void OnDeath(UPrimitive* player);
     float GetHeight() const { return height; }
 
     virtual void UpdateAnimation(float deltaTime);

@@ -1,5 +1,4 @@
 #include "UEnemy.h"
-#include "UPlayer.h"
 #include "ResourceManager.h"
 #include "UGameLogic.h"
 #include "USoundManager.h"
@@ -37,7 +36,7 @@ UEnemy::UEnemy(float x, float y, float w, float h)
 	ObjectType = EObjectType::ENEMY;
 }
 
-void UEnemy::SetPlayer(UPlayer* InPlayer)
+void UEnemy::SetPlayer(UPrimitive* InPlayer)
 {
 	Player = InPlayer;
 }
@@ -208,7 +207,7 @@ void UEnemy::SetState(UEnemy::EnemyState InState)
 	}
 }
 
-void UEnemy::OnDeath(UPlayer* player)
+void UEnemy::OnDeath(UPrimitive* player)
 {
 	if (eState == EnemyState::ALIVE)
 	{
