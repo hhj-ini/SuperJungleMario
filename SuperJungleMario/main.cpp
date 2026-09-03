@@ -290,14 +290,17 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 		for (int i = 0; i < FloatingScoreUIList.size(); i++)
 		{
-			if (GameTime - FloatingScoreUIList[i].createdTime > 2.0f)
+			double timeElapsed = GameTime - FloatingScoreUIList[i].createdTime;
+			if (timeElapsed > 1.0f)
 			{
 				delete FloatingScoreUIList[i].floatingUUi;
 				FloatingScoreUIList.erase(FloatingScoreUIList.begin() + i);
 			}
 			else 
 			{
-				//double 
+				const float floatingSpeed = 0.2f;
+				float floatingAmoutY = static_cast<float>(timeElapsed) * floatingSpeed;
+				FloatingScoreUIList[i].ndCoord.y = FloatingScoreUIList[i].startY + floatingAmoutY;
 			}
 		}
 
@@ -526,7 +529,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			float ndcY = UGameLogic::GetInstance().getCoordinate().y - camera.y + 0.2f;
 			// 객체를 생성해야함
 			UUi* newFloatingScore = new UUi(ui_vertices);
-			FloatingScoreUIList.push_back({ newFloatingScore, GameTime, UGameLogic::GetInstance().getLastScore(), DirectX::XMFLOAT2(ndcX, ndcY) });
+			FloatingScoreUIList.push_back({ newFloatingScore, GameTime, UGameLogic::GetInstance().getLastScore(), DirectX::XMFLOAT2(ndcX, ndcY), ndcY });
 			renderer.PrepareUIShader(UIFloatingSRV);
 			// lock 해제
 			UGameLogic::GetInstance().setIsFloatingScore(false);

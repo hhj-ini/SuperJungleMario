@@ -85,4 +85,5 @@ struct FFloatingScore
 	double createdTime;
 	int displayScore;
 	DirectX::XMFLOAT2 ndCoord;
+	float startY;
 };
