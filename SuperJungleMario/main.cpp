@@ -139,7 +139,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	}
 	UUi* CoinUI = new UUi(ui_vertices, DirectX::XMFLOAT2(-0.24f, 0.84f));
 	// Black UI part
-	size_t BlackUICnt = 11;
+	size_t BlackUICnt = 10;
 	UUi** BlackUIList = new UUi * [BlackUICnt];
 	for (size_t i = 0; i < BlackUICnt; i++)
 	{

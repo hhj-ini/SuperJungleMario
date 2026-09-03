@@ -68,6 +68,7 @@
     <ClCompile Include="UFlower.cpp" />
     <ClCompile Include="UPipe.cpp" />
     <ClCompile Include="USoundManager.cpp" />
+    <ClCompile Include="UCoin.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Cube.h" />
@@ -138,6 +139,7 @@
     <ClInclude Include="UFlag.h" />
     <ClInclude Include="UPipe.h" />
     <ClInclude Include="USoundManager.h" />
+    <ClInclude Include="UCoin.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
