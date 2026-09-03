@@ -84,4 +84,5 @@ struct FFloatingScore
 	UUi* floatingUUi;
 	double createdTime;
 	int displayScore;
+	DirectX::XMFLOAT2 ndCoord;
 };
